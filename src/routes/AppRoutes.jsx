@@ -17,6 +17,9 @@ import CodingChallenges from '../pages/CodingChallenges.jsx';
 import Contests from '../pages/Contests.jsx';
 import Leaderboards from '../pages/Leaderboards.jsx';
 import Profile from '../pages/Profile.jsx';
+import CreateQuiz from '../pages/CreateQuiz.jsx';
+import CreateContest from '../pages/CreateContest.jsx';
+import CreateChallenge from '../pages/CreateChallenge.jsx';
 
 // Protected Route Wrapper Component
 function ProtectedRoute({ children, allowedRoles = [] }) {
@@ -73,6 +76,30 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={['teacher', 'admin']}>
             <TeacherDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create-quiz"
+        element={
+          <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+            <CreateQuiz />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create-contest"
+        element={
+          <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+            <CreateContest />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create-challenge"
+        element={
+          <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+            <CreateChallenge />
           </ProtectedRoute>
         }
       />

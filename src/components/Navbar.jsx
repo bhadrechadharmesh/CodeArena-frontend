@@ -62,6 +62,7 @@ export default function Navbar() {
                 {user.role === 'teacher' && (
                   <>
                     <Link to="/teacher-dashboard" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Dashboard</Link>
+                    <Link to="/create-challenge" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Create Challenge</Link>
                     <Link to="/create-quiz" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Create Quiz</Link>
                     <Link to="/create-contest" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Schedule Contest</Link>
                   </>
@@ -149,6 +150,7 @@ export default function Navbar() {
                 {user.role === 'teacher' && (
                   <>
                     <Link to="/teacher-dashboard" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Dashboard</Link>
+                    <Link to="/create-challenge" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Create Challenge</Link>
                     <Link to="/create-quiz" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Create Quiz</Link>
                     <Link to="/create-contest" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Schedule Contest</Link>
                   </>

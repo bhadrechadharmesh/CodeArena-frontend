@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import MonacoEditor from '../components/MonacoEditor.jsx';
+import WebcamMonitor from '../components/WebcamMonitor.jsx';
 import { initiateSocketConnection, disconnectSocket, subscribeToContestLeaderboard, unsubscribeFromContestLeaderboard } from '../services/socketService.js';
 import { Calendar, Users, Trophy, Play, Clock, Terminal, ChevronRight } from 'lucide-react';
 
@@ -18,6 +19,7 @@ export default function Contests() {
   const [language, setLanguage] = useState('javascript');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState(null);
+  const [violationCount, setViolationCount] = useState(0);
 
   // Timer
   const [timeLeft, setTimeLeft] = useState(0);
@@ -115,6 +117,22 @@ export default function Contests() {
     clearInterval(timerRef.current);
   };
 
+  // Auto-submit and exit on 3 violations
+  useEffect(() => {
+    if (activeContest && violationCount >= 3) {
+      alert('CONTEST TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your current code is being submitted and you are being logged out of the contest arena.');
+      
+      const submitAndLeave = async () => {
+        if (activeChallenge) {
+          await handleSubmitContestChallenge();
+        }
+        handleLeaveContestWorkspace();
+      };
+      
+      submitAndLeave();
+    }
+  }, [violationCount, activeContest]);
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse text-center">
@@ -131,6 +149,12 @@ export default function Contests() {
 
     return (
       <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Proctoring Camera Feed */}
+        <WebcamMonitor 
+          contestId={activeContest._id} 
+          onViolationLog={() => setViolationCount((prev) => prev + 1)} 
+        />
+
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
           <div>
             <button

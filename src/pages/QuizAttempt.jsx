@@ -15,6 +15,7 @@ export default function QuizAttempt() {
   const [timeLeft, setTimeLeft] = useState(0); // in seconds
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedResult, setSubmittedResult] = useState(null);
+  const [violationCount, setViolationCount] = useState(0);
   
   const timerRef = useRef(null);
 
@@ -130,6 +131,14 @@ export default function QuizAttempt() {
     }
   };
 
+  // Auto-submit on 3 violations
+  useEffect(() => {
+    if (violationCount >= 3) {
+      alert('EXAM TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your quiz is being submitted automatically.');
+      handleSubmitQuiz();
+    }
+  }, [violationCount]);
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse text-center">
@@ -198,7 +207,10 @@ export default function QuizAttempt() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 relative">
       {/* Proctoring Camera Feed */}
-      <WebcamMonitor quizId={id} />
+      <WebcamMonitor 
+        quizId={id} 
+        onViolationLog={() => setViolationCount((prev) => prev + 1)} 
+      />
 
       {/* Header bar with Timer */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">

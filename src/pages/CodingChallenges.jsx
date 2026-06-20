@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MonacoEditor from '../components/MonacoEditor.jsx';
+import WebcamMonitor from '../components/WebcamMonitor.jsx';
 import { Code2, Play, Terminal, HelpCircle, AlertCircle, Award, CheckCircle } from 'lucide-react';
 
 export default function CodingChallenges() {
   const [challenges, setChallenges] = useState([]);
   const [activeChallenge, setActiveChallenge] = useState(null);
+  const [attempts, setAttempts] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Editor States
@@ -13,12 +15,17 @@ export default function CodingChallenges() {
   const [language, setLanguage] = useState('javascript');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState(null);
+  const [violationCount, setViolationCount] = useState(0);
 
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const res = await axios.get('/api/challenges');
-        setChallenges(res.data.challenges);
+        const [challengesRes, attemptsRes] = await Promise.all([
+          axios.get('/api/challenges'),
+          axios.get('/api/challenges/attempts/my').catch(() => ({ data: { attempts: [] } }))
+        ]);
+        setChallenges(challengesRes.data.challenges || []);
+        setAttempts(attemptsRes.data.attempts || []);
       } catch (err) {
         console.error('Failed to load challenges:', err.message);
       } finally {
@@ -64,6 +71,16 @@ export default function CodingChallenges() {
     }
   };
 
+  // Auto-submit on 3 violations
+  useEffect(() => {
+    if (activeChallenge && violationCount >= 3) {
+      alert('CHALLENGE TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your code is being submitted automatically.');
+      handleSubmitCode().then(() => {
+        setActiveChallenge(null);
+      });
+    }
+  }, [violationCount, activeChallenge]);
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse text-center">
@@ -77,6 +94,12 @@ export default function CodingChallenges() {
   if (activeChallenge) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Proctoring Camera Feed */}
+        <WebcamMonitor 
+          challengeId={activeChallenge._id} 
+          onViolationLog={() => setViolationCount((prev) => prev + 1)} 
+        />
+
         {/* Back navigation */}
         <button
           onClick={() => setActiveChallenge(null)}
@@ -223,42 +246,62 @@ export default function CodingChallenges() {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
-          {challenges.map((chal) => (
-            <div
-              key={chal._id}
-              className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                    chal.difficulty === 'easy' ? 'bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400' :
-                    chal.difficulty === 'medium' ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400' :
-                    'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'
-                  }`}>
-                    {chal.difficulty}
-                  </span>
-                  <Award className="h-4 w-4 text-brand-600 dark:text-brand-400" />
-                </div>
-                <h3 className="font-outfit font-bold text-xl text-slate-900 dark:text-white mt-1 leading-snug">{chal.title}</h3>
-                <div className="text-slate-500 dark:text-slate-400 text-xs mt-2 line-clamp-3 leading-relaxed">
-                  {/* strip markdown markers from description for cards display */}
-                  {chal.description.replace(/[#*`]/g, '')}
-                </div>
-              </div>
+          {challenges.map((chal) => {
+            const challengeAttempt = attempts.find(a => (a.challengeId?._id || a.challengeId) === chal._id);
+            const hasAttempted = !!challengeAttempt;
 
-              <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
-                <span className="text-[10px] text-slate-400 font-semibold uppercase">
-                  Languages: {chal.supportedLanguages.join(', ')}
-                </span>
-                <button
-                  onClick={() => handleSelectChallenge(chal._id)}
-                  className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors shadow-sm"
-                >
-                  Solve Problem
-                </button>
+            return (
+              <div
+                key={chal._id}
+                className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                      chal.difficulty === 'easy' ? 'bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400' :
+                      chal.difficulty === 'medium' ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400' :
+                      'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400'
+                    }`}>
+                      {chal.difficulty}
+                    </span>
+                    <Award className="h-4 w-4 text-brand-600 dark:text-brand-400" />
+                  </div>
+                  <h3 className="font-outfit font-bold text-xl text-slate-900 dark:text-white mt-1 leading-snug">{chal.title}</h3>
+                  <div className="text-slate-500 dark:text-slate-400 text-xs mt-2 line-clamp-3 leading-relaxed">
+                    {/* strip markdown markers from description for cards display */}
+                    {chal.description.replace(/[#*`]/g, '')}
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                  <span className="text-[10px] text-slate-400 font-semibold uppercase">
+                    Languages: {chal.supportedLanguages.join(', ')}
+                  </span>
+                  {hasAttempted ? (
+                    <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1.5 rounded-lg border ${
+                      challengeAttempt.status === 'Accepted'
+                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 border-emerald-250 dark:border-emerald-800'
+                        : 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400 border-red-250 dark:border-red-800'
+                    }`}>
+                      {challengeAttempt.status === 'Accepted' ? (
+                        <CheckCircle className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                      ) : (
+                        <AlertCircle className="h-3.5 w-3.5 text-red-650 dark:text-red-400" />
+                      )}
+                      <span>{challengeAttempt.status}</span>
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleSelectChallenge(chal._id)}
+                      className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors shadow-sm"
+                    >
+                      Solve Problem
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

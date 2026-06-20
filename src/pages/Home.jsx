@@ -33,21 +33,6 @@ export default function Home() {
             Learn More
           </Link>
         </div>
-
-        {/* Floating statistics */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-          {[
-            { value: '10k+', label: 'Active Learners' },
-            { value: '500+', label: 'Challenges Solved' },
-            { value: '50+', label: 'Live Contests' },
-            { value: '99.9%', label: 'Uptime SLA' }
-          ].map((stat, i) => (
-            <div key={i} className="glass-card p-6 rounded-2xl shadow-sm text-center">
-              <span className="font-outfit font-bold text-3xl text-brand-600 dark:text-brand-500 block">{stat.value}</span>
-              <span className="text-slate-500 dark:text-slate-400 text-sm mt-1 block">{stat.label}</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Feature section */}
