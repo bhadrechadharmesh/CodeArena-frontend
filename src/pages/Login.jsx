@@ -110,12 +110,12 @@ export default function Login() {
 
         {/* Google OAuth Button */}
         <button
-          onClick={handleGoogleLogin}
+          disabled
           type="button"
-          className="w-full bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 dark:text-white shadow-sm transition-colors"
+          className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none"
         >
-          <Chrome className="h-4 w-4 text-red-500 fill-current" />
-          <span>Login with Google</span>
+          <Chrome className="h-4 w-4 text-slate-400 dark:text-slate-500 fill-current" />
+          <span>Login with Google (Coming Soon)</span>
         </button>
 
         <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-8">
