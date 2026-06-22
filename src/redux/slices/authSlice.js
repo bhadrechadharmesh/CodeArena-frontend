@@ -56,6 +56,11 @@ export const registerUserThunk = (userData) => async (dispatch) => {
   dispatch(authStart());
   try {
     const res = await axios.post('/api/auth/register', userData);
+    if (res.data.requiresVerification) {
+      // Clear loading state but don't set error
+      dispatch(authFailure(null));
+      return { success: true, requiresVerification: true, email: res.data.email };
+    }
     dispatch(authSuccess(res.data));
     return { success: true };
   } catch (err) {
@@ -72,8 +77,35 @@ export const loginUserThunk = (credentials) => async (dispatch) => {
     dispatch(authSuccess(res.data));
     return { success: true };
   } catch (err) {
+    const isUnverified = err.response?.data?.requiresVerification;
     const errMsg = err.response?.data?.message || 'Login failed';
     dispatch(authFailure(errMsg));
+    if (isUnverified) {
+      return { success: false, requiresVerification: true, email: err.response?.data?.email, error: errMsg };
+    }
+    return { success: false, error: errMsg };
+  }
+};
+
+export const verifyOtpThunk = (verifyData) => async (dispatch) => {
+  dispatch(authStart());
+  try {
+    const res = await axios.post('/api/auth/verify-otp', verifyData);
+    dispatch(authSuccess(res.data));
+    return { success: true };
+  } catch (err) {
+    const errMsg = err.response?.data?.message || 'Verification failed';
+    dispatch(authFailure(errMsg));
+    return { success: false, error: errMsg };
+  }
+};
+
+export const resendOtpThunk = (email) => async (dispatch) => {
+  try {
+    const res = await axios.post('/api/auth/resend-otp', { email });
+    return { success: true, message: res.data.message };
+  } catch (err) {
+    const errMsg = err.response?.data?.message || 'Failed to resend OTP';
     return { success: false, error: errMsg };
   }
 };

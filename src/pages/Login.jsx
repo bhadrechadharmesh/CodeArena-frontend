@@ -33,6 +33,8 @@ export default function Login() {
     const res = await dispatch(loginUserThunk({ email, password }));
     if (res.success) {
       // Redirect happens in useEffect
+    } else if (res.requiresVerification) {
+      navigate(`/verify-otp?email=${encodeURIComponent(res.email || email)}`);
     }
   };
 

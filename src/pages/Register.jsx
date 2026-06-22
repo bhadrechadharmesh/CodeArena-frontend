@@ -40,7 +40,9 @@ export default function Register() {
 
     const res = await dispatch(registerUserThunk({ name, email, password, role, college }));
     if (res.success) {
-      // Redirect happens in useEffect
+      if (res.requiresVerification) {
+        navigate(`/verify-otp?email=${encodeURIComponent(res.email || email)}`);
+      }
     }
   };
 
