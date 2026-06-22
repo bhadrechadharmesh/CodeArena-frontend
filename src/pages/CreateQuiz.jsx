@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Trash2, Save, ArrowLeft, HelpCircle, AlertCircle, PlusCircle } from 'lucide-react';
+import { Plus, Trash2, Save, ArrowLeft, HelpCircle, AlertCircle, PlusCircle, Upload, FileText, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 export default function CreateQuiz() {
   const navigate = useNavigate();
@@ -18,6 +18,64 @@ export default function CreateQuiz() {
   const [totalMarks, setTotalMarks] = useState(10);
   const [tagsInput, setTagsInput] = useState('');
   const [isPublished, setIsPublished] = useState(false);
+
+  // Import State
+  const [importing, setImporting] = useState(false);
+  const [importSuccess, setImportSuccess] = useState('');
+  const [showInstructions, setShowInstructions] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setImporting(true);
+    setError('');
+    setImportSuccess('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('/api/quizzes/import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.data?.success && response.data?.questions?.length > 0) {
+        // Pad MCQ and multiple correct questions with enough options if needed
+        const importedQuestions = response.data.questions.map(q => {
+          if ((q.questionType === 'mcq' || q.questionType === 'multiple_correct') && q.options.length < 2) {
+            const needed = 2 - q.options.length;
+            const newOpts = [...q.options];
+            for (let i = 0; i < needed; i++) {
+              newOpts.push('');
+            }
+            return { ...q, options: newOpts };
+          }
+          return q;
+        });
+
+        // If current questions list is empty or untouched, replace it
+        if (questions.length === 1 && questions[0].questionText === '' && questions[0].options.every(o => o === '')) {
+          setQuestions(importedQuestions);
+        } else {
+          setQuestions([...questions, ...importedQuestions]);
+        }
+
+        setImportSuccess(`Successfully imported ${response.data.count} question(s)!`);
+      } else {
+        setError('No questions could be parsed from the uploaded file.');
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || 'Failed to import questions. Please check file format.');
+    } finally {
+      setImporting(false);
+      // Reset input value to allow uploading same file name again
+      e.target.value = '';
+    }
+  };
 
   // Questions State
   const [questions, setQuestions] = useState([
@@ -358,6 +416,69 @@ export default function CreateQuiz() {
               Publish quiz immediately (make it visible to students)
             </label>
           </div>
+        </div>
+
+        {/* Import Questions Section */}
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-2">
+            <div className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-brand-600" />
+              <h2 className="font-outfit font-bold text-xl dark:text-white">Import Questions from PDF/TXT</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowInstructions(!showInstructions)}
+              className="text-xs text-slate-500 hover:text-brand-600 flex items-center gap-1 font-semibold transition-colors"
+            >
+              <HelpCircle className="h-4 w-4" />
+              <span>{showInstructions ? 'Hide Guide' : 'Show Guide'}</span>
+            </button>
+          </div>
+
+          {showInstructions && (
+            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-2 leading-relaxed">
+              <p className="font-bold text-slate-700 dark:text-slate-300">💡 File Formatting Guide for Best Results:</p>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Start each question block with a number (e.g., <code className="font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">1. What is HTML?</code>)</li>
+                <li>List options with letters (e.g., <code className="font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">A) Option text</code>, <code className="font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">B) Option text</code>)</li>
+                <li>Specify the correct option on a line starting with Answer (e.g., <code className="font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">Answer: A</code>)</li>
+                <li>For multiple correct answers, separate with commas (e.g., <code className="font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">Answer: A, C</code>)</li>
+                <li>For True/False, specify answer directly (e.g., <code className="font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">Answer: False</code>)</li>
+                <li>Optionally add explanation (e.g., <code className="font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">Explanation: Reason here...</code>)</li>
+              </ul>
+            </div>
+          )}
+
+          <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-8 hover:border-brand-500 dark:hover:border-brand-500 transition-colors bg-slate-50/50 dark:bg-slate-900/10 relative">
+            <input
+              type="file"
+              accept=".pdf,.txt"
+              onChange={handleFileUpload}
+              disabled={importing}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+            />
+            {importing ? (
+              <div className="flex flex-col items-center gap-2">
+                <RefreshCw className="h-8 w-8 text-brand-600 animate-spin" />
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Processing file and extracting questions...</p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center text-center gap-2">
+                <Upload className="h-8 w-8 text-slate-400 dark:text-slate-500" />
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Drag & drop your file here, or <span className="text-brand-600 hover:text-brand-700 cursor-pointer">browse</span>
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Supports PDF and TXT question papers</p>
+              </div>
+            )}
+          </div>
+
+          {importSuccess && (
+            <div className="p-3 rounded-xl bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 flex items-center gap-2 text-xs font-semibold">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>{importSuccess}</span>
+            </div>
+          )}
         </div>
 
         {/* Questions Section */}
