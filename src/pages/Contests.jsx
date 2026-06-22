@@ -4,7 +4,7 @@ import axios from 'axios';
 import MonacoEditor from '../components/MonacoEditor.jsx';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
 import { initiateSocketConnection, disconnectSocket, subscribeToContestLeaderboard, unsubscribeFromContestLeaderboard } from '../services/socketService.js';
-import { Calendar, Users, Trophy, Play, Clock, Terminal, ChevronRight } from 'lucide-react';
+import { Calendar, Users, Trophy, Play, Clock, Terminal, ChevronRight, BookOpen, CheckSquare, Save, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function Contests() {
   const { user } = useSelector((state) => state.auth);
@@ -20,6 +20,16 @@ export default function Contests() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState(null);
   const [violationCount, setViolationCount] = useState(0);
+
+  // Quiz states
+  const [activeQuiz, setActiveQuiz] = useState(null);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [quizCurrentIdx, setQuizCurrentIdx] = useState(0);
+  const [quizAnswers, setQuizAnswers] = useState([]);
+  const [quizReviewed, setQuizReviewed] = useState([]);
+  const [quizStartTime, setQuizStartTime] = useState(null);
+  const [quizSubmittedResult, setQuizSubmittedResult] = useState(null);
+  const [quizIsSubmitting, setQuizIsSubmitting] = useState(false);
 
   // Timer
   const [timeLeft, setTimeLeft] = useState(0);
@@ -84,9 +94,38 @@ export default function Contests() {
 
   const handleSelectChallenge = (chal) => {
     setActiveChallenge(chal);
+    setActiveQuiz(null);
     setLanguage('javascript');
     setCode(`// Write your JavaScript code here\nimport fs from 'fs';\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log(input);`);
     setTestResults(null);
+  };
+
+  const handleSelectQuiz = async (quiz) => {
+    setActiveChallenge(null);
+    setActiveQuiz(null);
+    setQuizLoading(true);
+    setQuizSubmittedResult(null);
+    try {
+      const res = await axios.get(`/api/quizzes/${quiz._id}`);
+      const fetchedQuiz = res.data.quiz;
+      setActiveQuiz(fetchedQuiz);
+      setQuizCurrentIdx(0);
+      
+      const initialAnswers = fetchedQuiz.questions.map((q) => ({
+        questionId: q._id,
+        selectedOption: null,
+        selectedOptions: [],
+        booleanAnswer: null,
+        textAnswer: ''
+      }));
+      setQuizAnswers(initialAnswers);
+      setQuizReviewed([]);
+      setQuizStartTime(Date.now());
+    } catch (err) {
+      alert('Failed to load quiz questions.');
+    } finally {
+      setQuizLoading(false);
+    }
   };
 
   const handleSubmitContestChallenge = async () => {
@@ -107,12 +146,68 @@ export default function Contests() {
     }
   };
 
+  const handleSubmitContestQuiz = async () => {
+    if (quizIsSubmitting || !activeQuiz || !activeContest) return;
+    setQuizIsSubmitting(true);
+
+    try {
+      const elapsedSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
+      const res = await axios.post(`/api/contests/${activeContest._id}/submit-quiz/${activeQuiz._id}`, {
+        answers: quizAnswers,
+        timeTaken: elapsedSeconds
+      });
+      setQuizSubmittedResult(res.data.attempt);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to submit quiz.');
+    } finally {
+      setQuizIsSubmitting(false);
+    }
+  };
+
+  const handleQuizOptionChange = (qIdx, optIdx) => {
+    setQuizAnswers((prev) =>
+      prev.map((ans, idx) => (idx === qIdx ? { ...ans, selectedOption: optIdx } : ans))
+    );
+  };
+
+  const handleQuizCheckboxChange = (qIdx, optIdx) => {
+    setQuizAnswers((prev) =>
+      prev.map((ans, idx) => {
+        if (idx !== qIdx) return ans;
+        const selected = ans.selectedOptions || [];
+        const newSelected = selected.includes(optIdx)
+          ? selected.filter((item) => item !== optIdx)
+          : [...selected, optIdx];
+        return { ...ans, selectedOptions: newSelected };
+      })
+    );
+  };
+
+  const handleQuizBooleanChange = (qIdx, val) => {
+    setQuizAnswers((prev) =>
+      prev.map((ans, idx) => (idx === qIdx ? { ...ans, booleanAnswer: val } : ans))
+    );
+  };
+
+  const handleQuizTextChange = (qIdx, val) => {
+    setQuizAnswers((prev) =>
+      prev.map((ans, idx) => (idx === qIdx ? { ...ans, textAnswer: val } : ans))
+    );
+  };
+
+  const toggleQuizReview = (qIdx) => {
+    setQuizReviewed((prev) =>
+      prev.includes(qIdx) ? prev.filter((item) => item !== qIdx) : [...prev, qIdx]
+    );
+  };
+
   const handleLeaveContestWorkspace = () => {
     if (activeContest) {
       unsubscribeFromContestLeaderboard(activeContest._id, user.id);
     }
     setActiveContest(null);
     setActiveChallenge(null);
+    setActiveQuiz(null);
     setLeaderboard([]);
     clearInterval(timerRef.current);
   };
@@ -120,7 +215,7 @@ export default function Contests() {
   // Auto-submit and exit on 3 violations
   useEffect(() => {
     if (activeContest && violationCount >= 3) {
-      alert('CONTEST TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your current code is being submitted and you are being logged out of the contest arena.');
+      alert('CONTEST TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your current progress is being submitted and you are leaving the contest arena.');
       
       const submitAndLeave = async () => {
         if (activeChallenge) {
@@ -173,26 +268,65 @@ export default function Contests() {
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
-          {/* Left panel: List Challenges and Leaderboard */}
+          {/* Left panel: List Challenges, Quizzes, and Leaderboard */}
           <div className="lg:col-span-5 space-y-6">
             {/* Contest Challenges list */}
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
-              <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Contest Challenges</h3>
-              <div className="space-y-2">
-                {activeContest.codingChallenges?.map((chal) => (
-                  <button
-                    key={chal._id}
-                    onClick={() => handleSelectChallenge(chal)}
-                    className={`w-full text-left p-4 rounded-xl border text-sm font-semibold flex items-center justify-between transition-all ${
-                      activeChallenge?._id === chal._id ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-750 dark:border-brand-500 dark:text-white' : 'bg-slate-50 border-slate-200 dark:bg-slate-900/40 dark:border-slate-700 dark:text-slate-200 hover:bg-slate-100/50'
-                    }`}
-                  >
-                    <span>{chal.title}</span>
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                ))}
+            {activeContest.codingChallenges && activeContest.codingChallenges.length > 0 && (
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Contest Challenges</h3>
+                <div className="space-y-2">
+                  {activeContest.codingChallenges.map((chal) => (
+                    <button
+                      key={chal._id}
+                      onClick={() => handleSelectChallenge(chal)}
+                      className={`w-full text-left p-4 rounded-xl border text-sm font-semibold flex items-center justify-between transition-all ${
+                        activeChallenge?._id === chal._id ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-750 dark:border-brand-500 dark:text-white' : 'bg-slate-50 border-slate-200 dark:bg-slate-900/40 dark:border-slate-700 dark:text-slate-200 hover:bg-slate-100/50'
+                      }`}
+                    >
+                      <span>{chal.title}</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Contest Quizzes list */}
+            {activeContest.quizzes && activeContest.quizzes.length > 0 && (
+              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+                <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Contest Quizzes</h3>
+                <div className="space-y-2">
+                  {activeContest.quizzes.map((quiz) => {
+                    const isCompleted = leaderboard.find(
+                      (e) => e.userId?._id === user.id || e.userId === user.id
+                    )?.completedQuizzes?.includes(quiz._id);
+
+                    return (
+                      <button
+                        key={quiz._id}
+                        onClick={() => handleSelectQuiz(quiz)}
+                        className={`w-full text-left p-4 rounded-xl border text-sm font-semibold flex items-center justify-between transition-all ${
+                          activeQuiz?._id === quiz._id ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-750 dark:border-brand-500 dark:text-white' : 'bg-slate-50 border-slate-200 dark:bg-slate-900/40 dark:border-slate-700 dark:text-slate-200 hover:bg-slate-100/50'
+                        }`}
+                      >
+                        <div className="flex flex-col">
+                          <span>{quiz.title}</span>
+                          <span className="text-[10px] text-slate-400 mt-1 font-normal uppercase tracking-wider">{quiz.category}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {isCompleted && (
+                            <span className="text-[9px] uppercase font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded">
+                              Completed
+                            </span>
+                          )}
+                          <ChevronRight className="h-4 w-4" />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Socket Live Leaderboard */}
             <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
@@ -225,9 +359,194 @@ export default function Contests() {
             </div>
           </div>
 
-          {/* Right panel: Editor Workspace */}
+          {/* Right panel: Editor Workspace or Quiz Attempt */}
           <div className="lg:col-span-7">
-            {activeChallenge ? (
+            {quizLoading ? (
+              <div className="bg-white dark:bg-slate-800 p-12 rounded-2xl border border-slate-100 dark:border-slate-700 text-center shadow-sm">
+                <Clock className="h-10 w-10 text-brand-600 mx-auto animate-spin mb-2" />
+                <span className="text-slate-400">Loading quiz questions...</span>
+              </div>
+            ) : activeQuiz ? (
+              quizSubmittedResult ? (
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm text-center">
+                  <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckSquare className="h-8 w-8" />
+                  </div>
+                  <h2 className="font-outfit font-extrabold text-2xl text-slate-900 dark:text-white">Quiz Submitted!</h2>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Your score has been registered to the live standings.</p>
+
+                  <div className="grid grid-cols-2 gap-4 my-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-700">
+                    <div className="text-center">
+                      <span className="text-slate-500 dark:text-slate-400 text-xs block">Score</span>
+                      <span className="font-outfit font-bold text-2xl text-slate-900 dark:text-white mt-1 block">{quizSubmittedResult.score} pts</span>
+                    </div>
+                    <div className="text-center">
+                      <span className="text-slate-500 dark:text-slate-400 text-xs block">Accuracy</span>
+                      <span className="font-outfit font-bold text-2xl text-emerald-600 dark:text-emerald-400 mt-1 block">{quizSubmittedResult.accuracy}%</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setActiveQuiz(null)}
+                    className="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 px-6 rounded-xl shadow-sm transition-colors text-sm"
+                  >
+                    Back to Workspace
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between min-h-[450px]">
+                  <div>
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-4 text-xs font-semibold text-slate-400">
+                      <span className="uppercase">Question {quizCurrentIdx + 1} of {activeQuiz.questions.length}</span>
+                      <span className="bg-slate-150 dark:bg-slate-700 px-2 py-0.5 rounded uppercase">{activeQuiz.questions[quizCurrentIdx]?.difficulty}</span>
+                    </div>
+
+                    <h3 className="font-outfit font-semibold text-lg text-slate-900 dark:text-white leading-relaxed mb-6">
+                      {activeQuiz.questions[quizCurrentIdx]?.questionText}
+                    </h3>
+
+                    {/* Options */}
+                    <div className="space-y-3">
+                      {/* MCQ */}
+                      {activeQuiz.questions[quizCurrentIdx]?.questionType === 'mcq' && activeQuiz.questions[quizCurrentIdx]?.options.map((opt, i) => (
+                        <button
+                          key={i}
+                          onClick={() => handleQuizOptionChange(quizCurrentIdx, i)}
+                          className={`w-full text-left p-4 rounded-xl border text-sm font-medium transition-all flex items-center justify-between ${
+                            quizAnswers[quizCurrentIdx]?.selectedOption === i ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-700 dark:border-brand-500 dark:text-white' : 'bg-slate-50 hover:bg-slate-100/50 border-slate-200 dark:bg-slate-900/50 dark:hover:bg-slate-900 dark:border-slate-700 dark:text-slate-200'
+                          }`}
+                        >
+                          <span>{opt}</span>
+                          <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${quizAnswers[quizCurrentIdx]?.selectedOption === i ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-300'}`}>
+                            {quizAnswers[quizCurrentIdx]?.selectedOption === i && <span className="w-1.5 h-1.5 bg-white rounded-full"></span>}
+                          </span>
+                        </button>
+                      ))}
+
+                      {/* Multiple Correct */}
+                      {activeQuiz.questions[quizCurrentIdx]?.questionType === 'multiple_correct' && activeQuiz.questions[quizCurrentIdx]?.options.map((opt, i) => {
+                        const isSelected = quizAnswers[quizCurrentIdx]?.selectedOptions?.includes(i);
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => handleQuizCheckboxChange(quizCurrentIdx, i)}
+                            className={`w-full text-left p-4 rounded-xl border text-sm font-medium transition-all flex items-center justify-between ${
+                              isSelected ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-700 dark:border-brand-500 dark:text-white' : 'bg-slate-50 hover:bg-slate-100/50 border-slate-200 dark:bg-slate-900/50 dark:hover:bg-slate-900 dark:border-slate-700 dark:text-slate-200'
+                            }`}
+                          >
+                            <span>{opt}</span>
+                            <span className={`w-4 h-4 rounded border flex items-center justify-center ${isSelected ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-300'}`}>
+                              {isSelected && <span className="w-2 h-2 bg-white rounded-sm"></span>}
+                            </span>
+                          </button>
+                        );
+                      })}
+
+                      {/* True/False */}
+                      {activeQuiz.questions[quizCurrentIdx]?.questionType === 'true_false' && (
+                        <div className="flex gap-4">
+                          {[true, false].map((val) => (
+                            <button
+                              key={val.toString()}
+                              onClick={() => handleQuizBooleanChange(quizCurrentIdx, val)}
+                              className={`flex-grow py-4 rounded-xl border text-sm font-bold transition-all text-center ${
+                                quizAnswers[quizCurrentIdx]?.booleanAnswer === val ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-700 dark:border-brand-500 dark:text-white' : 'bg-slate-50 hover:bg-slate-100/50 border-slate-200 dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-300'
+                              }`}
+                            >
+                              {val ? 'TRUE' : 'FALSE'}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Fill in the blank */}
+                      {activeQuiz.questions[quizCurrentIdx]?.questionType === 'fill_blank' && (
+                        <div>
+                          <input
+                            type="text"
+                            value={quizAnswers[quizCurrentIdx]?.textAnswer || ''}
+                            onChange={(e) => handleQuizTextChange(quizCurrentIdx, e.target.value)}
+                            className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-4 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
+                            placeholder="Type your answer here..."
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Navigation Grid & Footer */}
+                  <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700">
+                    {/* Small grid navigation */}
+                    <div className="flex flex-wrap gap-1.5 mb-6 justify-center">
+                      {activeQuiz.questions.map((_, index) => {
+                        const isSelected = index === quizCurrentIdx;
+                        const hasAns = quizAnswers[index] && (
+                          quizAnswers[index].selectedOption !== null ||
+                          quizAnswers[index].selectedOptions.length > 0 ||
+                          quizAnswers[index].booleanAnswer !== null ||
+                          quizAnswers[index].textAnswer.trim() !== ''
+                        );
+                        const isReview = quizReviewed.includes(index);
+
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => setQuizCurrentIdx(index)}
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs border transition-all ${
+                              isSelected ? 'ring-2 ring-brand-500 ring-offset-2 dark:ring-offset-slate-900 border-brand-500 bg-brand-500 text-white' :
+                              isReview ? 'bg-amber-500 text-white border-amber-500' :
+                              hasAns ? 'bg-emerald-500 text-white border-emerald-500' :
+                              'bg-slate-50 border-slate-200 dark:bg-slate-700 dark:border-slate-650 text-slate-600 dark:text-slate-300 hover:border-slate-400'
+                            }`}
+                          >
+                            {index + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                      <div className="flex gap-2">
+                        <button
+                          disabled={quizCurrentIdx === 0}
+                          onClick={() => setQuizCurrentIdx((prev) => prev - 1)}
+                          className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 disabled:opacity-50 text-slate-700 dark:text-slate-250 font-semibold text-xs px-4 py-2.5 rounded-lg transition-colors border border-slate-200 dark:border-slate-600"
+                        >
+                          <ArrowLeft className="h-3.5 w-3.5" />
+                          <span>Prev</span>
+                        </button>
+                        <button
+                          disabled={quizCurrentIdx === activeQuiz.questions.length - 1}
+                          onClick={() => setQuizCurrentIdx((prev) => prev + 1)}
+                          className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 disabled:opacity-50 text-slate-700 dark:text-slate-250 font-semibold text-xs px-4 py-2.5 rounded-lg transition-colors border border-slate-200 dark:border-slate-600"
+                        >
+                          <span>Next</span>
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => toggleQuizReview(quizCurrentIdx)}
+                        className={`font-semibold text-xs px-4 py-2.5 rounded-lg border transition-all ${
+                          quizReviewed.includes(quizCurrentIdx) ? 'bg-amber-500 border-amber-500 text-white' : 'border-amber-500 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/20'
+                        }`}
+                      >
+                        {quizReviewed.includes(quizCurrentIdx) ? 'Marked for Review' : 'Mark for Review'}
+                      </button>
+
+                      <button
+                        onClick={handleSubmitContestQuiz}
+                        disabled={quizIsSubmitting}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-6 py-2.5 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                      >
+                        <Save className="h-3.5 w-3.5" />
+                        <span>Submit Quiz</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )
+            ) : activeChallenge ? (
               <div className="flex flex-col gap-6">
                 {/* Challenge description */}
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm text-sm">
@@ -280,7 +599,7 @@ export default function Contests() {
               <div className="bg-white dark:bg-slate-800 p-12 rounded-2xl border border-slate-100 dark:border-slate-700 text-center shadow-sm">
                 <Trophy className="h-12 w-12 text-indigo-500 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold dark:text-white">Workspace Ready</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Select a challenge from the left menu to start coding.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Select a challenge or quiz from the left menu to start.</p>
               </div>
             )}
           </div>

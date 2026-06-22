@@ -70,40 +70,34 @@ export default function QuizAttempt() {
   };
 
   const handleOptionChange = (qIdx, optIdx) => {
-    setAnswers((prev) => {
-      const updated = [...prev];
-      updated[qIdx].selectedOption = optIdx;
-      return updated;
-    });
+    setAnswers((prev) =>
+      prev.map((ans, idx) => (idx === qIdx ? { ...ans, selectedOption: optIdx } : ans))
+    );
   };
 
   const handleCheckboxChange = (qIdx, optIdx) => {
-    setAnswers((prev) => {
-      const updated = [...prev];
-      const selected = updated[qIdx].selectedOptions || [];
-      if (selected.includes(optIdx)) {
-        updated[qIdx].selectedOptions = selected.filter((item) => item !== optIdx);
-      } else {
-        updated[qIdx].selectedOptions = [...selected, optIdx];
-      }
-      return updated;
-    });
+    setAnswers((prev) =>
+      prev.map((ans, idx) => {
+        if (idx !== qIdx) return ans;
+        const selected = ans.selectedOptions || [];
+        const newSelected = selected.includes(optIdx)
+          ? selected.filter((item) => item !== optIdx)
+          : [...selected, optIdx];
+        return { ...ans, selectedOptions: newSelected };
+      })
+    );
   };
 
   const handleBooleanChange = (qIdx, val) => {
-    setAnswers((prev) => {
-      const updated = [...prev];
-      updated[qIdx].booleanAnswer = val;
-      return updated;
-    });
+    setAnswers((prev) =>
+      prev.map((ans, idx) => (idx === qIdx ? { ...ans, booleanAnswer: val } : ans))
+    );
   };
 
   const handleTextChange = (qIdx, val) => {
-    setAnswers((prev) => {
-      const updated = [...prev];
-      updated[qIdx].textAnswer = val;
-      return updated;
-    });
+    setAnswers((prev) =>
+      prev.map((ans, idx) => (idx === qIdx ? { ...ans, textAnswer: val } : ans))
+    );
   };
 
   const toggleReview = (qIdx) => {
