@@ -4,7 +4,7 @@ import axios from 'axios';
 import MonacoEditor from '../components/MonacoEditor.jsx';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
 import { initiateSocketConnection, disconnectSocket, subscribeToContestLeaderboard, unsubscribeFromContestLeaderboard } from '../services/socketService.js';
-import { Calendar, Users, Trophy, Play, Clock, Terminal, ChevronRight, BookOpen, CheckSquare, Save, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Calendar, Users, Trophy, Play, Clock, Terminal, ChevronRight, BookOpen, CheckSquare, Save, ArrowLeft, ArrowRight, Download } from 'lucide-react';
 
 export default function Contests() {
   const { user } = useSelector((state) => state.auth);
@@ -212,6 +212,23 @@ export default function Contests() {
     clearInterval(timerRef.current);
   };
 
+  const handleDownloadPDF = async (attemptId, quizTitle) => {
+    try {
+      const response = await axios.get(`/api/quizzes/attempts/${attemptId}/pdf`, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `scorecard_${quizTitle.toLowerCase().replace(/\s+/g, '_')}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (err) {
+      alert('Failed to download scorecard PDF. Please try again.');
+    }
+  };
+
   // Auto-submit and exit on 3 violations
   useEffect(() => {
     if (activeContest && violationCount >= 3) {
@@ -385,12 +402,21 @@ export default function Contests() {
                       <span className="font-outfit font-bold text-2xl text-emerald-600 dark:text-emerald-400 mt-1 block">{quizSubmittedResult.accuracy}%</span>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setActiveQuiz(null)}
-                    className="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 px-6 rounded-xl shadow-sm transition-colors text-sm"
-                  >
-                    Back to Workspace
-                  </button>
+                  <div className="flex gap-4 justify-center">
+                    <button
+                      onClick={() => handleDownloadPDF(quizSubmittedResult._id || quizSubmittedResult.id, activeQuiz.title)}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-xl shadow-sm transition-colors text-sm flex items-center justify-center gap-1.5"
+                    >
+                      <Download className="h-4 w-4" />
+                      <span>Download Scorecard</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveQuiz(null)}
+                      className="bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 px-6 rounded-xl shadow-sm transition-colors text-sm"
+                    >
+                      Back to Workspace
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between min-h-[450px]">

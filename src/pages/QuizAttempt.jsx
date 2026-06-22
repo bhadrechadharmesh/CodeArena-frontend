@@ -173,7 +173,8 @@ export default function QuizAttempt() {
             </button>
             <button
               onClick={async () => {
-                const response = await axios.get(`/api/quizzes/attempts/${submittedResult.id}/pdf`, { responseType: 'blob' });
+                const attemptId = submittedResult._id || submittedResult.id;
+                const response = await axios.get(`/api/quizzes/attempts/${attemptId}/pdf`, { responseType: 'blob' });
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
