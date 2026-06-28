@@ -118,7 +118,7 @@ export default function CreateChallenge() {
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={() => navigate('/teacher-dashboard')}
-          className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-350"
+          className="p-2.5 rounded-xl nm-btn text-slate-650 dark:text-slate-350"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
@@ -142,7 +142,7 @@ export default function CreateChallenge() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Core Specifications */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+        <div className="nm-card p-6 rounded-2xl space-y-4">
           <h3 className="font-outfit font-bold text-lg dark:text-white border-b border-slate-100 dark:border-slate-750 pb-2 flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-amber-500" />
             General Specifications
@@ -157,7 +157,7 @@ export default function CreateChallenge() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-indigo-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white"
                 placeholder="e.g. Find Longest Palindrome"
               />
             </div>
@@ -168,7 +168,7 @@ export default function CreateChallenge() {
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-indigo-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white"
               >
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
@@ -185,7 +185,7 @@ export default function CreateChallenge() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows="5"
-              className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-indigo-500 dark:text-white font-mono"
+              className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white font-mono"
               placeholder="Describe the challenge parameters, expected arguments, and background..."
             />
           </div>
@@ -199,7 +199,7 @@ export default function CreateChallenge() {
                 type="text"
                 value={constraints}
                 onChange={(e) => setConstraints(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-indigo-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white"
                 placeholder="e.g. 1 <= N <= 10^5, Time Limit: 2s"
               />
             </div>
@@ -217,8 +217,8 @@ export default function CreateChallenge() {
                       onClick={() => handleLanguageToggle(lang)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
                         isSelected
-                          ? 'bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-950/30 dark:border-indigo-800 dark:text-indigo-400'
-                          : 'bg-slate-50 border-slate-200 text-slate-500 dark:bg-slate-900/55 dark:border-slate-800'
+                          ? 'nm-inset text-indigo-700 dark:text-indigo-400 border-indigo-500/30'
+                          : 'nm-btn border-transparent text-slate-500 dark:text-slate-400'
                       }`}
                     >
                       {lang.toUpperCase()}
@@ -231,7 +231,7 @@ export default function CreateChallenge() {
         </div>
 
         {/* Examples Section */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+        <div className="nm-card p-6 rounded-2xl space-y-4">
           <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-750 pb-2">
             <h3 className="font-outfit font-bold text-lg dark:text-white">
               Public Examples ({examples.length})
@@ -239,7 +239,7 @@ export default function CreateChallenge() {
             <button
               type="button"
               onClick={handleAddExample}
-              className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-bold bg-indigo-50 dark:bg-indigo-950/20 px-2.5 py-1.5 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-indigo-650 dark:text-indigo-400 font-bold nm-btn px-2.5 py-1.5 rounded-lg"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Add Example</span>
@@ -248,7 +248,7 @@ export default function CreateChallenge() {
 
           <div className="space-y-4">
             {examples.map((ex, idx) => (
-              <div key={idx} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3 bg-slate-50/30 dark:bg-slate-900/10">
+              <div key={idx} className="p-4 rounded-xl space-y-3 nm-inset-sm bg-transparent">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Example #{idx + 1}</span>
                   {examples.length > 1 && (
@@ -268,7 +268,7 @@ export default function CreateChallenge() {
                       value={ex.input}
                       onChange={(e) => handleExampleChange(idx, 'input', e.target.value)}
                       rows="2"
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-indigo-550 dark:text-white font-mono"
+                      className="w-full nm-input rounded-lg py-2 px-3 text-xs focus:outline-none dark:text-white font-mono"
                       placeholder='e.g. "racecar"'
                     />
                   </div>
@@ -278,7 +278,7 @@ export default function CreateChallenge() {
                       value={ex.output}
                       onChange={(e) => handleExampleChange(idx, 'output', e.target.value)}
                       rows="2"
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-indigo-550 dark:text-white font-mono"
+                      className="w-full nm-input rounded-lg py-2 px-3 text-xs focus:outline-none dark:text-white font-mono"
                       placeholder="e.g. true"
                     />
                   </div>
@@ -289,7 +289,7 @@ export default function CreateChallenge() {
                     type="text"
                     value={ex.explanation}
                     onChange={(e) => handleExampleChange(idx, 'explanation', e.target.value)}
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-indigo-550 dark:text-white"
+                    className="w-full nm-input rounded-lg py-2 px-3 text-xs focus:outline-none dark:text-white"
                     placeholder="Describe how the input produces the output..."
                   />
                 </div>
@@ -299,7 +299,7 @@ export default function CreateChallenge() {
         </div>
 
         {/* Test Cases Section */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+        <div className="nm-card p-6 rounded-2xl space-y-4">
           <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-750 pb-2">
             <h3 className="font-outfit font-bold text-lg dark:text-white">
               Evaluation Test Cases ({testCases.length})
@@ -307,7 +307,7 @@ export default function CreateChallenge() {
             <button
               type="button"
               onClick={handleAddTestCase}
-              className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-bold bg-indigo-50 dark:bg-indigo-950/20 px-2.5 py-1.5 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-indigo-650 dark:text-indigo-400 font-bold nm-btn px-2.5 py-1.5 rounded-lg"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Add Test Case</span>
@@ -316,7 +316,7 @@ export default function CreateChallenge() {
 
           <div className="space-y-4">
             {testCases.map((tc, idx) => (
-              <div key={idx} className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3 bg-slate-50/30 dark:bg-slate-900/10">
+              <div key={idx} className="p-4 rounded-xl space-y-3 nm-inset-sm bg-transparent">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Test Case #{idx + 1}</span>
                   <div className="flex items-center gap-4">
@@ -347,7 +347,7 @@ export default function CreateChallenge() {
                       value={tc.input}
                       onChange={(e) => handleTestCaseChange(idx, 'input', e.target.value)}
                       rows="2.5"
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-indigo-550 dark:text-white font-mono"
+                      className="w-full nm-input rounded-lg py-2 px-3 text-xs focus:outline-none dark:text-white font-mono"
                       placeholder="e.g. racecar\n"
                     />
                   </div>
@@ -357,7 +357,7 @@ export default function CreateChallenge() {
                       value={tc.expectedOutput}
                       onChange={(e) => handleTestCaseChange(idx, 'expectedOutput', e.target.value)}
                       rows="2.5"
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-indigo-550 dark:text-white font-mono"
+                      className="w-full nm-input rounded-lg py-2 px-3 text-xs focus:outline-none dark:text-white font-mono"
                       placeholder="e.g. true\n"
                     />
                   </div>
@@ -372,14 +372,14 @@ export default function CreateChallenge() {
           <button
             type="button"
             onClick={() => navigate('/teacher-dashboard')}
-            className="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold text-sm px-6 py-3 rounded-xl transition-colors"
+            className="nm-btn text-slate-700 dark:text-slate-300 font-semibold text-sm px-6 py-3 rounded-xl"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 nm-btn-primary font-semibold text-sm px-6 py-3 rounded-xl disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
             <span>{loading ? 'Saving...' : 'Save Challenge'}</span>

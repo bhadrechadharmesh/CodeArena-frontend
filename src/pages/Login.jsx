@@ -46,7 +46,7 @@ export default function Login() {
 
   return (
     <div className="max-w-md mx-auto my-16 px-4">
-      <div className="glass-card p-8 rounded-3xl shadow-xl">
+      <div className="nm-card p-8 rounded-3xl">
         <div className="text-center mb-8">
           <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Welcome Back</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Log in to access your dashboard and competitions</p>
@@ -69,7 +69,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="you@example.com"
               />
             </div>
@@ -83,7 +83,7 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="••••••••"
               />
             </div>
@@ -92,7 +92,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2"
+            className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
           >
             {loading ? 'Logging in...' : (
               <>
@@ -114,7 +114,7 @@ export default function Login() {
         <button
           disabled
           type="button"
-          className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none"
+          className="w-full nm-inset-sm rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 text-slate-400 dark:text-slate-500 cursor-not-allowed"
         >
           <Chrome className="h-4 w-4 text-slate-400 dark:text-slate-500 fill-current" />
           <span>Login with Google (Coming Soon)</span>

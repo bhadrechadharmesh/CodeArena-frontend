@@ -60,8 +60,8 @@ export default function AdminDashboard() {
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-        <div className="glass-card p-5 rounded-2xl shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-brand-50 dark:bg-slate-700/50 rounded-xl text-brand-600 dark:text-brand-400">
+        <div className="nm-card p-5 rounded-2xl flex items-center gap-3">
+          <div className="p-2.5 nm-inset-sm rounded-xl text-brand-600 dark:text-brand-400">
             <Users className="h-5 w-5" />
           </div>
           <div>
@@ -70,8 +70,8 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-emerald-50 dark:bg-slate-700/50 rounded-xl text-emerald-500">
+        <div className="nm-card p-5 rounded-2xl flex items-center gap-3">
+          <div className="p-2.5 nm-inset-sm rounded-xl text-emerald-500">
             <Users className="h-5 w-5" />
           </div>
           <div>
@@ -80,8 +80,8 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-indigo-50 dark:bg-slate-700/50 rounded-xl text-indigo-500">
+        <div className="nm-card p-5 rounded-2xl flex items-center gap-3">
+          <div className="p-2.5 nm-inset-sm rounded-xl text-indigo-500">
             <FolderCheck className="h-5 w-5" />
           </div>
           <div>
@@ -90,8 +90,8 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl shadow-sm flex items-center gap-3">
-          <div className="p-2.5 bg-purple-50 dark:bg-slate-700/50 rounded-xl text-purple-500">
+        <div className="nm-card p-5 rounded-2xl flex items-center gap-3">
+          <div className="p-2.5 nm-inset-sm rounded-xl text-purple-500">
             <CalendarRange className="h-5 w-5" />
           </div>
           <div>
@@ -100,8 +100,8 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl shadow-sm flex items-center gap-3 col-span-2 lg:col-span-1">
-          <div className="p-2.5 bg-red-50 dark:bg-slate-700/50 rounded-xl text-red-500">
+        <div className="nm-card p-5 rounded-2xl flex items-center gap-3 col-span-2 lg:col-span-1">
+          <div className="p-2.5 nm-inset-sm rounded-xl text-red-500">
             <ShieldAlert className="h-5 w-5" />
           </div>
           <div>
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Growth Charts */}
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm mb-8">
+      <div className="nm-card p-6 rounded-2xl mb-8">
         <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Monthly Platform Growth</h3>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
@@ -121,21 +121,21 @@ export default function AdminDashboard() {
               <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} />
               <YAxis stroke="#94a3b8" fontSize={11} />
               <Tooltip />
-              <Bar dataKey="users" fill="#6366f1" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="users" fill="#f43f5e" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
       {/* Proctoring Log */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700">
+      <div className="nm-card rounded-2xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-200/50 dark:border-slate-800/50">
           <h3 className="font-outfit font-semibold text-lg dark:text-white">Active Proctoring Violations</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                 <th className="px-6 py-3">User</th>
                 <th className="px-6 py-3">Violation Type</th>
                 <th className="px-6 py-3">Details</th>
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleBanUser(violation.userId?.name || 'Student')}
-                        className="inline-flex items-center gap-1 text-amber-600 hover:text-amber-700 font-bold text-xs bg-amber-50 hover:bg-amber-100 px-2 py-1 rounded transition-colors"
+                        className="inline-flex items-center gap-1 nm-btn font-bold text-xs px-2 py-1 rounded text-amber-600 dark:text-amber-400"
                       >
                         <Ban className="h-3.5 w-3.5" />
                         <span>Warn</span>

@@ -271,14 +271,14 @@ export default function Contests() {
           <div>
             <button
               onClick={handleLeaveContestWorkspace}
-              className="text-brand-600 hover:text-brand-700 font-semibold text-xs mb-1"
+              className="text-brand-600 hover:text-brand-700 font-semibold text-xs mb-1 nm-btn px-3 py-1 rounded-lg"
             >
               &larr; Exit Contest Arena
             </button>
             <h2 className="font-outfit font-extrabold text-2xl dark:text-white leading-none mt-1">{activeContest.title}</h2>
           </div>
 
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-indigo-50 border border-indigo-200 dark:bg-slate-800 dark:text-indigo-400 dark:border-slate-700">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold nm-inset-sm text-indigo-655 dark:text-indigo-400">
             <Clock className="h-4 w-4" />
             <span>Time Left: {min}m {sec.toString().padStart(2, '0')}s</span>
           </div>
@@ -289,15 +289,15 @@ export default function Contests() {
           <div className="lg:col-span-5 space-y-6">
             {/* Contest Challenges list */}
             {activeContest.codingChallenges && activeContest.codingChallenges.length > 0 && (
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+              <div className="nm-card p-6 rounded-2xl">
                 <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Contest Challenges</h3>
                 <div className="space-y-2">
                   {activeContest.codingChallenges.map((chal) => (
                     <button
                       key={chal._id}
                       onClick={() => handleSelectChallenge(chal)}
-                      className={`w-full text-left p-4 rounded-xl border text-sm font-semibold flex items-center justify-between transition-all ${
-                        activeChallenge?._id === chal._id ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-750 dark:border-brand-500 dark:text-white' : 'bg-slate-50 border-slate-200 dark:bg-slate-900/40 dark:border-slate-700 dark:text-slate-200 hover:bg-slate-100/50'
+                      className={`w-full text-left p-4 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
+                        activeChallenge?._id === chal._id ? 'nm-inset text-brand-750 dark:text-white border border-brand-500/30' : 'nm-btn text-slate-700 dark:text-slate-200'
                       }`}
                     >
                       <span>{chal.title}</span>
@@ -310,7 +310,7 @@ export default function Contests() {
 
             {/* Contest Quizzes list */}
             {activeContest.quizzes && activeContest.quizzes.length > 0 && (
-              <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+              <div className="nm-card p-6 rounded-2xl">
                 <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Contest Quizzes</h3>
                 <div className="space-y-2">
                   {activeContest.quizzes.map((quiz) => {
@@ -322,8 +322,8 @@ export default function Contests() {
                       <button
                         key={quiz._id}
                         onClick={() => handleSelectQuiz(quiz)}
-                        className={`w-full text-left p-4 rounded-xl border text-sm font-semibold flex items-center justify-between transition-all ${
-                          activeQuiz?._id === quiz._id ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-750 dark:border-brand-500 dark:text-white' : 'bg-slate-50 border-slate-200 dark:bg-slate-900/40 dark:border-slate-700 dark:text-slate-200 hover:bg-slate-100/50'
+                        className={`w-full text-left p-4 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
+                          activeQuiz?._id === quiz._id ? 'nm-inset text-brand-750 dark:text-white border border-brand-500/30' : 'nm-btn text-slate-700 dark:text-slate-200'
                         }`}
                       >
                         <div className="flex flex-col">
@@ -332,7 +332,7 @@ export default function Contests() {
                         </div>
                         <div className="flex items-center gap-2">
                           {isCompleted && (
-                            <span className="text-[9px] uppercase font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded">
+                            <span className="text-[9px] uppercase font-bold text-emerald-650 dark:text-emerald-400 nm-inset-sm px-2 py-0.5 rounded">
                               Completed
                             </span>
                           )}
@@ -346,7 +346,7 @@ export default function Contests() {
             )}
 
             {/* Socket Live Leaderboard */}
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+            <div className="nm-card p-6 rounded-2xl">
               <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4 flex items-center gap-2">
                 <Trophy className="h-5 w-5 text-amber-500" />
                 Live Standings
@@ -354,7 +354,7 @@ export default function Contests() {
               <div className="overflow-y-auto max-h-64 text-xs">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-100 dark:border-slate-700 text-slate-400 font-bold uppercase tracking-wider">
+                    <tr className="nm-inset-sm text-slate-400 font-bold uppercase tracking-wider">
                       <th className="pb-2">Rank</th>
                       <th className="pb-2">Contestant</th>
                       <th className="pb-2 text-right">Score</th>
@@ -419,12 +419,12 @@ export default function Contests() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between min-h-[450px]">
+                <div className="nm-card p-6 rounded-2xl flex flex-col justify-between min-h-[450px]">
                   <div>
                     {/* Header */}
                     <div className="flex items-center justify-between mb-4 text-xs font-semibold text-slate-400">
                       <span className="uppercase">Question {quizCurrentIdx + 1} of {activeQuiz.questions.length}</span>
-                      <span className="bg-slate-150 dark:bg-slate-700 px-2 py-0.5 rounded uppercase">{activeQuiz.questions[quizCurrentIdx]?.difficulty}</span>
+                      <span className="nm-inset-sm px-2.5 py-0.5 rounded uppercase">{activeQuiz.questions[quizCurrentIdx]?.difficulty}</span>
                     </div>
 
                     <h3 className="font-outfit font-semibold text-lg text-slate-900 dark:text-white leading-relaxed mb-6">
@@ -438,8 +438,8 @@ export default function Contests() {
                         <button
                           key={i}
                           onClick={() => handleQuizOptionChange(quizCurrentIdx, i)}
-                          className={`w-full text-left p-4 rounded-xl border text-sm font-medium transition-all flex items-center justify-between ${
-                            quizAnswers[quizCurrentIdx]?.selectedOption === i ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-700 dark:border-brand-500 dark:text-white' : 'bg-slate-50 hover:bg-slate-100/50 border-slate-200 dark:bg-slate-900/50 dark:hover:bg-slate-900 dark:border-slate-700 dark:text-slate-200'
+                          className={`w-full text-left p-4 rounded-xl text-sm font-medium transition-all flex items-center justify-between ${
+                            quizAnswers[quizCurrentIdx]?.selectedOption === i ? 'nm-inset text-brand-700 dark:text-white border border-brand-500/30' : 'nm-btn text-slate-700 dark:text-slate-200'
                           }`}
                         >
                           <span>{opt}</span>
@@ -456,8 +456,8 @@ export default function Contests() {
                           <button
                             key={i}
                             onClick={() => handleQuizCheckboxChange(quizCurrentIdx, i)}
-                            className={`w-full text-left p-4 rounded-xl border text-sm font-medium transition-all flex items-center justify-between ${
-                              isSelected ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-700 dark:border-brand-500 dark:text-white' : 'bg-slate-50 hover:bg-slate-100/50 border-slate-200 dark:bg-slate-900/50 dark:hover:bg-slate-900 dark:border-slate-700 dark:text-slate-200'
+                            className={`w-full text-left p-4 rounded-xl text-sm font-medium transition-all flex items-center justify-between ${
+                              isSelected ? 'nm-inset text-brand-700 dark:text-white border border-brand-500/30' : 'nm-btn text-slate-700 dark:text-slate-200'
                             }`}
                           >
                             <span>{opt}</span>
@@ -475,8 +475,8 @@ export default function Contests() {
                             <button
                               key={val.toString()}
                               onClick={() => handleQuizBooleanChange(quizCurrentIdx, val)}
-                              className={`flex-grow py-4 rounded-xl border text-sm font-bold transition-all text-center ${
-                                quizAnswers[quizCurrentIdx]?.booleanAnswer === val ? 'bg-brand-50 border-brand-500 text-brand-700 dark:bg-slate-700 dark:border-brand-500 dark:text-white' : 'bg-slate-50 hover:bg-slate-100/50 border-slate-200 dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-300'
+                              className={`flex-grow py-4 rounded-xl text-sm font-bold transition-all text-center ${
+                                quizAnswers[quizCurrentIdx]?.booleanAnswer === val ? 'nm-inset text-brand-700 dark:text-white border border-brand-500/30' : 'nm-btn text-slate-700 dark:text-slate-300'
                               }`}
                             >
                               {val ? 'TRUE' : 'FALSE'}
@@ -492,7 +492,7 @@ export default function Contests() {
                             type="text"
                             value={quizAnswers[quizCurrentIdx]?.textAnswer || ''}
                             onChange={(e) => handleQuizTextChange(quizCurrentIdx, e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-4 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
+                            className="w-full nm-input rounded-xl py-4 px-4 text-sm focus:outline-none dark:text-white"
                             placeholder="Type your answer here..."
                           />
                         </div>
@@ -518,11 +518,11 @@ export default function Contests() {
                           <button
                             key={index}
                             onClick={() => setQuizCurrentIdx(index)}
-                            className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs border transition-all ${
-                              isSelected ? 'ring-2 ring-brand-500 ring-offset-2 dark:ring-offset-slate-900 border-brand-500 bg-brand-500 text-white' :
-                              isReview ? 'bg-amber-500 text-white border-amber-500' :
-                              hasAns ? 'bg-emerald-500 text-white border-emerald-500' :
-                              'bg-slate-50 border-slate-200 dark:bg-slate-700 dark:border-slate-650 text-slate-600 dark:text-slate-300 hover:border-slate-400'
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs transition-all ${
+                              isSelected ? 'nm-inset text-brand-600 dark:text-brand-400 border border-brand-500/40 ring-1 ring-brand-500/20' :
+                              isReview ? 'bg-amber-500 text-white border-amber-500 shadow-inner' :
+                              hasAns ? 'bg-emerald-500 text-white border-emerald-500 shadow-inner' :
+                              'nm-btn text-slate-600 dark:text-slate-300'
                             }`}
                           >
                             {index + 1}
@@ -536,7 +536,7 @@ export default function Contests() {
                         <button
                           disabled={quizCurrentIdx === 0}
                           onClick={() => setQuizCurrentIdx((prev) => prev - 1)}
-                          className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 disabled:opacity-50 text-slate-700 dark:text-slate-250 font-semibold text-xs px-4 py-2.5 rounded-lg transition-colors border border-slate-200 dark:border-slate-600"
+                          className="inline-flex items-center justify-center gap-1.5 nm-btn disabled:opacity-50 text-slate-700 dark:text-slate-250 font-semibold text-xs px-4 py-2.5 rounded-lg"
                         >
                           <ArrowLeft className="h-3.5 w-3.5" />
                           <span>Prev</span>
@@ -544,7 +544,7 @@ export default function Contests() {
                         <button
                           disabled={quizCurrentIdx === activeQuiz.questions.length - 1}
                           onClick={() => setQuizCurrentIdx((prev) => prev + 1)}
-                          className="inline-flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 disabled:opacity-50 text-slate-700 dark:text-slate-250 font-semibold text-xs px-4 py-2.5 rounded-lg transition-colors border border-slate-200 dark:border-slate-600"
+                          className="inline-flex items-center justify-center gap-1.5 nm-btn disabled:opacity-50 text-slate-700 dark:text-slate-250 font-semibold text-xs px-4 py-2.5 rounded-lg"
                         >
                           <span>Next</span>
                           <ArrowRight className="h-3.5 w-3.5" />
@@ -553,8 +553,8 @@ export default function Contests() {
 
                       <button
                         onClick={() => toggleQuizReview(quizCurrentIdx)}
-                        className={`font-semibold text-xs px-4 py-2.5 rounded-lg border transition-all ${
-                          quizReviewed.includes(quizCurrentIdx) ? 'bg-amber-500 border-amber-500 text-white' : 'border-amber-500 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/20'
+                        className={`font-semibold text-xs px-4 py-2.5 rounded-lg transition-all ${
+                          quizReviewed.includes(quizCurrentIdx) ? 'nm-inset text-amber-600 dark:text-amber-400 border border-amber-500/30' : 'nm-btn text-amber-600 dark:text-amber-400'
                         }`}
                       >
                         {quizReviewed.includes(quizCurrentIdx) ? 'Marked for Review' : 'Mark for Review'}
@@ -563,7 +563,7 @@ export default function Contests() {
                       <button
                         onClick={handleSubmitContestQuiz}
                         disabled={quizIsSubmitting}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-6 py-2.5 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                        className="nm-btn-primary font-semibold text-xs px-6 py-2.5 rounded-lg flex items-center justify-center gap-1.5 disabled:opacity-50"
                       >
                         <Save className="h-3.5 w-3.5" />
                         <span>Submit Quiz</span>
@@ -575,7 +575,7 @@ export default function Contests() {
             ) : activeChallenge ? (
               <div className="flex flex-col gap-6">
                 {/* Challenge description */}
-                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm text-sm">
+                <div className="nm-card p-6 rounded-2xl text-sm">
                   <h3 className="font-outfit font-bold text-xl dark:text-white mb-2">{activeChallenge.title}</h3>
                   <div className="text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                     {activeChallenge.description}
@@ -591,7 +591,7 @@ export default function Contests() {
                 />
 
                 {/* Submit Panel Console */}
-                <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 text-slate-200">
+                <div className="bg-slate-800 dark:bg-slate-900 border border-slate-700 rounded-lg p-4 text-slate-200 shadow-inner">
                   <div className="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
                     <span className="text-xs font-bold uppercase text-slate-400 flex items-center gap-1">
                       <Terminal className="h-3.5 w-3.5" />
@@ -600,7 +600,7 @@ export default function Contests() {
                     <button
                       onClick={handleSubmitContestChallenge}
                       disabled={isSubmitting}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2 rounded shadow transition-all"
+                      className="nm-btn bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-750 text-white font-semibold text-xs px-4 py-2 rounded-lg"
                     >
                       {isSubmitting ? 'Evaluating...' : 'Submit Answer'}
                     </button>
@@ -622,7 +622,7 @@ export default function Contests() {
                 </div>
               </div>
             ) : (
-              <div className="bg-white dark:bg-slate-800 p-12 rounded-2xl border border-slate-100 dark:border-slate-700 text-center shadow-sm">
+              <div className="nm-card p-12 rounded-2xl text-center">
                 <Trophy className="h-12 w-12 text-indigo-500 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold dark:text-white">Workspace Ready</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Select a challenge or quiz from the left menu to start.</p>
@@ -641,7 +641,7 @@ export default function Contests() {
       <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Participate in tournaments and compete on real-time standings</p>
 
       {contests.length === 0 ? (
-        <div className="text-center py-12 glass-card rounded-2xl">
+        <div className="text-center py-12 nm-card rounded-2xl">
           <Calendar className="h-12 w-12 text-slate-400 mx-auto mb-3" />
           <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">No Contests Scheduled</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Check back later for upcoming challenges.</p>
@@ -651,7 +651,7 @@ export default function Contests() {
           {contests.map((cont) => {
             const isLive = new Date() >= new Date(cont.startTime) && new Date() <= new Date(cont.endTime);
             return (
-              <div key={cont._id} className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+              <div key={cont._id} className="nm-card p-6 rounded-2xl flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
@@ -669,7 +669,7 @@ export default function Contests() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
                     <Users className="h-4 w-4" />
                     <span>{cont.participants?.length || 0} registered</span>
@@ -677,7 +677,7 @@ export default function Contests() {
 
                   <button
                     onClick={() => handleJoinContest(cont._id)}
-                    className="bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors shadow-sm"
+                    className="nm-btn-primary font-semibold text-xs px-4 py-2 rounded-lg"
                   >
                     Enter Arena
                   </button>

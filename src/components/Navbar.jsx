@@ -30,15 +30,15 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass-card bg-white/80 dark:bg-slate-900/80 shadow-sm transition-colors duration-200">
+    <nav className="sticky top-0 z-50 bg-white/90 dark:bg-darkbg-card/90 backdrop-blur-md border-b border-slate-200/30 dark:border-slate-800/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.4)] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="bg-gradient-to-tr from-brand-600 to-indigo-500 p-2 rounded-lg text-white">
+            <div className="bg-gradient-to-tr from-indigo-650 to-blue-500 p-2 rounded-lg text-white">
               <Code2 className="h-6 w-6" />
             </div>
-            <span className="font-outfit font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent">
+            <span className="font-outfit font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-650 to-indigo-550 bg-clip-text text-transparent">
               CODEARENA
             </span>
           </Link>
@@ -80,7 +80,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-3">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 nm-btn transition-colors"
               aria-label="Toggle Theme"
             >
               {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
@@ -100,7 +100,7 @@ export default function Navbar() {
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center space-x-1 text-red-500 hover:text-red-600 font-medium text-sm px-3 py-2 rounded-md transition-colors"
+                  className="flex items-center space-x-1 text-red-500 hover:text-red-600 font-medium text-sm px-3 py-2 nm-btn rounded-xl transition-all"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>Logout</span>
@@ -108,8 +108,8 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link to="/login" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium text-sm px-3 py-2">Login</Link>
-                <Link to="/register" className="bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm px-4 py-2 rounded-lg shadow-sm transition-colors">Register</Link>
+                <Link to="/login" className="text-slate-600 dark:text-slate-350 hover:text-brand-500 font-medium text-sm px-4 py-2 nm-btn rounded-xl">Login</Link>
+                <Link to="/register" className="nm-btn-primary font-medium text-sm px-4 py-2 rounded-xl flex items-center justify-center">Register</Link>
               </div>
             )}
           </div>
@@ -131,7 +131,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 transition-all duration-200">
+        <div className="md:hidden bg-white dark:bg-darkbg-card border-t border-slate-100 dark:border-slate-800 transition-all duration-200">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link to="/" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Home</Link>
             <Link to="/about" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">About</Link>

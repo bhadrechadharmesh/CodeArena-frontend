@@ -110,7 +110,7 @@ export default function CodingChallenges() {
 
         <div className="grid lg:grid-cols-12 gap-6 items-stretch">
           {/* Left panel: Description */}
-          <div className="lg:col-span-5 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+          <div className="lg:col-span-5 nm-card p-6 rounded-2xl flex flex-col justify-between">
             <div>
               <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase mb-3 ${
                 activeChallenge.difficulty === 'easy' ? 'bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400' :
@@ -128,7 +128,7 @@ export default function CodingChallenges() {
               {activeChallenge.constraints && (
                 <div className="mb-6">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Constraints</h4>
-                  <pre className="bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700 rounded-xl p-3 text-xs font-mono dark:text-slate-300">
+                  <pre className="nm-inset-sm rounded-xl p-3 text-xs font-mono dark:text-slate-350">
                     {activeChallenge.constraints}
                   </pre>
                 </div>
@@ -139,7 +139,7 @@ export default function CodingChallenges() {
                 <div>
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Examples</h4>
                   {activeChallenge.examples.map((ex, i) => (
-                    <div key={i} className="bg-slate-50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-700 rounded-xl p-4 text-xs font-mono mb-2">
+                    <div key={i} className="nm-inset-sm rounded-xl p-4 text-xs font-mono mb-2">
                       <div className="mb-1"><strong className="text-brand-500">Input:</strong> {ex.input}</div>
                       <div className="mb-1"><strong className="text-emerald-500">Output:</strong> {ex.output}</div>
                       {ex.explanation && <div><strong className="text-slate-400">Explanation:</strong> {ex.explanation}</div>}
@@ -149,7 +149,7 @@ export default function CodingChallenges() {
               )}
             </div>
 
-            <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-700 text-xs text-slate-400">
+            <div className="mt-8 pt-4 border-t border-slate-200/50 dark:border-slate-800/50 text-xs text-slate-400">
               Created by CodeArena Instructors
             </div>
           </div>
@@ -165,7 +165,7 @@ export default function CodingChallenges() {
             />
 
             {/* Run Console Controls */}
-            <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 text-slate-200">
+            <div className="bg-slate-800 dark:bg-slate-900 border border-slate-700 rounded-lg p-4 text-slate-200 shadow-inner">
               <div className="flex items-center justify-between mb-4 border-b border-slate-700 pb-2">
                 <span className="text-xs font-bold uppercase text-slate-400 flex items-center gap-1">
                   <Terminal className="h-3.5 w-3.5" />
@@ -174,7 +174,7 @@ export default function CodingChallenges() {
                 <button
                   onClick={handleSubmitCode}
                   disabled={isSubmitting}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2 rounded shadow transition-all flex items-center gap-1"
+                  className="nm-btn bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-750 text-white font-semibold text-xs px-4 py-2 rounded-lg flex items-center gap-1"
                 >
                   <Play className="h-3.5 w-3.5 fill-current" />
                   <span>{isSubmitting ? 'Evaluating...' : 'Run Code'}</span>
@@ -239,7 +239,7 @@ export default function CodingChallenges() {
       <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Improve your algorithm skills by writing code and executing test scripts</p>
 
       {challenges.length === 0 ? (
-        <div className="text-center py-12 glass-card rounded-2xl">
+        <div className="text-center py-12 nm-card rounded-2xl">
           <Code2 className="h-12 w-12 text-slate-400 mx-auto mb-3" />
           <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">No Coding Challenges</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Please wait for instructors to seed problems.</p>
@@ -253,7 +253,7 @@ export default function CodingChallenges() {
             return (
               <div
                 key={chal._id}
-                className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+                className="nm-card p-6 rounded-2xl flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -273,16 +273,12 @@ export default function CodingChallenges() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-slate-200/50 dark:border-slate-800/50 flex items-center justify-between">
                   <span className="text-[10px] text-slate-400 font-semibold uppercase">
                     Languages: {chal.supportedLanguages.join(', ')}
                   </span>
                   {hasAttempted ? (
-                    <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1.5 rounded-lg border ${
-                      challengeAttempt.status === 'Accepted'
-                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 border-emerald-250 dark:border-emerald-800'
-                        : 'bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400 border-red-250 dark:border-red-800'
-                    }`}>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1.5 rounded-lg nm-inset-sm">
                       {challengeAttempt.status === 'Accepted' ? (
                         <CheckCircle className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                       ) : (
@@ -293,7 +289,7 @@ export default function CodingChallenges() {
                   ) : (
                     <button
                       onClick={() => handleSelectChallenge(chal._id)}
-                      className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors shadow-sm"
+                      className="nm-btn-primary font-semibold text-xs px-4 py-2 rounded-lg"
                     >
                       Solve Problem
                     </button>

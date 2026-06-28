@@ -10,7 +10,7 @@ export default function About() {
       </p>
 
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div className="nm-card p-6 rounded-2xl">
           <h3 className="font-outfit font-semibold text-lg dark:text-white flex items-center gap-2 mb-3">
             <Cpu className="h-5 w-5 text-brand-600" />
             Execution Judge Architecture
@@ -20,7 +20,7 @@ export default function About() {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div className="nm-card p-6 rounded-2xl">
           <h3 className="font-outfit font-semibold text-lg dark:text-white flex items-center gap-2 mb-3">
             <ShieldCheck className="h-5 w-5 text-emerald-600" />
             Proctoring & Audit Trailing

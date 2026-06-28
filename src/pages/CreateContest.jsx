@@ -155,7 +155,7 @@ export default function CreateContest() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Configuration */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+        <div className="nm-card p-6 rounded-2xl space-y-4">
           <h3 className="font-outfit font-bold text-lg dark:text-white border-b border-slate-100 dark:border-slate-750 pb-2">
             General Specifications
           </h3>
@@ -168,7 +168,7 @@ export default function CreateContest() {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
+              className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white"
               placeholder="e.g. Summer Coding Championship 2026"
             />
           </div>
@@ -184,7 +184,7 @@ export default function CreateContest() {
                   setContestType(e.target.value);
                   setErrorMsg('');
                 }}
-                className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white"
               >
                 <option value="coding">Coding Challenges Only</option>
                 <option value="quiz">Quizzes Only</option>
@@ -201,7 +201,7 @@ export default function CreateContest() {
                   type="datetime-local"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
+                  className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white"
                 />
               </div>
               <div>
@@ -212,7 +212,7 @@ export default function CreateContest() {
                   type="datetime-local"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
+                  className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white"
                 />
               </div>
             </div>
@@ -221,7 +221,7 @@ export default function CreateContest() {
 
         {/* Coding Challenges Selection */}
         {contestType !== 'quiz' && (
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+          <div className="nm-card p-6 rounded-2xl space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-slate-750 pb-2">
               <h3 className="font-outfit font-bold text-lg dark:text-white flex items-center gap-2">
                 <Code2 className="h-5 w-5 text-indigo-500" />
@@ -234,7 +234,7 @@ export default function CreateContest() {
                   placeholder="Search challenges..."
                   value={challengeSearch}
                   onChange={(e) => setChallengeSearch(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 pl-9 pr-3 text-xs focus:outline-none focus:border-indigo-550 dark:text-white"
+                  className="w-full nm-input rounded-lg py-1.5 pl-9 pr-3 text-xs focus:outline-none dark:text-white"
                 />
               </div>
             </div>
@@ -251,14 +251,14 @@ export default function CreateContest() {
                     <div
                       key={chal._id}
                       onClick={() => handleToggleChallenge(chal._id)}
-                      className={`cursor-pointer border p-3.5 rounded-xl flex items-start gap-3 transition-all ${
+                      className={`cursor-pointer p-3.5 rounded-xl flex items-start gap-3 transition-all ${
                         isChecked
-                          ? 'border-indigo-500 bg-indigo-50/30 dark:bg-indigo-950/20'
-                          : 'border-slate-100 dark:border-slate-700/50 hover:bg-slate-50/50 dark:hover:bg-slate-750/30'
+                          ? 'nm-inset text-indigo-755 border border-indigo-500/30'
+                          : 'nm-btn border-transparent text-slate-700 dark:text-slate-200'
                       }`}
                     >
                       <div className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                        isChecked ? 'bg-indigo-600 border-indigo-650 text-white' : 'border-slate-300 dark:border-slate-600'
+                        isChecked ? 'nm-inset text-indigo-650 border border-indigo-500/30 bg-transparent' : 'nm-btn border-transparent'
                       }`}>
                         {isChecked && <Check className="h-3 w-3 stroke-[3]" />}
                       </div>
@@ -287,7 +287,7 @@ export default function CreateContest() {
 
         {/* Quizzes Selection */}
         {contestType !== 'coding' && (
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+          <div className="nm-card p-6 rounded-2xl space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-slate-750 pb-2">
               <h3 className="font-outfit font-bold text-lg dark:text-white flex items-center gap-2">
                 <BookOpen className="h-5 w-5 text-emerald-500" />
@@ -300,7 +300,7 @@ export default function CreateContest() {
                   placeholder="Search quizzes..."
                   value={quizSearch}
                   onChange={(e) => setQuizSearch(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 rounded-lg py-1.5 pl-9 pr-3 text-xs focus:outline-none focus:border-emerald-550 dark:text-white"
+                  className="w-full nm-input rounded-lg py-1.5 pl-9 pr-3 text-xs focus:outline-none dark:text-white"
                 />
               </div>
             </div>
@@ -317,14 +317,14 @@ export default function CreateContest() {
                     <div
                       key={quiz._id}
                       onClick={() => handleToggleQuiz(quiz._id)}
-                      className={`cursor-pointer border p-3.5 rounded-xl flex items-start gap-3 transition-all ${
+                      className={`cursor-pointer p-3.5 rounded-xl flex items-start gap-3 transition-all ${
                         isChecked
-                          ? 'border-emerald-550 bg-emerald-50/20 dark:bg-emerald-950/15'
-                          : 'border-slate-100 dark:border-slate-700/50 hover:bg-slate-50/50 dark:hover:bg-slate-750/30'
+                          ? 'nm-inset text-emerald-755 border border-emerald-500/30'
+                          : 'nm-btn border-transparent text-slate-700 dark:text-slate-200'
                       }`}
                     >
                       <div className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                        isChecked ? 'bg-emerald-600 border-emerald-650 text-white' : 'border-slate-300 dark:border-slate-600'
+                        isChecked ? 'nm-inset text-emerald-650 border border-emerald-500/30 bg-transparent' : 'nm-btn border-transparent'
                       }`}>
                         {isChecked && <Check className="h-3 w-3 stroke-[3]" />}
                       </div>
@@ -352,14 +352,14 @@ export default function CreateContest() {
           <button
             type="button"
             onClick={() => navigate('/teacher-dashboard')}
-            className="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold text-sm px-6 py-3 rounded-xl transition-colors"
+            className="nm-btn text-slate-700 dark:text-slate-300 font-semibold text-sm px-6 py-3 rounded-xl"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 nm-btn-primary font-semibold text-sm px-6 py-3 rounded-xl disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
             <span>{loading ? 'Scheduling...' : 'Schedule Contest'}</span>

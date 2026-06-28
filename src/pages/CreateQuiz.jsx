@@ -291,7 +291,7 @@ export default function CreateQuiz() {
       <div className="flex items-center gap-2 mb-6">
         <button
           onClick={() => navigate('/teacher-dashboard')}
-          className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300"
+          className="p-2.5 rounded-xl nm-btn text-slate-650 dark:text-slate-305"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
@@ -316,8 +316,8 @@ export default function CreateQuiz() {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Quiz Meta Info */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-6">
-          <h2 className="font-outfit font-bold text-xl dark:text-white border-b border-slate-100 dark:border-slate-700 pb-2">Quiz Information</h2>
+        <div className="nm-card p-6 rounded-2xl space-y-6">
+          <h2 className="font-outfit font-bold text-xl dark:text-white border-b border-slate-200 dark:border-slate-750 pb-2">Quiz Information</h2>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-1">
@@ -326,7 +326,7 @@ export default function CreateQuiz() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white font-medium"
                 placeholder="e.g. JavaScript Arrays & Methods"
                 required
               />
@@ -338,7 +338,7 @@ export default function CreateQuiz() {
                 type="text"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white font-medium"
                 placeholder="e.g. Web Development"
                 required
               />
@@ -360,7 +360,7 @@ export default function CreateQuiz() {
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white font-medium"
               >
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
@@ -375,7 +375,7 @@ export default function CreateQuiz() {
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 min="1"
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white font-medium"
                 required
               />
             </div>
@@ -387,7 +387,7 @@ export default function CreateQuiz() {
                 value={totalMarks}
                 onChange={(e) => setTotalMarks(e.target.value)}
                 min="1"
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white font-medium"
                 required
               />
             </div>
@@ -398,7 +398,7 @@ export default function CreateQuiz() {
                 type="text"
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white font-medium"
                 placeholder="e.g. javascript, arrays, coding"
               />
             </div>
@@ -419,7 +419,7 @@ export default function CreateQuiz() {
         </div>
 
         {/* Import Questions Section */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+        <div className="nm-card p-6 rounded-2xl space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-2">
             <div className="flex items-center gap-2">
               <FileText className="h-5 w-5 text-brand-600" />
@@ -436,7 +436,7 @@ export default function CreateQuiz() {
           </div>
 
           {showInstructions && (
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-2 leading-relaxed">
+            <div className="p-4 rounded-xl nm-inset-sm text-xs text-slate-600 dark:text-slate-400 space-y-2 leading-relaxed">
               <p className="font-bold text-slate-700 dark:text-slate-300">💡 File Formatting Guide for Best Results:</p>
               <ul className="list-disc pl-4 space-y-1">
                 <li>Start each question block with a number (e.g., <code className="font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">1. What is HTML?</code>)</li>
@@ -449,7 +449,7 @@ export default function CreateQuiz() {
             </div>
           )}
 
-          <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-8 hover:border-brand-500 dark:hover:border-brand-500 transition-colors bg-slate-50/50 dark:bg-slate-900/10 relative">
+          <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-8 hover:border-brand-500 transition-colors nm-inset-sm bg-transparent relative">
             <input
               type="file"
               accept=".pdf,.txt"
@@ -488,7 +488,7 @@ export default function CreateQuiz() {
             <button
               type="button"
               onClick={handleAddQuestion}
-              className="inline-flex items-center gap-1 bg-brand-50 hover:bg-brand-100 text-brand-600 dark:bg-slate-800 dark:hover:bg-slate-700 font-bold text-xs px-3 py-2 rounded-xl transition-colors"
+              className="inline-flex items-center gap-1 nm-btn text-brand-600 dark:text-brand-400 font-bold text-xs px-3 py-2 rounded-xl"
             >
               <PlusCircle className="h-4 w-4" />
               <span>Add Question</span>
@@ -496,7 +496,7 @@ export default function CreateQuiz() {
           </div>
 
           {questions.map((q, qIdx) => (
-            <div key={qIdx} className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm relative space-y-6">
+            <div key={qIdx} className="nm-card p-6 rounded-2xl relative space-y-6">
               
               {/* Question Header */}
               <div className="flex items-center justify-between">
@@ -518,7 +518,7 @@ export default function CreateQuiz() {
                   <select
                     value={q.questionType}
                     onChange={(e) => handleQuestionChange(qIdx, 'questionType', e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                    className="w-full nm-input rounded-xl py-2 px-3 text-xs focus:outline-none dark:text-white font-medium"
                   >
                     <option value="mcq">Multiple Choice (MCQ)</option>
                     <option value="multiple_correct">Multiple Correct Answers</option>
@@ -533,7 +533,7 @@ export default function CreateQuiz() {
                     type="text"
                     value={q.topic}
                     onChange={(e) => handleQuestionChange(qIdx, 'topic', e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                    className="w-full nm-input rounded-xl py-2 px-3 text-xs focus:outline-none dark:text-white font-medium"
                     placeholder="e.g. Scope, Functions"
                   />
                 </div>
@@ -543,7 +543,7 @@ export default function CreateQuiz() {
                   <select
                     value={q.difficulty}
                     onChange={(e) => handleQuestionChange(qIdx, 'difficulty', e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-brand-500 dark:text-white font-medium"
+                    className="w-full nm-input rounded-xl py-2 px-3 text-xs focus:outline-none dark:text-white font-medium"
                   >
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -559,14 +559,14 @@ export default function CreateQuiz() {
                   value={q.questionText}
                   onChange={(e) => handleQuestionChange(qIdx, 'questionText', e.target.value)}
                   rows="2"
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white font-medium leading-relaxed"
+                  className="w-full nm-input rounded-xl py-3 px-4 text-sm focus:outline-none dark:text-white font-medium leading-relaxed"
                   placeholder="e.g. What is the output of typeof null?"
                   required
                 />
               </div>
 
               {/* Options & Correct Answer block */}
-              <div className="space-y-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+              <div className="space-y-3 p-4 rounded-xl nm-inset-sm bg-transparent">
                 <h4 className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-2">Options & Correct Answer Setup</h4>
 
                 {/* MCQ Mode */}
@@ -585,7 +585,7 @@ export default function CreateQuiz() {
                           type="text"
                           value={opt}
                           onChange={(e) => handleOptionChange(qIdx, optIdx, e.target.value)}
-                          className="flex-grow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-brand-500 text-slate-900 dark:text-white font-medium"
+                          className="flex-grow nm-input rounded-xl py-2 px-3 text-xs focus:outline-none text-slate-900 dark:text-white font-medium"
                           placeholder={`Option ${optIdx + 1}`}
                           required
                         />
@@ -601,7 +601,7 @@ export default function CreateQuiz() {
                     <button
                       type="button"
                       onClick={() => handleAddOption(qIdx)}
-                      className="text-xs font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1 mt-1"
+                      className="text-xs font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1 mt-1 nm-btn px-2.5 py-1 rounded-lg"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       <span>Add Option</span>
@@ -624,7 +624,7 @@ export default function CreateQuiz() {
                           type="text"
                           value={opt}
                           onChange={(e) => handleOptionChange(qIdx, optIdx, e.target.value)}
-                          className="flex-grow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-brand-500 text-slate-900 dark:text-white font-medium"
+                          className="flex-grow nm-input rounded-xl py-2 px-3 text-xs focus:outline-none text-slate-900 dark:text-white font-medium"
                           placeholder={`Option ${optIdx + 1}`}
                           required
                         />
@@ -640,7 +640,7 @@ export default function CreateQuiz() {
                     <button
                       type="button"
                       onClick={() => handleAddOption(qIdx)}
-                      className="text-xs font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1 mt-1"
+                      className="text-xs font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1 mt-1 nm-btn px-2.5 py-1 rounded-lg"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       <span>Add Option</span>
@@ -654,10 +654,10 @@ export default function CreateQuiz() {
                     <button
                       type="button"
                       onClick={() => handleQuestionChange(qIdx, 'answer', true)}
-                      className={`flex-grow py-2 rounded-xl border text-xs font-bold transition-all ${
+                      className={`flex-grow py-2 rounded-xl text-xs font-bold transition-all ${
                         q.answer === true
-                          ? 'bg-brand-500 border-brand-500 text-white'
-                          : 'bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300'
+                          ? 'nm-inset text-brand-700 dark:text-white border border-brand-500/30'
+                          : 'nm-btn text-slate-750 dark:text-slate-300'
                       }`}
                     >
                       TRUE IS CORRECT
@@ -665,10 +665,10 @@ export default function CreateQuiz() {
                     <button
                       type="button"
                       onClick={() => handleQuestionChange(qIdx, 'answer', false)}
-                      className={`flex-grow py-2 rounded-xl border text-xs font-bold transition-all ${
+                      className={`flex-grow py-2 rounded-xl text-xs font-bold transition-all ${
                         q.answer === false
-                          ? 'bg-brand-500 border-brand-500 text-white'
-                          : 'bg-white border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300'
+                          ? 'nm-inset text-brand-700 dark:text-white border border-brand-500/30'
+                          : 'nm-btn text-slate-750 dark:text-slate-300'
                       }`}
                     >
                       FALSE IS CORRECT
@@ -684,7 +684,7 @@ export default function CreateQuiz() {
                       type="text"
                       value={q.correctAnswerText}
                       onChange={(e) => handleQuestionChange(qIdx, 'correctAnswerText', e.target.value)}
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-brand-500 text-slate-900 dark:text-white font-medium"
+                      className="w-full nm-input rounded-xl py-2 px-3 text-xs focus:outline-none text-slate-900 dark:text-white font-medium"
                       placeholder="e.g. object (case-insensitive grading)"
                       required
                     />
@@ -699,7 +699,7 @@ export default function CreateQuiz() {
                   value={q.explanation}
                   onChange={(e) => handleQuestionChange(qIdx, 'explanation', e.target.value)}
                   rows="2"
-                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2.5 px-3.5 text-xs focus:outline-none focus:border-brand-500 dark:text-white leading-relaxed"
+                  className="w-full nm-input rounded-xl py-2.5 px-3.5 text-xs focus:outline-none dark:text-white leading-relaxed"
                   placeholder="Explain why this answer is correct..."
                 />
               </div>
@@ -713,14 +713,14 @@ export default function CreateQuiz() {
           <button
             type="button"
             onClick={() => navigate('/teacher-dashboard')}
-            className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-sm px-6 py-3 rounded-xl transition-colors"
+            className="nm-btn text-slate-700 dark:text-slate-200 font-semibold text-sm px-6 py-3 rounded-xl"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 nm-btn-primary font-semibold text-sm px-6 py-3 rounded-xl disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
             <span>{loading ? 'Creating...' : 'Save & Publish'}</span>

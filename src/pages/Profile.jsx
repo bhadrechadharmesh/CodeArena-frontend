@@ -50,14 +50,14 @@ export default function Profile() {
 
       <div className="grid md:grid-cols-3 gap-6 items-start">
         {/* Left Stats column */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm text-center">
-          <div className="w-20 h-20 bg-indigo-500 text-white rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 uppercase">
+        <div className="nm-card p-6 rounded-2xl text-center">
+          <div className="w-20 h-20 nm-inset-sm text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 uppercase">
             {user?.name.charAt(0)}
           </div>
           <h3 className="font-bold text-lg dark:text-white leading-tight">{user?.name}</h3>
           <span className="text-xs text-brand-600 font-bold uppercase tracking-wider mt-1 block">{user?.role}</span>
 
-          <div className="border-t border-slate-100 dark:border-slate-700 mt-6 pt-4 space-y-3 text-xs text-left text-slate-500">
+          <div className="border-t border-slate-200/50 dark:border-slate-800/50 mt-6 pt-4 space-y-3 text-xs text-left text-slate-500">
             <div className="flex justify-between">
               <span>Member Since:</span>
               <strong className="text-slate-800 dark:text-white">{new Date(user?.createdAt || Date.now()).toLocaleDateString()}</strong>
@@ -74,7 +74,7 @@ export default function Profile() {
         </div>
 
         {/* Right Form column */}
-        <div className="md:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div className="md:col-span-2 nm-card p-6 rounded-2xl">
           <form onSubmit={handleSave} className="space-y-4">
             <div>
               <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2">Full Name</label>
@@ -84,7 +84,7 @@ export default function Profile() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
+                  className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
                   placeholder="Your Name"
                 />
               </div>
@@ -98,7 +98,7 @@ export default function Profile() {
                   type="email"
                   value={user?.email || ''}
                   disabled
-                  className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-500 focus:outline-none"
+                  className="w-full nm-input opacity-70 cursor-not-allowed rounded-xl py-3 pl-11 pr-4 text-sm text-slate-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -109,12 +109,12 @@ export default function Profile() {
                 <div className="relative">
                   <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                   <input
-                    type="text"
-                    value={college}
-                    onChange={(e) => setCollege(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
-                    placeholder="College Name"
-                  />
+                  type="text"
+                  value={college}
+                  onChange={(e) => setCollege(e.target.value)}
+                  className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
+                  placeholder="College Name"
+                />
                 </div>
               </div>
             )}
@@ -127,7 +127,7 @@ export default function Profile() {
                   rows="3"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white"
+                  className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
                   placeholder="Tell us about yourself..."
                 />
               </div>
@@ -136,7 +136,7 @@ export default function Profile() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2 text-sm"
+              className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2 text-sm"
             >
               <Save className="h-4 w-4" />
               <span>{loading ? 'Saving Changes...' : 'Save Settings'}</span>

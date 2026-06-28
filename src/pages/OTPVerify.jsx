@@ -124,9 +124,9 @@ export default function OTPVerify() {
 
   return (
     <div className="max-w-md mx-auto my-16 px-4">
-      <div className="glass-card p-8 rounded-3xl shadow-xl">
+      <div className="nm-card p-8 rounded-3xl">
         <div className="text-center mb-8">
-          <div className="mx-auto w-12 h-12 bg-brand-50 dark:bg-brand-950/50 rounded-2xl flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4 border border-brand-100 dark:border-brand-900/50">
+          <div className="mx-auto w-12 h-12 nm-card-sm rounded-2xl flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
             <ShieldCheck className="h-6 w-6" />
           </div>
           <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Verify Your Email</h2>
@@ -161,7 +161,7 @@ export default function OTPVerify() {
                 ref={(el) => (inputRefs.current[idx] = el)}
                 onChange={(e) => handleChange(idx, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(idx, e)}
-                className="w-12 h-14 text-center font-outfit text-xl font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:text-white"
+                className="w-12 h-14 text-center font-outfit text-xl font-bold nm-input rounded-xl dark:text-white"
                 placeholder="-"
                 disabled={!email || loading}
               />
@@ -171,7 +171,7 @@ export default function OTPVerify() {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2"
+            className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
           >
             {loading ? 'Verifying...' : 'Verify & Continue'}
           </button>

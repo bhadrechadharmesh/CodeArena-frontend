@@ -142,26 +142,26 @@ export default function TeacherDashboard() {
         <div className="flex gap-2 flex-wrap">
           <Link
             to="/create-challenge"
-            className="inline-flex items-center gap-1 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-sm px-4 py-2 rounded-xl transition-all shadow-sm"
+            className="inline-flex items-center gap-1 nm-btn font-semibold text-sm px-4 py-2 rounded-xl text-slate-800 dark:text-slate-200"
           >
             <PlusCircle className="h-4 w-4 text-indigo-500" />
             <span>Create Challenge</span>
           </Link>
           <Link
             to="/create-quiz"
-            className="inline-flex items-center gap-1 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-semibold text-sm px-4 py-2 rounded-xl transition-all shadow-sm"
+            className="inline-flex items-center gap-1 nm-btn font-semibold text-sm px-4 py-2 rounded-xl text-slate-800 dark:text-slate-200"
           >
             <PlusCircle className="h-4 w-4 text-emerald-500" />
             <span>Create Quiz</span>
           </Link>
           <Link
             to="/create-contest"
-            className="inline-flex items-center gap-1 bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm px-4 py-2 rounded-xl shadow-sm transition-colors"
+            className="inline-flex items-center gap-1 nm-btn-primary font-semibold text-sm px-4 py-2 rounded-xl"
           >
             <Calendar className="h-4 w-4" />
             <span>Schedule Contest</span>
           </Link>
-          <button onClick={fetchData} className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300">
+          <button onClick={fetchData} className="p-2 rounded-lg nm-btn text-slate-600 dark:text-slate-300">
             <RefreshCw className="h-5 w-5" />
           </button>
         </div>
@@ -169,8 +169,8 @@ export default function TeacherDashboard() {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="glass-card p-6 rounded-2xl shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-brand-50 dark:bg-slate-700/50 rounded-xl text-brand-600 dark:text-brand-400">
+        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
+          <div className="p-3 nm-inset-sm rounded-xl text-brand-600 dark:text-brand-400">
             <FileText className="h-6 w-6" />
           </div>
           <div>
@@ -179,8 +179,8 @@ export default function TeacherDashboard() {
           </div>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-indigo-50 dark:bg-slate-700/50 rounded-xl text-indigo-500">
+        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
+          <div className="p-3 nm-inset-sm rounded-xl text-indigo-500">
             <Users className="h-6 w-6" />
           </div>
           <div>
@@ -189,8 +189,8 @@ export default function TeacherDashboard() {
           </div>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-emerald-50 dark:bg-slate-700/50 rounded-xl text-emerald-500">
+        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
+          <div className="p-3 nm-inset-sm rounded-xl text-emerald-500">
             <Award className="h-6 w-6" />
           </div>
           <div>
@@ -199,8 +199,8 @@ export default function TeacherDashboard() {
           </div>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-purple-50 dark:bg-slate-700/50 rounded-xl text-purple-500">
+        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
+          <div className="p-3 nm-inset-sm rounded-xl text-purple-500">
             <Percent className="h-6 w-6" />
           </div>
           <div>
@@ -212,7 +212,7 @@ export default function TeacherDashboard() {
 
       <div className="grid md:grid-cols-3 gap-8">
         {/* Top Performers */}
-        <div className="md:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div className="md:col-span-2 nm-card p-6 rounded-2xl">
           <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Top Performing Candidates</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -243,7 +243,7 @@ export default function TeacherDashboard() {
         </div>
 
         {/* Difficulty Distribution Chart */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
+        <div className="nm-card p-6 rounded-2xl">
           <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Quiz Difficulty Split</h3>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
@@ -270,12 +270,12 @@ export default function TeacherDashboard() {
       </div>
 
       {/* Tab Selectors */}
-      <div className="flex p-1.5 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-md rounded-2xl gap-2 mt-10 mb-8 max-w-fit border border-slate-200/40 dark:border-slate-700/50 shadow-inner">
+      <div className="flex p-1.5 nm-inset rounded-2xl gap-2 mt-10 mb-8 max-w-fit">
         <button
           onClick={() => setActiveTab('contests')}
           className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 ${
             activeTab === 'contests'
-              ? 'bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm'
+              ? 'nm-card-sm text-brand-600 dark:text-brand-400'
               : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
           }`}
         >
@@ -285,7 +285,7 @@ export default function TeacherDashboard() {
           onClick={() => setActiveTab('quizzes')}
           className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 ${
             activeTab === 'quizzes'
-              ? 'bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm'
+              ? 'nm-card-sm text-brand-600 dark:text-brand-400'
               : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
           }`}
         >
@@ -295,7 +295,7 @@ export default function TeacherDashboard() {
           onClick={() => setActiveTab('challenges')}
           className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 ${
             activeTab === 'challenges'
-              ? 'bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm'
+              ? 'nm-card-sm text-brand-600 dark:text-brand-400'
               : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
           }`}
         >
@@ -305,8 +305,8 @@ export default function TeacherDashboard() {
 
       {/* Tab Content Panel */}
       {activeTab === 'contests' && (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+        <div className="nm-card rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center">
             <h3 className="font-outfit font-semibold text-lg dark:text-white">Scheduled Contests</h3>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {myContests.length} {myContests.length === 1 ? 'Contest' : 'Contests'} Scheduled
@@ -315,7 +315,7 @@ export default function TeacherDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-3">Contest Title</th>
                   <th className="px-6 py-3">Type</th>
                   <th className="px-6 py-3">Timeline</th>
@@ -369,7 +369,7 @@ export default function TeacherDashboard() {
                         <td className="px-6 py-4 text-right">
                           <button
                             onClick={() => handleDeleteContest(c._id, c.title)}
-                            className="inline-flex items-center gap-1.5 text-red-650 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-semibold text-xs bg-red-50 dark:bg-red-950/20 px-2.5 py-1.5 rounded-lg transition-colors"
+                            className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                             <span>Cancel</span>
@@ -386,8 +386,8 @@ export default function TeacherDashboard() {
       )}
 
       {activeTab === 'quizzes' && (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+        <div className="nm-card rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center">
             <h3 className="font-outfit font-semibold text-lg dark:text-white">My Quizzes</h3>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {myQuizzes.length} {myQuizzes.length === 1 ? 'Quiz' : 'Quizzes'} Created
@@ -396,7 +396,7 @@ export default function TeacherDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-3">Quiz Title</th>
                   <th className="px-6 py-3">Category</th>
                   <th className="px-6 py-3">Difficulty</th>
@@ -439,14 +439,14 @@ export default function TeacherDashboard() {
                       <td className="px-6 py-4 text-right space-x-2">
                         <button
                           onClick={() => handleViewAttempts('quiz', q._id, q.title)}
-                          className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-350 font-semibold text-xs bg-brand-50 dark:bg-brand-950/20 px-2.5 py-1.5 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-brand-600 dark:text-brand-400"
                         >
                           <Eye className="h-3.5 w-3.5" />
                           <span>Attempts</span>
                         </button>
                         <button
                           onClick={() => handleDeleteQuiz(q._id, q.title)}
-                          className="inline-flex items-center gap-1.5 text-red-650 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-semibold text-xs bg-red-50 dark:bg-red-950/20 px-2.5 py-1.5 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           <span>Delete</span>
@@ -462,8 +462,8 @@ export default function TeacherDashboard() {
       )}
 
       {activeTab === 'challenges' && (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+        <div className="nm-card rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center">
             <h3 className="font-outfit font-semibold text-lg dark:text-white">Coding Challenges</h3>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {myChallenges.length} {myChallenges.length === 1 ? 'Challenge' : 'Challenges'} Created
@@ -472,7 +472,7 @@ export default function TeacherDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-3">Challenge Title</th>
                   <th className="px-6 py-3">Difficulty</th>
                   <th className="px-6 py-3">Supported Languages</th>
@@ -521,14 +521,14 @@ export default function TeacherDashboard() {
                       <td className="px-6 py-4 text-right space-x-2">
                         <button
                           onClick={() => handleViewAttempts('challenge', c._id, c.title)}
-                          className="inline-flex items-center gap-1.5 text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-350 font-semibold text-xs bg-brand-50 dark:bg-brand-950/20 px-2.5 py-1.5 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-brand-600 dark:text-brand-400"
                         >
                           <Eye className="h-3.5 w-3.5" />
                           <span>Attempts</span>
                         </button>
                         <button
                           onClick={() => handleDeleteChallenge(c._id, c.title)}
-                          className="inline-flex items-center gap-1.5 text-red-650 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-semibold text-xs bg-red-50 dark:bg-red-950/20 px-2.5 py-1.5 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           <span>Delete</span>
@@ -561,7 +561,7 @@ export default function TeacherDashboard() {
 
         return (
           <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden shadow-2xl border border-slate-100 dark:border-slate-700 flex flex-col transition-all transform scale-100 duration-300">
+            <div className="nm-card rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden flex flex-col transition-all transform scale-100 duration-300">
               {/* Header */}
               <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-750 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
                 <div>
@@ -597,39 +597,39 @@ export default function TeacherDashboard() {
                   <>
                     {/* Analytics Summary */}
                     <div className="grid grid-cols-3 gap-4 mb-6">
-                      <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-750">
-                        <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Total Submissions</span>
+                      <div className="nm-inset-sm p-4 rounded-xl">
+                        <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Total Submissions</span>
                         <span className="font-outfit font-extrabold text-2xl text-slate-900 dark:text-white mt-1 block">{totalAttemptsCount}</span>
                       </div>
                       {selectedItemForAttempts.type === 'quiz' ? (
                         <>
-                          <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-750">
-                            <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Average Score</span>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Average Score</span>
                             <span className="font-outfit font-extrabold text-2xl text-brand-600 dark:text-brand-400 mt-1 block">{avgScore} pts</span>
                           </div>
-                          <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-750">
-                            <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Highest Score</span>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Highest Score</span>
                             <span className="font-outfit font-extrabold text-2xl text-emerald-600 dark:text-emerald-400 mt-1 block">{highestScore} pts</span>
                           </div>
                         </>
                       ) : (
                         <>
-                          <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-750">
-                            <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Success Rate</span>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Success Rate</span>
                             <span className="font-outfit font-extrabold text-2xl text-brand-600 dark:text-brand-400 mt-1 block">{successRate}%</span>
                           </div>
-                          <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-750">
-                            <span className="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Passed Submissions</span>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Passed Submissions</span>
                             <span className="font-outfit font-extrabold text-2xl text-emerald-600 dark:text-emerald-400 mt-1 block">{passedCountTotal}</span>
                           </div>
                         </>
                       )}
                     </div>
 
-                    <div className="overflow-x-auto border border-slate-100 dark:border-slate-750 rounded-xl">
+                    <div className="overflow-x-auto nm-inset rounded-xl">
                       <table className="w-full text-left border-collapse text-xs md:text-sm">
                         <thead>
-                          <tr className="bg-slate-50 dark:bg-slate-700/30 border-b border-slate-100 dark:border-slate-755 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+                          <tr className="nm-card-sm border-b border-slate-200/50 dark:border-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
                             <th className="px-5 py-3">Student Name</th>
                             <th className="px-5 py-3">Email</th>
                             <th className="px-5 py-3">College</th>
@@ -708,7 +708,7 @@ export default function TeacherDashboard() {
               <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-705 flex justify-end bg-slate-50 dark:bg-slate-900/50">
                 <button
                   onClick={() => setSelectedItemForAttempts(null)}
-                  className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-md active:scale-95"
+                  className="nm-btn-primary font-semibold text-xs px-5 py-2.5 rounded-xl"
                 >
                   Close Panel
                 </button>

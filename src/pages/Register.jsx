@@ -48,7 +48,7 @@ export default function Register() {
 
   return (
     <div className="max-w-md mx-auto my-12 px-4">
-      <div className="glass-card p-8 rounded-3xl shadow-xl">
+      <div className="nm-card p-8 rounded-3xl">
         <div className="text-center mb-8">
           <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Create Account</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Join the ultimate competitive coding arena</p>
@@ -70,7 +70,7 @@ export default function Register() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="Tony Stark"
               />
             </div>
@@ -84,7 +84,7 @@ export default function Register() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="tony@stark.com"
               />
             </div>
@@ -98,7 +98,7 @@ export default function Register() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:text-white"
+                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="Min. 6 characters"
               />
             </div>
@@ -109,7 +109,7 @@ export default function Register() {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:text-white"
+              className="w-full nm-input rounded-xl py-3 px-4 text-sm dark:text-white"
             >
               <option value="student">Student (Take contests & solve challenges)</option>
               <option value="teacher">Teacher (Schedule contests & review stats)</option>
@@ -125,7 +125,7 @@ export default function Register() {
                   type="text"
                   value={college}
                   onChange={(e) => setCollege(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:text-white"
+                  className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
                   placeholder="MIT"
                 />
               </div>
@@ -135,7 +135,7 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl shadow-md transition-colors flex items-center justify-center gap-2"
+            className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
           >
             {loading ? 'Creating Account...' : (
               <>

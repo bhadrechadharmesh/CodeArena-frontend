@@ -17,8 +17,8 @@ export default {
           750: '#293548',
         },
         indigo: {
-          550: '#5956ec',
-          650: '#493fd7',
+          550: '#a855f7',
+          650: '#7e22ce',
         },
         emerald: {
           250: '#8ae5c3',
@@ -30,18 +30,16 @@ export default {
           650: '#cc2121',
         },
         brand: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
+          50: '#f5f3ff',
+          100: '#ede9fe',
           500: '#6366f1',
           600: '#4f46e5',
           700: '#4338ca',
           900: '#312e81',
         },
-        darkbg: {
-          DEFAULT: '#0F172A',
-          card: '#1E293B',
-          border: '#334155',
-        }
+        darkbg: '#0b0f19',
+        'darkbg-card': '#161b26',
+        'darkbg-border': '#222d3d',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

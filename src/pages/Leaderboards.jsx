@@ -40,7 +40,7 @@ export default function Leaderboards() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
-        <div className="bg-amber-50 dark:bg-amber-950/20 p-3 rounded-full w-fit mx-auto text-amber-500 mb-2 border border-amber-200/50">
+        <div className="nm-inset p-3 rounded-full w-fit mx-auto text-amber-500 mb-2 flex items-center justify-center">
           <Trophy className="h-8 w-8" />
         </div>
         <h1 className="font-outfit font-extrabold text-3xl dark:text-white">Global Leaderboard</h1>
@@ -55,16 +55,16 @@ export default function Leaderboards() {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search by candidate name or college..."
-          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-brand-500 dark:text-white shadow-sm"
+          className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
         />
       </div>
 
       {/* Board */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+      <div className="nm-card rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                 <th className="px-6 py-3.5">Rank</th>
                 <th className="px-6 py-3.5">Developer</th>
                 <th className="px-6 py-3.5">College</th>
@@ -94,7 +94,7 @@ export default function Leaderboards() {
                       )}
                     </td>
                     <td className="px-6 py-4 flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-xs uppercase">
+                      <div className="w-8 h-8 rounded-full nm-inset-sm text-indigo-650 dark:text-indigo-400 flex items-center justify-center font-bold text-xs uppercase">
                         {item.name.charAt(0)}
                       </div>
                       <span className="text-slate-900 dark:text-white font-bold">{item.name}</span>
@@ -102,7 +102,7 @@ export default function Leaderboards() {
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{item.college || 'Self Taught'}</td>
                     <td className="px-6 py-4 text-center">
                       {item.streak > 0 ? (
-                        <span className="inline-flex items-center gap-0.5 text-xs text-orange-500 bg-orange-50 dark:bg-orange-950/20 px-2 py-0.5 rounded font-bold">
+                        <span className="inline-flex items-center gap-0.5 text-xs text-orange-550 dark:text-orange-400 nm-inset-sm px-2 py-0.5 rounded font-bold">
                           <Zap className="h-3.5 w-3.5 fill-current" />
                           {item.streak}
                         </span>
