@@ -1,7 +1,7 @@
 import React from 'react';
 import Editor from '@monaco-editor/react';
 
-const LANGUAGE_TEMPLATES = {
+export const LANGUAGE_TEMPLATES = {
   cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your C++ code here\n    string input;\n    if (cin >> input) {\n        cout << input;\n    }\n    return 0;\n}`,
   java: `import java.util.Scanner;\n\npublic class Solution {\n    public static void main(String[] args) {\n        // Write your Java code here\n        Scanner sc = new Scanner(System.in);\n        if (sc.hasNext()) {\n            System.out.print(sc.next());\n        }\n    }\n}`,
   python: `# Write your Python code here\nimport sys\ninput_data = sys.stdin.read().strip()\nprint(input_data)`,
@@ -13,7 +13,8 @@ export default function MonacoEditor({
   setCode,
   language,
   setLanguage,
-  supportedLanguages = ['cpp', 'java', 'python', 'javascript']
+  supportedLanguages = ['cpp', 'java', 'python', 'javascript'],
+  sampleCode = null
 }) {
   const handleEditorChange = (value) => {
     setCode(value);
@@ -22,7 +23,8 @@ export default function MonacoEditor({
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
     setLanguage(lang);
-    setCode(LANGUAGE_TEMPLATES[lang]);
+    const sample = sampleCode?.[lang] || '';
+    setCode(sample || LANGUAGE_TEMPLATES[lang]);
   };
 
   return (
@@ -36,18 +38,32 @@ export default function MonacoEditor({
           <span className="ml-2 font-mono text-xs text-slate-400">solution_editor.src</span>
         </div>
 
-        {/* Language selector */}
-        <select
-          value={language}
-          onChange={handleLanguageChange}
-          className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs text-slate-200 font-medium focus:outline-none"
-        >
-          {supportedLanguages.map((lang) => (
-            <option key={lang} value={lang}>
-              {lang === 'cpp' ? 'C++ (g++)' : lang === 'java' ? 'Java (OpenJDK)' : lang === 'python' ? 'Python 3' : 'Node.js'}
-            </option>
-          ))}
-        </select>
+        {/* Action Panel: Reset and Select Language */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              if (confirm('Are you sure you want to reset your editor to the starter/sample code?')) {
+                const sample = sampleCode?.[language] || '';
+                setCode(sample || LANGUAGE_TEMPLATES[language]);
+              }
+            }}
+            className="bg-slate-750 hover:bg-slate-700 text-slate-300 border border-slate-600 rounded px-2.5 py-1 text-xs font-semibold focus:outline-none transition-colors"
+            title="Reset editor to default starter code"
+          >
+            Reset Code
+          </button>
+          <select
+            value={language}
+            onChange={handleLanguageChange}
+            className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs text-slate-200 font-medium focus:outline-none"
+          >
+            {supportedLanguages.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang === 'cpp' ? 'C++ (g++)' : lang === 'java' ? 'Java (OpenJDK)' : lang === 'python' ? 'Python 3' : 'Node.js'}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Editor Panel */}

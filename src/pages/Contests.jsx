@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import MonacoEditor from '../components/MonacoEditor.jsx';
+import MonacoEditor, { LANGUAGE_TEMPLATES } from '../components/MonacoEditor.jsx';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
 import { initiateSocketConnection, disconnectSocket, subscribeToContestLeaderboard, unsubscribeFromContestLeaderboard } from '../services/socketService.js';
 import { Calendar, Users, Trophy, Play, Clock, Terminal, ChevronRight, BookOpen, CheckSquare, Save, ArrowLeft, ArrowRight, Download } from 'lucide-react';
@@ -95,8 +95,10 @@ export default function Contests() {
   const handleSelectChallenge = (chal) => {
     setActiveChallenge(chal);
     setActiveQuiz(null);
-    setLanguage('javascript');
-    setCode(`// Write your JavaScript code here\nimport fs from 'fs';\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log(input);`);
+    const defaultLang = chal.supportedLanguages?.[0] || 'javascript';
+    setLanguage(defaultLang);
+    const sample = chal.sampleCode?.[defaultLang] || '';
+    setCode(sample || LANGUAGE_TEMPLATES[defaultLang] || '');
     setTestResults(null);
   };
 
@@ -589,6 +591,7 @@ export default function Contests() {
                   language={language}
                   setLanguage={setLanguage}
                   supportedLanguages={activeChallenge.supportedLanguages}
+                  sampleCode={activeChallenge.sampleCode}
                 />
 
                 {/* Submit Panel Console */}

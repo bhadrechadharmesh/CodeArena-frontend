@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import MonacoEditor from '../components/MonacoEditor.jsx';
+import MonacoEditor, { LANGUAGE_TEMPLATES } from '../components/MonacoEditor.jsx';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
 import { Code2, Play, Terminal, HelpCircle, AlertCircle, Award, CheckCircle } from 'lucide-react';
 
@@ -42,9 +42,13 @@ export default function CodingChallenges() {
       const challenge = res.data.challenge;
       setActiveChallenge(challenge);
       
-      // Default to JS template on selection
-      setLanguage('javascript');
-      setCode(`// Write your JavaScript code here\nimport fs from 'fs';\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconsole.log(input);`);
+      // Default to first supported language or javascript
+      const defaultLang = challenge.supportedLanguages?.[0] || 'javascript';
+      setLanguage(defaultLang);
+      
+      // Load sample starter template if provided
+      const sample = challenge.sampleCode?.[defaultLang] || '';
+      setCode(sample || LANGUAGE_TEMPLATES[defaultLang] || '');
       setTestResults(null);
     } catch (err) {
       alert('Failed to load challenge details.');
@@ -163,6 +167,7 @@ export default function CodingChallenges() {
               language={language}
               setLanguage={setLanguage}
               supportedLanguages={activeChallenge.supportedLanguages}
+              sampleCode={activeChallenge.sampleCode}
             />
 
             {/* Run Console Controls */}
