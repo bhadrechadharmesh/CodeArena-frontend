@@ -53,7 +53,7 @@ export default function CodingChallenges() {
     }
   };
 
-  const handleSubmitCode = async () => {
+  const handleSubmitCode = async (runOnly = false) => {
     if (!activeChallenge || isSubmitting) return;
     setIsSubmitting(true);
     setTestResults(null);
@@ -61,7 +61,8 @@ export default function CodingChallenges() {
     try {
       const res = await axios.post(`/api/challenges/${activeChallenge._id}/submit`, {
         code,
-        language
+        language,
+        runOnly
       });
       setTestResults(res.data);
     } catch (err) {
@@ -75,7 +76,7 @@ export default function CodingChallenges() {
   useEffect(() => {
     if (activeChallenge && violationCount >= 3) {
       alert('CHALLENGE TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your code is being submitted automatically.');
-      handleSubmitCode().then(() => {
+      handleSubmitCode(false).then(() => {
         setActiveChallenge(null);
       });
     }
@@ -171,14 +172,24 @@ export default function CodingChallenges() {
                   <Terminal className="h-3.5 w-3.5" />
                   Terminal Console
                 </span>
-                <button
-                  onClick={handleSubmitCode}
-                  disabled={isSubmitting}
-                  className="nm-btn bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-750 text-white font-semibold text-xs px-4 py-2 rounded-lg flex items-center gap-1"
-                >
-                  <Play className="h-3.5 w-3.5 fill-current" />
-                  <span>{isSubmitting ? 'Evaluating...' : 'Run Code'}</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleSubmitCode(true)}
+                    disabled={isSubmitting}
+                    className="nm-btn bg-slate-700 hover:bg-slate-650 text-white font-semibold text-xs px-4 py-2 rounded-lg flex items-center gap-1 transition-colors disabled:opacity-50"
+                  >
+                    <Play className="h-3.5 w-3.5 fill-current" />
+                    <span>Run Code</span>
+                  </button>
+                  <button
+                    onClick={() => handleSubmitCode(false)}
+                    disabled={isSubmitting}
+                    className="nm-btn bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2 rounded-lg flex items-center gap-1 transition-colors disabled:opacity-50"
+                  >
+                    <CheckCircle className="h-3.5 w-3.5" />
+                    <span>Submit Code</span>
+                  </button>
+                </div>
               </div>
 
               {/* Console Output */}
@@ -277,23 +288,24 @@ export default function CodingChallenges() {
                   <span className="text-[10px] text-slate-400 font-semibold uppercase">
                     Languages: {chal.supportedLanguages.join(', ')}
                   </span>
-                  {hasAttempted ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1.5 rounded-lg nm-inset-sm">
-                      {challengeAttempt.status === 'Accepted' ? (
-                        <CheckCircle className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                      ) : (
-                        <AlertCircle className="h-3.5 w-3.5 text-red-650 dark:text-red-400" />
-                      )}
-                      <span>{challengeAttempt.status}</span>
-                    </span>
-                  ) : (
+                  <div className="flex items-center gap-2">
+                    {hasAttempted && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase px-2.5 py-1.5 rounded-lg nm-inset-sm">
+                        {challengeAttempt.status === 'Accepted' ? (
+                          <CheckCircle className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                        ) : (
+                          <AlertCircle className="h-3.5 w-3.5 text-red-650 dark:text-red-400" />
+                        )}
+                        <span>{challengeAttempt.status}</span>
+                      </span>
+                    )}
                     <button
                       onClick={() => handleSelectChallenge(chal._id)}
                       className="nm-btn-primary font-semibold text-xs px-4 py-2 rounded-lg"
                     >
-                      Solve Problem
+                      {hasAttempted ? 'View Workspace' : 'Solve Problem'}
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
             );

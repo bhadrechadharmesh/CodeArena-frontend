@@ -128,7 +128,7 @@ export default function Contests() {
     }
   };
 
-  const handleSubmitContestChallenge = async () => {
+  const handleSubmitContestChallenge = async (runOnly = false) => {
     if (!activeChallenge || !activeContest || isSubmitting) return;
     setIsSubmitting(true);
     setTestResults(null);
@@ -136,7 +136,8 @@ export default function Contests() {
     try {
       const res = await axios.post(`/api/contests/${activeContest._id}/submit-challenge/${activeChallenge._id}`, {
         code,
-        language
+        language,
+        runOnly
       });
       setTestResults(res.data);
     } catch (err) {
@@ -597,17 +598,26 @@ export default function Contests() {
                       <Terminal className="h-3.5 w-3.5" />
                       Contest Console
                     </span>
-                    <button
-                      onClick={handleSubmitContestChallenge}
-                      disabled={isSubmitting}
-                      className="nm-btn bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-750 text-white font-semibold text-xs px-4 py-2 rounded-lg"
-                    >
-                      {isSubmitting ? 'Evaluating...' : 'Submit Answer'}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleSubmitContestChallenge(true)}
+                        disabled={isSubmitting}
+                        className="nm-btn bg-slate-700 hover:bg-slate-650 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                      >
+                        Run Code
+                      </button>
+                      <button
+                        onClick={() => handleSubmitContestChallenge(false)}
+                        disabled={isSubmitting}
+                        className="nm-btn bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+                      >
+                        Submit Answer
+                      </button>
+                    </div>
                   </div>
 
                   <div className="font-mono text-xs h-[120px] overflow-y-auto space-y-2 bg-slate-950 p-3 rounded">
-                    {!testResults && !isSubmitting && <span className="text-slate-500">Submit answer to compile code.</span>}
+                    {!testResults && !isSubmitting && <span className="text-slate-500">Run or submit code to compile.</span>}
                     {isSubmitting && <span className="text-brand-400 animate-pulse">Grading submission...</span>}
                     {testResults && (
                       <div>

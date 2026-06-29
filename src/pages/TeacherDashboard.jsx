@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import { FileText, Users, Award, Percent, ChevronRight, PlusCircle, RefreshCw, Calendar, Trash2, Eye, X } from 'lucide-react';
+import { FileText, Users, Award, Percent, ChevronRight, PlusCircle, RefreshCw, Calendar, Trash2, Eye, X, ArrowLeft, CheckCircle2, XCircle, Copy, Check, FileCode } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Editor from '@monaco-editor/react';
 
 const COLORS = ['#10B981', '#F59E0B', '#EF4444'];
 
@@ -18,10 +19,14 @@ export default function TeacherDashboard() {
   const [selectedItemForAttempts, setSelectedItemForAttempts] = useState(null);
   const [attemptsList, setAttemptsList] = useState([]);
   const [loadingAttempts, setLoadingAttempts] = useState(false);
+  const [selectedAttemptForReview, setSelectedAttemptForReview] = useState(null);
+  const [loadingReview, setLoadingReview] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleViewAttempts = async (type, id, title) => {
     try {
       setLoadingAttempts(true);
+      setSelectedAttemptForReview(null);
       setSelectedItemForAttempts({ type, id, title });
       const endpoint = type === 'quiz' ? `/api/quizzes/${id}/attempts` : `/api/challenges/${id}/attempts`;
       const res = await axios.get(endpoint);
@@ -32,6 +37,34 @@ export default function TeacherDashboard() {
     } finally {
       setLoadingAttempts(false);
     }
+  };
+
+  const handleReviewAttempt = async (type, attempt) => {
+    if (type === 'challenge') {
+      setSelectedAttemptForReview({ type, attempt });
+    } else {
+      try {
+        setLoadingReview(true);
+        const res = await axios.get(`/api/quizzes/attempts/${attempt._id}`);
+        setSelectedAttemptForReview({ type, attempt: res.data.attempt });
+      } catch (err) {
+        alert('Failed to load review: ' + (err.response?.data?.message || err.message));
+      } finally {
+        setLoadingReview(false);
+      }
+    }
+  };
+
+  const handleCopyCode = (code) => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCloseAttemptsModal = () => {
+    setSelectedItemForAttempts(null);
+    setSelectedAttemptForReview(null);
+    setAttemptsList([]);
   };
 
   const fetchData = async () => {
@@ -566,14 +599,20 @@ export default function TeacherDashboard() {
               <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-750 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
                 <div>
                   <h3 className="font-outfit font-bold text-xl text-slate-900 dark:text-white">
-                    Attempts Tracking: {selectedItemForAttempts.title}
+                    {selectedAttemptForReview
+                      ? `Review Submission: ${selectedAttemptForReview.attempt.userId?.name || 'Candidate'}`
+                      : `Attempts Tracking: ${selectedItemForAttempts.title}`
+                    }
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Resource Type: <span className="font-semibold text-brand-600 dark:text-brand-400 uppercase">{selectedItemForAttempts.type === 'quiz' ? 'Quiz Exam' : 'Coding Challenge'}</span>
+                    {selectedAttemptForReview
+                      ? `${selectedItemForAttempts.type === 'quiz' ? 'Quiz Exam' : 'Coding Challenge'} Response Details`
+                      : `Resource Type: ${selectedItemForAttempts.type === 'quiz' ? 'Quiz Exam' : 'Coding Challenge'}`
+                    }
                   </p>
                 </div>
                 <button
-                  onClick={() => setSelectedItemForAttempts(null)}
+                  onClick={handleCloseAttemptsModal}
                   className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
                 >
                   <X className="h-5 w-5" />
@@ -581,14 +620,365 @@ export default function TeacherDashboard() {
               </div>
 
               {/* Body */}
-              <div className="p-6 overflow-y-auto flex-1">
+              <div className="p-6 overflow-y-auto flex-1 bg-slate-50/20 dark:bg-slate-900/10">
                 {loadingAttempts ? (
                   <div className="flex flex-col items-center justify-center py-16">
                     <RefreshCw className="h-10 w-10 text-brand-600 animate-spin mb-4" />
                     <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">Fetching student submissions...</span>
                   </div>
+                ) : loadingReview ? (
+                  <div className="flex flex-col items-center justify-center py-16">
+                    <RefreshCw className="h-10 w-10 text-brand-600 animate-spin mb-4" />
+                    <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">Loading student review...</span>
+                  </div>
+                ) : selectedAttemptForReview ? (
+                  /* Detailed Review Mode */
+                  <div className="flex flex-col h-full space-y-6">
+                    {/* Back Button */}
+                    <div>
+                      <button
+                        onClick={() => setSelectedAttemptForReview(null)}
+                        className="inline-flex items-center gap-1.5 text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold text-sm transition-colors"
+                      >
+                        <ArrowLeft className="h-4 w-4" />
+                        <span>Back to Candidates List</span>
+                      </button>
+                    </div>
+
+                    {selectedAttemptForReview.type === 'quiz' ? (
+                      /* Quiz Attempt Review */
+                      <div className="space-y-6">
+                        {/* Summary Cards */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Candidate</span>
+                            <span className="font-outfit font-bold text-sm text-slate-900 dark:text-white mt-1 block truncate">
+                              {selectedAttemptForReview.attempt.userId?.name || 'N/A'}
+                            </span>
+                          </div>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Score Obtained</span>
+                            <span className="font-outfit font-extrabold text-base text-indigo-600 dark:text-indigo-400 mt-1 block">
+                              {selectedAttemptForReview.attempt.score} / {selectedAttemptForReview.attempt.quizId?.totalMarks || 0} pts
+                            </span>
+                          </div>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Accuracy Rate</span>
+                            <span className="font-outfit font-extrabold text-base text-emerald-600 dark:text-emerald-400 mt-1 block">
+                              {selectedAttemptForReview.attempt.accuracy?.toFixed(1)}%
+                            </span>
+                          </div>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Time Taken</span>
+                            <span className="font-outfit font-semibold text-sm text-slate-800 dark:text-slate-350 mt-1 block">
+                              {Math.floor(selectedAttemptForReview.attempt.timeTaken / 60)}m {selectedAttemptForReview.attempt.timeTaken % 60}s
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Question Breakdown */}
+                        <div className="space-y-4">
+                          <h4 className="font-outfit font-bold text-base dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">
+                            Detailed Question & Response Log
+                          </h4>
+                          {selectedAttemptForReview.attempt.quizId?.questions?.map((q, idx) => {
+                            const studentAns = selectedAttemptForReview.attempt.answers?.find(
+                              (ans) => ans.questionId?.toString() === q._id?.toString()
+                            );
+                            const isCorrect = studentAns?.isCorrect;
+
+                            return (
+                              <div
+                                key={q._id}
+                                className={`nm-card p-5 rounded-2xl border transition-all ${
+                                  isCorrect
+                                    ? 'border-emerald-500/20 dark:border-emerald-500/10 shadow-emerald-50/20 dark:shadow-none'
+                                    : 'border-rose-500/20 dark:border-rose-500/10 shadow-rose-50/20 dark:shadow-none'
+                                }`}
+                              >
+                                {/* Question Header */}
+                                <div className="flex items-start justify-between gap-4 mb-3">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="px-2.5 py-0.5 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-850 dark:text-slate-200">
+                                      Q {idx + 1}
+                                    </span>
+                                    <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded bg-indigo-50 text-indigo-700 dark:bg-indigo-950/30 dark:text-indigo-400">
+                                      {q.questionType?.replace('_', ' ')}
+                                    </span>
+                                    <span className={`px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded ${
+                                      q.difficulty === 'easy' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400' :
+                                      q.difficulty === 'hard' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400' :
+                                      'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400'
+                                    }`}>
+                                      {q.difficulty}
+                                    </span>
+                                    <span className="text-slate-400 dark:text-slate-500 text-xs font-medium">
+                                      Topic: {q.topic || 'General'}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 font-bold text-xs shrink-0">
+                                    {isCorrect ? (
+                                      <span className="text-emerald-600 dark:text-emerald-450 inline-flex items-center gap-1">
+                                        <CheckCircle2 className="h-4 w-4" /> Correct
+                                      </span>
+                                    ) : (
+                                      <span className="text-rose-600 dark:text-rose-450 inline-flex items-center gap-1">
+                                        <XCircle className="h-4 w-4" /> Incorrect
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Question Text */}
+                                <div className="font-outfit font-medium text-slate-900 dark:text-slate-100 text-sm mb-4 leading-relaxed whitespace-pre-line">
+                                  {q.questionText}
+                                </div>
+
+                                {/* Options Mapping */}
+                                {q.questionType === 'mcq' && (
+                                  <div className="grid md:grid-cols-2 gap-3 mb-3">
+                                    {q.options?.map((opt, optIdx) => {
+                                      const isOptCorrect = optIdx === q.correctOption;
+                                      const isOptSelected = optIdx === studentAns?.selectedOption;
+                                      return (
+                                        <div
+                                          key={optIdx}
+                                          className={`p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
+                                            isOptCorrect && isOptSelected
+                                              ? 'bg-emerald-500/10 border-emerald-500 text-emerald-905 dark:text-emerald-250 font-semibold'
+                                              : isOptCorrect
+                                              ? 'bg-emerald-500/5 border-emerald-500/50 text-emerald-800 dark:text-emerald-300 font-semibold'
+                                              : isOptSelected
+                                              ? 'bg-rose-500/10 border-rose-500 text-rose-905 dark:text-rose-250 font-semibold'
+                                              : 'bg-slate-50/50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-350'
+                                          }`}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            <span className="font-mono text-xs text-slate-400">{String.fromCharCode(65 + optIdx)}.</span>
+                                            <span>{opt}</span>
+                                          </div>
+                                          <div className="flex items-center gap-1.5 shrink-0">
+                                            {isOptSelected && (
+                                              <span className="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-350">
+                                                Student Choice
+                                              </span>
+                                            )}
+                                            {isOptCorrect && (
+                                              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-450" />
+                                            )}
+                                            {!isOptCorrect && isOptSelected && (
+                                              <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-455" />
+                                            )}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+
+                                {q.questionType === 'multiple_correct' && (
+                                  <div className="grid md:grid-cols-2 gap-3 mb-3">
+                                    {q.options?.map((opt, optIdx) => {
+                                      const isOptCorrect = q.correctAnswers?.includes(optIdx);
+                                      const isOptSelected = studentAns?.selectedOptions?.includes(optIdx);
+                                      return (
+                                        <div
+                                          key={optIdx}
+                                          className={`p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
+                                            isOptCorrect && isOptSelected
+                                              ? 'bg-emerald-500/10 border-emerald-500 text-emerald-905 dark:text-emerald-250 font-semibold'
+                                              : isOptCorrect
+                                              ? 'bg-emerald-500/5 border-emerald-500/50 text-emerald-800 dark:text-emerald-300 font-semibold'
+                                              : isOptSelected
+                                              ? 'bg-rose-500/10 border-rose-500 text-rose-905 dark:text-rose-250 font-semibold'
+                                              : 'bg-slate-50/50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-350'
+                                          }`}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            <span className="font-mono text-xs text-slate-400">{String.fromCharCode(65 + optIdx)}.</span>
+                                            <span>{opt}</span>
+                                          </div>
+                                          <div className="flex items-center gap-1.5 shrink-0">
+                                            {isOptSelected && (
+                                              <span className="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-350">
+                                                Student Choice
+                                              </span>
+                                            )}
+                                            {isOptCorrect && (
+                                              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-455" />
+                                            )}
+                                            {!isOptCorrect && isOptSelected && (
+                                              <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-455" />
+                                            )}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+
+                                {q.questionType === 'true_false' && (
+                                  <div className="grid grid-cols-2 gap-3 mb-3">
+                                    {[true, false].map((val) => {
+                                      const isValCorrect = val === q.answer;
+                                      const isValSelected = val === studentAns?.booleanAnswer;
+                                      return (
+                                        <div
+                                          key={val.toString()}
+                                          className={`p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
+                                            isValCorrect && isValSelected
+                                              ? 'bg-emerald-500/10 border-emerald-500 text-emerald-905 dark:text-emerald-250 font-semibold'
+                                              : isValCorrect
+                                              ? 'bg-emerald-500/5 border-emerald-500/50 text-emerald-800 dark:text-emerald-300 font-semibold'
+                                              : isValSelected
+                                              ? 'bg-rose-500/10 border-rose-500 text-rose-905 dark:text-rose-250 font-semibold'
+                                              : 'bg-slate-50/50 dark:bg-slate-800/20 border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-350'
+                                          }`}
+                                        >
+                                          <span>{val ? 'True' : 'False'}</span>
+                                          <div className="flex items-center gap-1.5 shrink-0">
+                                            {isValSelected && (
+                                              <span className="text-[9px] px-1.5 py-0.5 rounded font-bold uppercase bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-350">
+                                                Student Choice
+                                              </span>
+                                            )}
+                                            {isValCorrect && (
+                                              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-455" />
+                                            )}
+                                            {!isValCorrect && isValSelected && (
+                                              <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-455" />
+                                            )}
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+
+                                {q.questionType === 'fill_blank' && (
+                                  <div className="space-y-2 mb-3">
+                                    <div className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
+                                      isCorrect
+                                        ? 'bg-emerald-500/5 border-emerald-500/30'
+                                        : 'bg-rose-500/5 border-rose-500/30'
+                                    }`}>
+                                      <span className="text-slate-400 dark:text-slate-500 font-medium">Student's Answer:</span>
+                                      <span className={`font-semibold ${isCorrect ? 'text-emerald-705 dark:text-emerald-400' : 'text-rose-705 dark:text-rose-400'}`}>
+                                        {studentAns?.textAnswer || 'No response'}
+                                      </span>
+                                    </div>
+                                    {!isCorrect && (
+                                      <div className="p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-xs flex items-center gap-2">
+                                        <span className="text-slate-400 dark:text-slate-500 font-medium">Correct Answer:</span>
+                                        <span className="font-semibold text-emerald-705 dark:text-emerald-400">
+                                          {q.correctAnswerText}
+                                        </span>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+
+                                {/* Explanation Panel */}
+                                {q.explanation && (
+                                  <div className="mt-3 text-xs bg-slate-50 dark:bg-slate-800/35 p-3 rounded-xl border border-slate-150 dark:border-slate-750/80 text-slate-500 dark:text-slate-400">
+                                    <span className="font-bold text-slate-700 dark:text-slate-350 block mb-1">Explanation:</span>
+                                    <p className="leading-relaxed">{q.explanation}</p>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : (
+                      /* Coding Challenge Code Review */
+                      <div className="space-y-6 flex flex-col h-full">
+                        {/* Summary Card */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Candidate</span>
+                            <span className="font-outfit font-bold text-sm text-slate-900 dark:text-white mt-1 block truncate">
+                              {selectedAttemptForReview.attempt.userId?.name || 'N/A'}
+                            </span>
+                          </div>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Run Status</span>
+                            <span className={`font-outfit font-extrabold text-sm mt-1 block uppercase tracking-wide ${
+                              selectedAttemptForReview.attempt.status === 'Accepted'
+                                ? 'text-emerald-605 dark:text-emerald-400'
+                                : 'text-rose-605 dark:text-rose-450'
+                            }`}>
+                              {selectedAttemptForReview.attempt.status}
+                            </span>
+                          </div>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Test Cases Passed</span>
+                            <span className="font-outfit font-bold text-sm text-slate-800 dark:text-slate-350 mt-1 block">
+                              {selectedAttemptForReview.attempt.passedCount} / {selectedAttemptForReview.attempt.totalCount}
+                            </span>
+                          </div>
+                          <div className="nm-inset-sm p-4 rounded-xl">
+                            <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Points Awarded</span>
+                            <span className="font-outfit font-extrabold text-base text-indigo-600 dark:text-indigo-400 mt-1 block">
+                              {selectedAttemptForReview.attempt.pointsAwarded} pts
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Solution Code Editor */}
+                        <div className="flex-1 flex flex-col bg-slate-900 border border-slate-700/60 rounded-2xl overflow-hidden min-h-[420px]">
+                          {/* Code Header */}
+                          <div className="flex items-center justify-between px-5 py-3 bg-slate-800 border-b border-slate-700/80">
+                            <div className="flex items-center space-x-2">
+                              <FileCode className="h-4 w-4 text-brand-400" />
+                              <span className="font-mono text-xs text-slate-300">
+                                solution.{selectedAttemptForReview.attempt.language === 'cpp' ? 'cpp' : selectedAttemptForReview.attempt.language === 'java' ? 'java' : selectedAttemptForReview.attempt.language === 'python' ? 'py' : 'js'}
+                              </span>
+                              <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase rounded bg-slate-700 text-slate-300 ml-2">
+                                {selectedAttemptForReview.attempt.language}
+                              </span>
+                            </div>
+                            <button
+                              onClick={() => handleCopyCode(selectedAttemptForReview.attempt.code)}
+                              className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-305 hover:text-white px-2.5 py-1 rounded bg-slate-700/60 hover:bg-slate-700 transition-colors"
+                            >
+                              {copied ? (
+                                <>
+                                  <Check className="h-3 w-3 text-emerald-450" />
+                                  <span>Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="h-3 w-3" />
+                                  <span>Copy Code</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+
+                          {/* Editor Container */}
+                          <div className="flex-grow h-[360px]">
+                            <Editor
+                              height="100%"
+                              language={selectedAttemptForReview.attempt.language === 'cpp' ? 'cpp' : selectedAttemptForReview.attempt.language === 'java' ? 'java' : selectedAttemptForReview.attempt.language === 'python' ? 'python' : 'javascript'}
+                              theme="vs-dark"
+                              value={selectedAttemptForReview.attempt.code}
+                              options={{
+                                readOnly: true,
+                                fontSize: 13,
+                                minimap: { enabled: true },
+                                automaticLayout: true,
+                                scrollBeyondLastLine: false,
+                                padding: { top: 12, bottom: 12 }
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 ) : attemptsList.length === 0 ? (
-                  <div className="text-center py-16 text-slate-500 dark:text-slate-400 bg-slate-50/50 dark:bg-slate-900/10 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                  <div className="text-center py-16 text-slate-550 dark:text-slate-455 mt-1">
                     <Users className="h-10 w-10 mx-auto text-slate-400 mb-3" />
                     <p className="font-medium text-slate-700 dark:text-slate-350">No Submissions Recorded</p>
                     <p className="text-xs text-slate-550 dark:text-slate-455 mt-1">Students have not attempted this {selectedItemForAttempts.type === 'quiz' ? 'quiz' : 'challenge'} yet.</p>
@@ -647,6 +1037,7 @@ export default function TeacherDashboard() {
                               </>
                             )}
                             <th className="px-5 py-3">Attempted At</th>
+                            <th className="px-5 py-3 text-right">Action</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-750">
@@ -662,38 +1053,47 @@ export default function TeacherDashboard() {
                                 {attempt.userId?.college || 'N/A'}
                               </td>
                               {selectedItemForAttempts.type === 'quiz' ? (
-                                <>
-                                  <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-white">
-                                    {attempt.score} pts
-                                  </td>
-                                  <td className="px-5 py-3.5 text-brand-600 dark:text-brand-400 font-semibold">
-                                    {attempt.accuracy?.toFixed(1)}%
-                                  </td>
-                                  <td className="px-5 py-3.5 text-slate-550 dark:text-slate-450 font-medium">
-                                    {Math.floor(attempt.timeTaken / 60)}m {attempt.timeTaken % 60}s
-                                  </td>
-                                </>
+                                  <>
+                                    <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-white">
+                                      {attempt.score} pts
+                                    </td>
+                                    <td className="px-5 py-3.5 text-brand-600 dark:text-brand-400 font-semibold">
+                                      {attempt.accuracy?.toFixed(1)}%
+                                    </td>
+                                    <td className="px-5 py-3.5 text-slate-550 dark:text-slate-450 font-medium">
+                                      {Math.floor(attempt.timeTaken / 60)}m {attempt.timeTaken % 60}s
+                                    </td>
+                                  </>
                               ) : (
-                                <>
-                                  <td className="px-5 py-3.5">
-                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${
-                                      attempt.status === 'Accepted'
-                                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-105 dark:border-emerald-900/30'
-                                        : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-105 dark:border-rose-900/30'
-                                    }`}>
-                                      {attempt.status}
-                                    </span>
-                                  </td>
-                                  <td className="px-5 py-3.5 font-semibold text-slate-800 dark:text-slate-300">
-                                    {attempt.passedCount} / {attempt.totalCount}
-                                  </td>
-                                  <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-white">
-                                    {attempt.pointsAwarded} pts
-                                  </td>
-                                </>
+                                  <>
+                                    <td className="px-5 py-3.5">
+                                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${
+                                        attempt.status === 'Accepted'
+                                          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-105 dark:border-emerald-900/30'
+                                          : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-105 dark:border-rose-900/30'
+                                      }`}>
+                                        {attempt.status}
+                                      </span>
+                                    </td>
+                                    <td className="px-5 py-3.5 font-semibold text-slate-800 dark:text-slate-300">
+                                      {attempt.passedCount} / {attempt.totalCount}
+                                    </td>
+                                    <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-white">
+                                      {attempt.pointsAwarded} pts
+                                    </td>
+                                  </>
                               )}
                               <td className="px-5 py-3.5 text-slate-500 dark:text-slate-400 text-xs">
                                 {new Date(attempt.submittedAt || attempt.createdAt).toLocaleString()}
+                              </td>
+                              <td className="px-5 py-3.5 text-right">
+                                <button
+                                  onClick={() => handleReviewAttempt(selectedItemForAttempts.type, attempt)}
+                                  className="inline-flex items-center gap-1 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-indigo-600 dark:text-indigo-400"
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                  <span>Review</span>
+                                </button>
                               </td>
                             </tr>
                           ))}
@@ -705,9 +1105,17 @@ export default function TeacherDashboard() {
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-705 flex justify-end bg-slate-50 dark:bg-slate-900/50">
+              <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-705 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900/50">
+                {selectedAttemptForReview && (
+                  <button
+                    onClick={() => setSelectedAttemptForReview(null)}
+                    className="nm-btn font-semibold text-xs px-5 py-2.5 rounded-xl text-slate-750 dark:text-slate-300"
+                  >
+                    Back to List
+                  </button>
+                )}
                 <button
-                  onClick={() => setSelectedItemForAttempts(null)}
+                  onClick={handleCloseAttemptsModal}
                   className="nm-btn-primary font-semibold text-xs px-5 py-2.5 rounded-xl"
                 >
                   Close Panel
