@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
+import CameraStartConfirmation from '../components/CameraStartConfirmation.jsx';
 import { Clock, CheckSquare, ArrowLeft, ArrowRight, HelpCircle, Save, AlertTriangle } from 'lucide-react';
 
 export default function QuizAttempt() {
@@ -16,6 +17,7 @@ export default function QuizAttempt() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedResult, setSubmittedResult] = useState(null);
   const [violationCount, setViolationCount] = useState(0);
+  const [confirmed, setConfirmed] = useState(false);
   
   const timerRef = useRef(null);
 
@@ -50,8 +52,8 @@ export default function QuizAttempt() {
 
   // Timer countdown and Auto-submit
   useEffect(() => {
-    if (loading || !quiz || timeLeft <= 0) {
-      if (timeLeft === 0 && quiz) {
+    if (loading || !quiz || timeLeft <= 0 || !confirmed) {
+      if (timeLeft === 0 && quiz && confirmed) {
         handleAutoSubmit();
       }
       return;
@@ -62,7 +64,7 @@ export default function QuizAttempt() {
     }, 1000);
 
     return () => clearInterval(timerRef.current);
-  }, [loading, quiz, timeLeft]);
+  }, [loading, quiz, timeLeft, confirmed]);
 
   const handleAutoSubmit = () => {
     alert('TIMEOUT: Quiz duration elapsed. Auto-submitting details...');
@@ -139,6 +141,17 @@ export default function QuizAttempt() {
         <Clock className="h-10 w-10 text-slate-300 mx-auto animate-spin mb-2" />
         <span className="text-slate-400">Loading quiz environment...</span>
       </div>
+    );
+  }
+
+  if (!confirmed) {
+    return (
+      <CameraStartConfirmation 
+        title={`Start Quiz: ${quiz?.title || 'Loading...'}`}
+        subtitle={`Category: ${quiz?.category || '--'} | Duration: ${quiz?.duration || '--'} mins | Marks: ${quiz?.totalMarks || '--'}`}
+        onConfirm={() => setConfirmed(true)}
+        onCancel={() => navigate('/quizzes')}
+      />
     );
   }
 

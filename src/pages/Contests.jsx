@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import MonacoEditor, { LANGUAGE_TEMPLATES } from '../components/MonacoEditor.jsx';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
+import CameraStartConfirmation from '../components/CameraStartConfirmation.jsx';
 import { initiateSocketConnection, disconnectSocket, subscribeToContestLeaderboard, unsubscribeFromContestLeaderboard } from '../services/socketService.js';
 import { Calendar, Users, Trophy, Play, Clock, Terminal, ChevronRight, BookOpen, CheckSquare, Save, ArrowLeft, ArrowRight, Download } from 'lucide-react';
 
@@ -20,6 +21,7 @@ export default function Contests() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState(null);
   const [violationCount, setViolationCount] = useState(0);
+  const [contestConfirmed, setContestConfirmed] = useState(false);
 
   // Quiz states
   const [activeQuiz, setActiveQuiz] = useState(null);
@@ -58,6 +60,7 @@ export default function Contests() {
   const handleJoinContest = async (contestId) => {
     try {
       setLoading(true);
+      setContestConfirmed(false);
       await axios.post(`/api/contests/${contestId}/join`);
       
       // Load details
@@ -209,6 +212,7 @@ export default function Contests() {
       unsubscribeFromContestLeaderboard(activeContest._id, user.id);
     }
     setActiveContest(null);
+    setContestConfirmed(false);
     setActiveChallenge(null);
     setActiveQuiz(null);
     setLeaderboard([]);
@@ -254,6 +258,20 @@ export default function Contests() {
         <Clock className="h-10 w-10 text-slate-300 mx-auto animate-spin mb-2" />
         <span className="text-slate-400">Loading contest environment...</span>
       </div>
+    );
+  }
+
+  // Workspace Confirmation Page
+  if (activeContest && !contestConfirmed) {
+    return (
+      <CameraStartConfirmation
+        title={`Enter Contest: ${activeContest.title}`}
+        subtitle={`Proctored Arena | Ends: ${new Date(activeContest.endTime).toLocaleString()}`}
+        onConfirm={() => setContestConfirmed(true)}
+        onCancel={() => {
+          handleLeaveContestWorkspace();
+        }}
+      />
     );
   }
 

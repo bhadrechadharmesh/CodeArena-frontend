@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MonacoEditor, { LANGUAGE_TEMPLATES } from '../components/MonacoEditor.jsx';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
+import CameraStartConfirmation from '../components/CameraStartConfirmation.jsx';
 import { Code2, Play, Terminal, HelpCircle, AlertCircle, Award, CheckCircle } from 'lucide-react';
 
 export default function CodingChallenges() {
@@ -16,6 +17,7 @@ export default function CodingChallenges() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [testResults, setTestResults] = useState(null);
   const [violationCount, setViolationCount] = useState(0);
+  const [challengeConfirmed, setChallengeConfirmed] = useState(false);
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -38,6 +40,7 @@ export default function CodingChallenges() {
   const handleSelectChallenge = async (id) => {
     try {
       setLoading(true);
+      setChallengeConfirmed(false);
       const res = await axios.get(`/api/challenges/${id}`);
       const challenge = res.data.challenge;
       setActiveChallenge(challenge);
@@ -82,6 +85,7 @@ export default function CodingChallenges() {
       alert('CHALLENGE TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your code is being submitted automatically.');
       handleSubmitCode(false).then(() => {
         setActiveChallenge(null);
+        setChallengeConfirmed(false);
       });
     }
   }, [violationCount, activeChallenge]);
@@ -92,6 +96,21 @@ export default function CodingChallenges() {
         <Code2 className="h-10 w-10 text-slate-300 mx-auto animate-spin mb-2" />
         <span className="text-slate-400">Loading coding environment...</span>
       </div>
+    );
+  }
+
+  // Workspace Confirmation Page
+  if (activeChallenge && !challengeConfirmed) {
+    return (
+      <CameraStartConfirmation
+        title={`Start Challenge: ${activeChallenge.title}`}
+        subtitle={`Difficulty: ${activeChallenge.difficulty.toUpperCase()} | Supported Languages: ${activeChallenge.supportedLanguages.join(', ')}`}
+        onConfirm={() => setChallengeConfirmed(true)}
+        onCancel={() => {
+          setActiveChallenge(null);
+          setChallengeConfirmed(false);
+        }}
+      />
     );
   }
 
@@ -107,7 +126,10 @@ export default function CodingChallenges() {
 
         {/* Back navigation */}
         <button
-          onClick={() => setActiveChallenge(null)}
+          onClick={() => {
+            setActiveChallenge(null);
+            setChallengeConfirmed(false);
+          }}
           className="text-brand-600 hover:text-brand-700 font-semibold text-sm mb-4 inline-flex items-center gap-1"
         >
           &larr; Back to Challenges
