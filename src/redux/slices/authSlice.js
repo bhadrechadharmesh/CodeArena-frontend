@@ -110,6 +110,36 @@ export const resendOtpThunk = (email) => async (dispatch) => {
   }
 };
 
+export const forgotPasswordThunk = (email) => async () => {
+  try {
+    const res = await axios.post('/api/auth/forgot-password', { email });
+    return { success: true, message: res.data.message };
+  } catch (err) {
+    const errMsg = err.response?.data?.message || 'Failed to send OTP';
+    return { success: false, error: errMsg };
+  }
+};
+
+export const verifyResetOtpThunk = (email, otp) => async () => {
+  try {
+    const res = await axios.post('/api/auth/verify-reset-otp', { email, otp });
+    return { success: true, message: res.data.message };
+  } catch (err) {
+    const errMsg = err.response?.data?.message || 'Invalid or expired OTP';
+    return { success: false, error: errMsg };
+  }
+};
+
+export const resetPasswordThunk = (email, otp, newPassword) => async () => {
+  try {
+    const res = await axios.post('/api/auth/reset-password', { email, otp, newPassword });
+    return { success: true, message: res.data.message };
+  } catch (err) {
+    const errMsg = err.response?.data?.message || 'Failed to reset password';
+    return { success: false, error: errMsg };
+  }
+};
+
 export const getMeThunk = () => async (dispatch) => {
   try {
     const res = await axios.get('/api/auth/me');

@@ -7,6 +7,7 @@ import Home from '../pages/Home.jsx';
 import Login from '../pages/Login.jsx';
 import Register from '../pages/Register.jsx';
 import OTPVerify from '../pages/OTPVerify.jsx';
+import ForgotPassword from '../pages/ForgotPassword.jsx';
 import OAuthCallback from '../pages/OAuthCallback.jsx';
 import About from '../pages/About.jsx';
 import StudentDashboard from '../pages/StudentDashboard.jsx';
@@ -53,6 +54,7 @@ export default function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/verify-otp" element={<OTPVerify />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/auth/callback" element={<OAuthCallback />} />
       <Route path="/about" element={<About />} />
 
