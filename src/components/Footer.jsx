@@ -24,13 +24,13 @@ export default function Footer() {
 
           {/* Socials */}
           <div className="flex space-x-4">
-            <a href="#" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
+            <a href="https://github.com/bhadrechadharmesh" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
               <Github className="h-4 w-4" />
             </a>
-            <a href="#" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
+            <a href="https://x.com/dharmesh1729647" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
               <Twitter className="h-4 w-4" />
             </a>
-            <a href="#" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
+            <a href="https://www.linkedin.com/in/dharmesh-bhadrecha-45396b308/" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
               <Linkedin className="h-4 w-4" />
             </a>
           </div>
