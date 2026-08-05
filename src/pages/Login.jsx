@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { Chrome, Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Chrome, Lock, Mail, AlertCircle, ArrowRight, Info } from 'lucide-react';
 import { loginUserThunk } from '../redux/slices/authSlice.js';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validationErr, setValidationErr] = useState('');
+  const [searchParams] = useSearchParams();
+  const [statusMsg, setStatusMsg] = useState('');
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, isAuthenticated, user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    const errorParam = searchParams.get('error');
+    const statusParam = searchParams.get('status');
+    if (errorParam === 'pending_approval') {
+      setValidationErr('Your teacher account is pending admin approval. Please check back later.');
+    }
+    if (statusParam === 'pending_approval') {
+      setStatusMsg('Email verified successfully! However, your teacher account is pending admin approval. You can log in once approved.');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -51,6 +64,14 @@ export default function Login() {
           <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Welcome Back</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Log in to access your dashboard and competitions</p>
         </div>
+
+        {/* Status Message */}
+        {statusMsg && (
+          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl mb-6 flex items-start gap-2 text-sm">
+            <Info className="h-5 w-5 shrink-0 text-emerald-500" />
+            <span>{statusMsg}</span>
+          </div>
+        )}
 
         {/* Errors */}
         {(error || validationErr) && (

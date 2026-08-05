@@ -100,7 +100,10 @@ export default function OTPVerify() {
 
     const res = await dispatch(verifyOtpThunk({ email, otp: otpCode }));
     if (res.success) {
-      // Redirect happens in useEffect on authentication success
+      if (res.requiresApproval) {
+        navigate('/login?status=pending_approval');
+      }
+      // Otherwise, standard redirects will be handled by useEffect on isAuthenticated
     }
   };
 

@@ -91,6 +91,10 @@ export const verifyOtpThunk = (verifyData) => async (dispatch) => {
   dispatch(authStart());
   try {
     const res = await axios.post('/api/auth/verify-otp', verifyData);
+    if (res.data.requiresApproval) {
+      dispatch(authFailure(null));
+      return { success: true, requiresApproval: true, message: res.data.message };
+    }
     dispatch(authSuccess(res.data));
     return { success: true };
   } catch (err) {

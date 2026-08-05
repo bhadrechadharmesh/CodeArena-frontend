@@ -1,26 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { ShieldAlert, Users, FolderCheck, CalendarRange, EyeOff, Trash2, Ban } from 'lucide-react';
+import { ShieldAlert, Users, FolderCheck, CalendarRange, EyeOff, Trash2, Ban, UserCheck, UserX, CheckCircle, Clock } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
   const [violations, setViolations] = useState([]);
+  const [teachers, setTeachers] = useState([]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [analyticsRes, violationsRes] = await Promise.all([
+      const [analyticsRes, violationsRes, teachersRes] = await Promise.all([
         axios.get('/api/analytics/admin'),
-        axios.get('/api/violations')
+        axios.get('/api/violations'),
+        axios.get('/api/auth/admin/teachers')
       ]);
       setAnalytics(analyticsRes.data);
       setViolations(violationsRes.data.violations);
+      setTeachers(teachersRes.data.teachers);
     } catch (err) {
       console.error('Failed to load admin dashboard:', err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleApproveTeacher = async (teacherId, currentApprovedStatus) => {
+    try {
+      const res = await axios.put(`/api/auth/admin/teachers/${teacherId}/approve`, {
+        isApproved: !currentApprovedStatus
+      });
+      if (res.data.success) {
+        setTeachers(prev =>
+          prev.map(t => (t._id === teacherId ? { ...t, isApproved: !currentApprovedStatus } : t))
+        );
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to update approval status');
     }
   };
 
@@ -179,6 +197,97 @@ export default function AdminDashboard() {
                         <Ban className="h-3.5 w-3.5" />
                         <span>Warn</span>
                       </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Teacher Approvals Section */}
+      <div className="nm-card rounded-2xl overflow-hidden mt-8 mb-8">
+        <div className="px-6 py-4 border-b border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center">
+          <div>
+            <h3 className="font-outfit font-semibold text-lg dark:text-white">Teacher Registration Approvals</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Review and approve teacher accounts to grant access</p>
+          </div>
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 dark:bg-brand-950/30 dark:text-brand-400">
+            {teachers.filter(t => !t.isApproved).length} Pending
+          </span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                <th className="px-6 py-3">Teacher</th>
+                <th className="px-6 py-3">Email</th>
+                <th className="px-6 py-3">College</th>
+                <th className="px-6 py-3">Email Status</th>
+                <th className="px-6 py-3">Approval Status</th>
+                <th className="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700 text-sm">
+              {teachers.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-slate-400">
+                    No teachers registered on the platform yet.
+                  </td>
+                </tr>
+              ) : (
+                teachers.map((teacher) => (
+                  <tr key={teacher._id} className="hover:bg-slate-50/55 dark:hover:bg-slate-700/30">
+                    <td className="px-6 py-4 font-semibold text-slate-900 dark:text-white">
+                      {teacher.name}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
+                      {teacher.email}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
+                      {teacher.college || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4">
+                      {teacher.isVerified ? (
+                        <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                          <CheckCircle className="h-3.5 w-3.5" /> Verified
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-amber-500 dark:text-amber-400 text-xs font-semibold">
+                          <Clock className="h-3.5 w-3.5" /> Unverified
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      {teacher.isApproved ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400">
+                          Approved
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                          Pending Approval
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      {teacher.isApproved ? (
+                        <button
+                          onClick={() => handleApproveTeacher(teacher._id, true)}
+                          className="inline-flex items-center gap-1 nm-btn font-bold text-xs px-2.5 py-1.5 rounded text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20"
+                        >
+                          <UserX className="h-3.5 w-3.5" />
+                          <span>Revoke</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleApproveTeacher(teacher._id, false)}
+                          className="inline-flex items-center gap-1 nm-btn font-bold text-xs px-2.5 py-1.5 rounded text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+                        >
+                          <UserCheck className="h-3.5 w-3.5" />
+                          <span>Approve</span>
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))
