@@ -59,10 +59,11 @@ export default function Login() {
 
   return (
     <div className="max-w-md mx-auto my-16 px-4">
-      <div className="nm-card p-8 rounded-3xl">
+      <div className="nm-card p-8">
         <div className="text-center mb-8">
-          <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Welcome Back</h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Log in to access your dashboard and competitions</p>
+          <p className="font-mono text-[11px] uppercase tracking-[.15em] text-[var(--muted)] mb-4">Member access</p>
+          <h2 className="font-outfit font-semibold text-3xl text-slate-900 dark:text-white tracking-tight">Welcome back.</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Pick up where you left off.</p>
         </div>
 
         {/* Status Message */}

@@ -38,13 +38,13 @@ export default function Leaderboards() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="text-center mb-8">
-        <div className="nm-inset p-3 rounded-full w-fit mx-auto text-amber-500 mb-2 flex items-center justify-center">
-          <Trophy className="h-8 w-8" />
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+      <div className="mb-8 border-b border-[var(--line)] pb-7">
+        <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-3">Global standings</p>
+        <div className="flex items-end justify-between gap-6">
+          <div><h1 className="font-outfit font-semibold text-4xl tracking-[-.04em] dark:text-white">Rankings.</h1><p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Points earned across quizzes, challenges, and contests.</p></div>
+          <Trophy className="h-8 w-8 text-[var(--accent-dark)] hidden sm:block" />
         </div>
-        <h1 className="font-outfit font-extrabold text-3xl dark:text-white">Global Leaderboard</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Standings of elite software engineers and code competitors</p>
       </div>
 
       {/* Search Filter */}
@@ -60,7 +60,7 @@ export default function Leaderboards() {
       </div>
 
       {/* Board */}
-      <div className="nm-card rounded-2xl overflow-hidden">
+      <div className="nm-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>

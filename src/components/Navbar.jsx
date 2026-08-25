@@ -1,184 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { Sun, Moon, LogOut, Menu, X, Trophy, Code2, ShieldAlert } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Menu, Moon, Sun, X, LogOut } from 'lucide-react';
 import { logout } from '../redux/slices/authSlice.js';
+
+const roleLinks = {
+  student: [['/student-dashboard', 'Overview'], ['/quizzes', 'Quizzes'], ['/challenges', 'Challenges'], ['/contests', 'Contests'], ['/leaderboards', 'Rankings']],
+  teacher: [['/teacher-dashboard', 'Overview'], ['/create-challenge', 'New challenge'], ['/create-quiz', 'New quiz'], ['/create-contest', 'Schedule']],
+  admin: [['/admin-dashboard', 'Admin panel']],
+};
 
 export default function Navbar() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch = useDispatch(); const navigate = useNavigate(); const location = useLocation();
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  useEffect(() => { document.documentElement.classList.toggle('dark', theme === 'dark'); localStorage.setItem('theme', theme); }, [theme]);
+  const links = isAuthenticated ? (roleLinks[user?.role] || []) : [['/about', 'About']];
+  const signOut = () => { dispatch(logout()); navigate('/login'); setOpen(false); };
+  const active = (path) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
 
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
-  };
-
-  return (
-    <nav className="sticky top-0 z-50 bg-white/90 dark:bg-darkbg-card/90 backdrop-blur-md border-b border-slate-200/30 dark:border-slate-800/30 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.4)] transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="bg-gradient-to-tr from-indigo-650 to-blue-500 p-2 rounded-lg text-white">
-              <Code2 className="h-6 w-6" />
-            </div>
-            <span className="font-outfit font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-650 to-indigo-550 bg-clip-text text-transparent">
-              CODEARENA
-            </span>
-          </Link>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Home</Link>
-            <Link to="/about" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">About</Link>
-            
-            {isAuthenticated && (
-              <>
-                {user.role === 'student' && (
-                  <>
-                    <Link to="/student-dashboard" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Dashboard</Link>
-                    <Link to="/quizzes" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Quizzes</Link>
-                    <Link to="/challenges" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Coding</Link>
-                    <Link to="/contests" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Contests</Link>
-                    <Link to="/leaderboards" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Leaderboard</Link>
-                  </>
-                )}
-                {user.role === 'teacher' && (
-                  <>
-                    <Link to="/teacher-dashboard" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Dashboard</Link>
-                    <Link to="/create-challenge" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Create Challenge</Link>
-                    <Link to="/create-quiz" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Create Quiz</Link>
-                    <Link to="/create-contest" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Schedule Contest</Link>
-                  </>
-                )}
-                {user.role === 'admin' && (
-                  <>
-                    <Link to="/admin-dashboard" className="text-slate-600 dark:text-slate-300 hover:text-brand-500 font-medium px-3 py-2 rounded-md text-sm transition-colors">Admin Panel</Link>
-                  </>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Action buttons */}
-          <div className="hidden md:flex items-center space-x-3">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 nm-btn transition-colors"
-              aria-label="Toggle Theme"
-            >
-              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </button>
-
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
-                <Link to="/profile" className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm">
-                    {user.avatar ? (
-                      <img src={user.avatar} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
-                    ) : (
-                      user.name.charAt(0)
-                    )}
-                  </div>
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{user.name}</span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center space-x-1 text-red-500 hover:text-red-600 font-medium text-sm px-3 py-2 nm-btn rounded-xl transition-all"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Link to="/login" className="text-slate-600 dark:text-slate-350 hover:text-brand-500 font-medium text-sm px-4 py-2 nm-btn rounded-xl">Login</Link>
-                <Link to="/register" className="nm-btn-primary font-medium text-sm px-4 py-2 rounded-xl flex items-center justify-center">Register</Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center space-x-2">
-            <button onClick={toggleTheme} className="p-2 text-slate-500 dark:text-slate-400">
-              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </button>
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-slate-500 dark:text-slate-400 focus:outline-none"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
-        </div>
+  return <nav className="sticky top-0 z-50 border-b border-[var(--line)]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="h-[72px] flex items-center justify-between gap-6">
+      <Link to="/" className="flex items-center gap-3 shrink-0" onClick={() => setOpen(false)}><span className="w-8 h-8 bg-[var(--accent)] text-[#181a1b] grid place-items-center font-bold text-sm">CA</span><span className="font-bold tracking-[-0.04em] text-lg">codearena<span className="text-[#9dbf25]">.</span></span></Link>
+      <div className="hidden md:flex items-center gap-1 flex-1">{links.map(([path, label]) => <Link key={path} to={path} className={`px-3 py-2 text-sm font-medium ${active(path) ? 'text-[var(--ink)]' : 'text-[var(--muted)] hover:text-[var(--ink)]'}`}><span className={active(path) ? 'border-b-2 border-[var(--accent-dark)] pb-1' : ''}>{label}</span></Link>)}</div>
+      <div className="hidden md:flex items-center gap-3">
+        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="p-2 text-[var(--muted)] hover:text-[var(--ink)]" aria-label="Toggle theme">{theme === 'light' ? <Moon size={17}/> : <Sun size={17}/>}</button>
+        {isAuthenticated ? <><Link to="/profile" className="flex items-center gap-2 text-sm font-medium"><span className="w-8 h-8 rounded-full bg-[var(--ink)] text-[var(--surface)] grid place-items-center text-xs">{user?.name?.charAt(0)?.toUpperCase()}</span><span className="max-w-[120px] truncate">{user?.name}</span></Link><button onClick={signOut} className="text-[var(--muted)] hover:text-red-600 p-2" title="Log out"><LogOut size={17}/></button></> : <><Link to="/login" className="text-sm font-medium text-[var(--muted)] hover:text-[var(--ink)]">Log in</Link><Link to="/register" className="nm-btn-primary text-sm font-semibold px-4 py-2">Create account</Link></>}
       </div>
-
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white dark:bg-darkbg-card border-t border-slate-100 dark:border-slate-800 transition-all duration-200">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link to="/" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Home</Link>
-            <Link to="/about" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">About</Link>
-
-            {isAuthenticated ? (
-              <>
-                {user.role === 'student' && (
-                  <>
-                    <Link to="/student-dashboard" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Dashboard</Link>
-                    <Link to="/quizzes" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Quizzes</Link>
-                    <Link to="/challenges" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Coding</Link>
-                    <Link to="/contests" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Contests</Link>
-                    <Link to="/leaderboards" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Leaderboard</Link>
-                  </>
-                )}
-                {user.role === 'teacher' && (
-                  <>
-                    <Link to="/teacher-dashboard" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Dashboard</Link>
-                    <Link to="/create-challenge" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Create Challenge</Link>
-                    <Link to="/create-quiz" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Create Quiz</Link>
-                    <Link to="/create-contest" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Schedule Contest</Link>
-                  </>
-                )}
-                {user.role === 'admin' && (
-                  <Link to="/admin-dashboard" onClick={() => setIsOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-200">Admin Panel</Link>
-                )}
-                <div className="border-t border-slate-100 dark:border-slate-800 my-2 pt-2">
-                  <div className="flex items-center px-3 py-2">
-                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{user.name}</span>
-                  </div>
-                  <button
-                    onClick={() => { setIsOpen(false); handleLogout(); }}
-                    className="block w-full text-left px-3 py-2 text-red-500 font-medium"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <Link to="/login" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-center text-slate-700 dark:text-slate-200 font-medium">Login</Link>
-                <Link to="/register" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-center bg-brand-600 hover:bg-brand-700 text-white rounded-md font-medium">Register</Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </nav>
-  );
+      <div className="md:hidden flex items-center gap-2"><button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="p-2 text-[var(--muted)]">{theme === 'light' ? <Moon size={18}/> : <Sun size={18}/>}</button><button onClick={() => setOpen(!open)} className="p-2 text-[var(--ink)]">{open ? <X size={21}/> : <Menu size={21}/>}</button></div>
+    </div></div>
+    {open && <div className="md:hidden border-t border-[var(--line)] px-4 py-3 bg-[var(--surface)]">{links.map(([path,label]) => <Link key={path} to={path} onClick={() => setOpen(false)} className="block py-3 text-sm font-medium border-b border-[var(--line)]">{label}</Link>)}{isAuthenticated ? <button onClick={signOut} className="py-3 text-sm text-red-600">Log out</button> : <Link to="/login" onClick={() => setOpen(false)} className="block py-3 text-sm">Log in</Link>}</div>}
+  </nav>;
 }

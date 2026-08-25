@@ -76,12 +76,13 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Welcome */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-outfit font-extrabold text-3xl dark:text-white">Welcome, {user?.name}!</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Track your performance and attempt coding challenges</p>
+          <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-3">Student overview</p>
+          <h1 className="font-outfit font-semibold text-4xl tracking-[-.04em] dark:text-white">Good to see you, {user?.name}.</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Your recent work, progress, and next steps.</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <Link
@@ -112,8 +113,8 @@ export default function StudentDashboard() {
       </div>
 
       {/* Metrics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[var(--line)] border border-[var(--line)] mb-8">
+        <div className="bg-[var(--surface)] p-6 flex items-center gap-4">
           <div className="p-3 nm-inset-sm rounded-xl text-brand-600 dark:text-brand-400">
             <Trophy className="h-6 w-6" />
           </div>
@@ -123,7 +124,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
+        <div className="bg-[var(--surface)] p-6 flex items-center gap-4">
           <div className="p-3 nm-inset-sm rounded-xl text-orange-500">
             <Zap className="h-6 w-6" />
           </div>
@@ -133,7 +134,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
+        <div className="bg-[var(--surface)] p-6 flex items-center gap-4">
           <div className="p-3 nm-inset-sm rounded-xl text-emerald-500">
             <Target className="h-6 w-6" />
           </div>
@@ -143,7 +144,7 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
+        <div className="bg-[var(--surface)] p-6 flex items-center gap-4">
           <div className="p-3 nm-inset-sm rounded-xl text-indigo-500">
             <Award className="h-6 w-6" />
           </div>
@@ -155,33 +156,33 @@ export default function StudentDashboard() {
       </div>
 
       {/* Visual Graphs */}
-      <div className="grid md:grid-cols-2 gap-8 mb-8">
+      <div className="grid md:grid-cols-2 gap-px bg-[var(--line)] border border-[var(--line)] mb-8">
         {/* Line Chart */}
-        <div className="nm-card p-6 rounded-2xl">
-          <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Weekly Progress (Scores)</h3>
+        <div className="bg-[var(--surface)] p-6">
+          <div className="flex items-start justify-between mb-5"><div><p className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--muted)]">Last 7 days</p><h3 className="font-outfit font-semibold text-lg dark:text-white mt-1">Score trend</h3></div><span className="w-2 h-2 bg-[var(--accent)] mt-1" /></div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={analytics?.weeklyProgress || []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
-                <Tooltip />
-                <Line type="monotone" dataKey="score" stroke="#f43f5e" strokeWidth={3} dot={{ r: 4 }} />
+                <CartesianGrid vertical={false} stroke="var(--line)" strokeDasharray="2 5" />
+                <XAxis dataKey="name" stroke="#7c867e" fontSize={10} tickLine={false} axisLine={false} />
+                <YAxis stroke="#7c867e" fontSize={10} tickLine={false} axisLine={false} width={28} />
+                <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 0, fontSize: 11 }} cursor={{ stroke: 'var(--line)' }} />
+                <Line type="monotone" dataKey="score" stroke="var(--ink)" strokeWidth={2.5} dot={{ r: 3, fill: 'var(--accent)', stroke: 'var(--ink)', strokeWidth: 1.5 }} activeDot={{ r: 5, fill: 'var(--accent)', stroke: 'var(--ink)' }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Radar Chart */}
-        <div className="nm-card p-6 rounded-2xl">
-          <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Topic Performance</h3>
+        <div className="bg-[var(--surface)] p-6">
+          <div className="flex items-start justify-between mb-5"><div><p className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--muted)]">By subject</p><h3 className="font-outfit font-semibold text-lg dark:text-white mt-1">Topic performance</h3></div><span className="text-[10px] font-mono text-[var(--muted)]">0–100</span></div>
           <div className="h-64 flex justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={analytics?.topicPerformance || []}>
-                <PolarGrid stroke="#e2e8f0" />
-                <PolarAngleAxis dataKey="subject" stroke="#94a3b8" fontSize={11} />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} fontSize={9} />
-                <Radar name="Student A" dataKey="A" stroke="#f43f5e" fill="#f43f5e" fillOpacity={0.4} />
+                <PolarGrid stroke="var(--line)" />
+                <PolarAngleAxis dataKey="subject" stroke="#7c867e" fontSize={10} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} fontSize={9} stroke="#7c867e" />
+                <Radar name="Your score" dataKey="A" stroke="var(--ink)" fill="var(--accent)" fillOpacity={0.65} strokeWidth={2} />
               </RadarChart>
             </ResponsiveContainer>
           </div>

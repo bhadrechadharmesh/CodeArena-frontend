@@ -72,9 +72,10 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="font-outfit font-extrabold text-3xl dark:text-white mb-2">Platform Administration</h1>
-      <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 font-medium">Moderate proctor audits and track platform registrations</p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-3">System overview</p>
+      <h1 className="font-outfit font-semibold text-4xl tracking-[-.04em] dark:text-white mb-2">Platform operations.</h1>
+      <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Review access, activity, and proctoring events.</p>
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
@@ -131,15 +132,15 @@ export default function AdminDashboard() {
 
       {/* Growth Charts */}
       <div className="nm-card p-6 rounded-2xl mb-8">
-        <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Monthly Platform Growth</h3>
+        <div className="flex items-start justify-between mb-5"><div><p className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--muted)]">Registration activity</p><h3 className="font-outfit font-semibold text-lg dark:text-white mt-1">Platform growth</h3></div><span className="text-[10px] font-mono text-[var(--muted)]">Monthly</span></div>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={analytics?.growthData || []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} />
-              <YAxis stroke="#94a3b8" fontSize={11} />
-              <Tooltip />
-              <Bar dataKey="users" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+              <CartesianGrid vertical={false} stroke="var(--line)" strokeDasharray="2 5" />
+              <XAxis dataKey="month" stroke="#7c867e" fontSize={10} tickLine={false} axisLine={false} />
+              <YAxis stroke="#7c867e" fontSize={10} tickLine={false} axisLine={false} width={28} />
+              <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 0, fontSize: 11 }} cursor={{ fill: 'var(--canvas)' }} />
+              <Bar dataKey="users" fill="var(--ink)" radius={[0, 0, 0, 0]} barSize={22} />
             </BarChart>
           </ResponsiveContainer>
         </div>

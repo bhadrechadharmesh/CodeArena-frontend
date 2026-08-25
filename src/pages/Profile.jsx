@@ -37,9 +37,10 @@ export default function Profile() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="font-outfit font-extrabold text-3xl dark:text-white mb-2">My Profile</h1>
-      <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Update your personal portfolio details and academic credentials</p>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+      <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-3">Account</p>
+      <h1 className="font-outfit font-semibold text-4xl tracking-[-.04em] dark:text-white mb-2">Profile settings.</h1>
+      <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Manage the details shown on your CodeArena account.</p>
 
       {successMsg && (
         <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl mb-6 flex items-center gap-2 text-sm font-semibold">
@@ -48,9 +49,9 @@ export default function Profile() {
         </div>
       )}
 
-      <div className="grid md:grid-cols-3 gap-6 items-start">
+      <div className="grid md:grid-cols-[260px_1fr] gap-6 items-start">
         {/* Left Stats column */}
-        <div className="nm-card p-6 rounded-2xl text-center">
+        <div className="nm-card p-6 text-center">
           <div className="w-20 h-20 nm-inset-sm text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 uppercase">
             {user?.name.charAt(0)}
           </div>
@@ -74,7 +75,7 @@ export default function Profile() {
         </div>
 
         {/* Right Form column */}
-        <div className="md:col-span-2 nm-card p-6 rounded-2xl">
+        <div className="nm-card p-6">
           <form onSubmit={handleSave} className="space-y-4">
             <div>
               <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2">Full Name</label>

@@ -1,41 +1,12 @@
 import React from 'react';
-import { Github, Twitter, Linkedin, Heart } from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
 
 export default function Footer() {
-  return (
-    <footer className="bg-white dark:bg-darkbg-card border-t border-slate-200/30 dark:border-slate-800/30 transition-colors duration-200 mt-auto shadow-[0_-4px_20px_-2px_rgba(0,0,0,0.03)] dark:shadow-[0_-4px_20px_-2px_rgba(0,0,0,0.3)]">
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          {/* Brand */}
-          <div className="flex items-center space-x-2">
-            <span className="font-outfit font-extrabold text-lg tracking-tight bg-gradient-to-r from-indigo-650 to-indigo-550 bg-clip-text text-transparent">
-              CODEARENA
-            </span>
-            <span className="text-slate-400 text-sm">|</span>
-            <span className="text-slate-500 dark:text-slate-400 text-sm">© {new Date().getFullYear()} All rights reserved.</span>
-          </div>
-
-          {/* Made with love */}
-          <div className="flex items-center space-x-1 my-4 md:my-0 text-slate-500 dark:text-slate-400 text-sm">
-            <span>Built with</span>
-            <Heart className="h-4 w-4 text-red-500 fill-current" />
-            <span>for developers everywhere.</span>
-          </div>
-
-          {/* Socials */}
-          <div className="flex space-x-4">
-            <a href="https://github.com/bhadrechadharmesh" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
-              <Github className="h-4 w-4" />
-            </a>
-            <a href="https://x.com/dharmesh1729647" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
-              <Twitter className="h-4 w-4" />
-            </a>
-            <a href="https://www.linkedin.com/in/dharmesh-bhadrecha-45396b308/" className="text-slate-500 dark:text-slate-400 p-2 nm-btn rounded-full flex items-center justify-center">
-              <Linkedin className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
+  return <footer className="mt-auto text-[#d9ded9]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row gap-5 items-start sm:items-center justify-between">
+      <div><span className="font-semibold tracking-[-.03em]">codearena<span className="text-[#b9f227]">.</span></span><span className="text-[#808881] text-xs ml-4">© {new Date().getFullYear()}</span></div>
+      <p className="text-xs text-[#909890]">Practice with purpose. Compete on merit.</p>
+      <div className="flex gap-2"><a aria-label="GitHub" href="https://github.com/bhadrechadharmesh" className="p-2 text-[#9ba39c] hover:text-[#b9f227]"><Github size={17}/></a><a aria-label="LinkedIn" href="https://www.linkedin.com/in/dharmesh-bhadrecha-45396b308/" className="p-2 text-[#9ba39c] hover:text-[#b9f227]"><Linkedin size={17}/></a></div>
+    </div>
+  </footer>;
 }

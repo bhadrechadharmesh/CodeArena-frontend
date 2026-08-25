@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
 import CameraStartConfirmation from '../components/CameraStartConfirmation.jsx';
-import { Clock, CheckSquare, ArrowLeft, ArrowRight, HelpCircle, Save, AlertTriangle } from 'lucide-react';
+import { Clock, CheckSquare, ArrowLeft, ArrowRight, HelpCircle, Save, AlertTriangle, Download } from 'lucide-react';
 
 export default function QuizAttempt() {
   const { id } = useParams();
@@ -158,29 +158,29 @@ export default function QuizAttempt() {
   // Display results screen after submission
   if (submittedResult) {
     return (
-      <div className="max-w-xl mx-auto my-12 px-4">
-        <div className="nm-card p-8 rounded-3xl text-center">
-          <div className="w-16 h-16 nm-inset-sm text-emerald-650 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckSquare className="h-8 w-8" />
-          </div>
-          <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Exam Submitted!</h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Your grading report is ready.</p>
+      <div className="max-w-2xl mx-auto my-12 px-4">
+        <div className="nm-card overflow-hidden">
+          <div className="h-2 bg-[var(--accent)]" />
+          <div className="p-8">
+          <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-4">Attempt complete</p>
+          <h2 className="font-outfit font-semibold text-4xl tracking-[-.04em] text-slate-900 dark:text-white">Your report is ready.</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">{quiz.title} has been graded and added to your history.</p>
 
-          <div className="grid grid-cols-2 gap-4 my-8 nm-inset p-6 rounded-2xl">
-            <div className="text-center">
-              <span className="text-slate-500 dark:text-slate-400 text-xs block">Score</span>
-              <span className="font-outfit font-bold text-2xl text-slate-900 dark:text-white mt-1 block">{submittedResult.score} pts</span>
+          <div className="grid grid-cols-2 gap-px bg-[var(--line)] border border-[var(--line)] my-8">
+            <div className="bg-[var(--surface)] p-6">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] block">Score</span>
+              <span className="font-outfit font-semibold text-3xl text-slate-900 dark:text-white mt-2 block">{submittedResult.score} <small className="text-sm text-[var(--muted)]">pts</small></span>
             </div>
-            <div className="text-center">
-              <span className="text-slate-500 dark:text-slate-400 text-xs block">Accuracy</span>
-              <span className="font-outfit font-bold text-2xl text-emerald-655 dark:text-emerald-400 mt-1 block">{submittedResult.accuracy}%</span>
+            <div className="bg-[var(--surface)] p-6">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] block">Accuracy</span>
+              <span className="font-outfit font-semibold text-3xl text-slate-900 dark:text-white mt-2 block">{submittedResult.accuracy}%</span>
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col-reverse sm:flex-row gap-3">
             <button
               onClick={() => navigate('/student-dashboard')}
-              className="flex-grow nm-btn-primary font-semibold py-3 rounded-xl text-sm"
+              className="sm:flex-grow nm-btn font-semibold py-3 px-5 text-sm"
             >
               Go to Dashboard
             </button>
@@ -196,10 +196,11 @@ export default function QuizAttempt() {
                 link.click();
                 link.parentNode.removeChild(link);
               }}
-              className="nm-btn text-slate-700 dark:text-slate-200 font-semibold px-4 py-3 rounded-xl text-sm transition-all"
+              className="sm:flex-grow nm-btn-primary font-semibold px-5 py-3 text-sm inline-flex items-center justify-center gap-2"
             >
-              Download PDF
+              <Download className="h-4 w-4" /> Download scorecard
             </button>
+          </div>
           </div>
         </div>
       </div>
@@ -211,6 +212,17 @@ export default function QuizAttempt() {
 
   const min = Math.floor(timeLeft / 60);
   const sec = timeLeft % 60;
+
+  const renderQuizControls = (position = 'top') => (
+    <div className={`grid grid-cols-1 sm:grid-cols-3 items-center gap-3 ${position === 'top' ? 'mb-6' : 'mt-8 pt-6 border-t border-slate-200/50 dark:border-slate-800/50'}`}>
+      <div className="flex gap-2 sm:justify-self-start">
+        <button disabled={currentIdx === 0} onClick={() => setCurrentIdx((prev) => prev - 1)} className="inline-flex items-center justify-center gap-1.5 nm-btn disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg"><ArrowLeft className="h-3.5 w-3.5" /><span>Prev</span></button>
+        <button onClick={() => toggleReview(currentIdx)} className={`font-semibold text-xs px-4 py-2.5 rounded-lg transition-all ${reviewed.includes(currentIdx) ? 'nm-inset text-amber-600 dark:text-amber-400 border border-amber-500/30' : 'nm-btn text-amber-600 dark:text-amber-400'}`}>{reviewed.includes(currentIdx) ? 'Marked' : 'Review'}</button>
+      </div>
+      <button onClick={handleSubmitQuiz} disabled={isSubmitting} className="nm-btn-primary font-semibold text-xs px-6 py-2.5 rounded-lg flex items-center justify-center gap-1.5 sm:justify-self-center"><Save className="h-3.5 w-3.5" /><span>Submit Test</span></button>
+      <button disabled={currentIdx === quiz.questions.length - 1} onClick={() => setCurrentIdx((prev) => prev + 1)} className="inline-flex items-center justify-center gap-1.5 nm-btn disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg sm:justify-self-end"><span>Next</span><ArrowRight className="h-3.5 w-3.5" /></button>
+    </div>
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 relative">
@@ -292,6 +304,8 @@ export default function QuizAttempt() {
               <span className="nm-inset-sm px-2.5 py-0.5 rounded uppercase">{currentQ.difficulty}</span>
             </div>
 
+            {renderQuizControls('top')}
+
             <h3 className="font-outfit font-semibold text-lg text-slate-900 dark:text-white leading-relaxed mb-6">
               {currentQ.questionText}
             </h3>
@@ -365,45 +379,7 @@ export default function QuizAttempt() {
             </div>
           </div>
 
-          {/* Footer Controls */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-8 pt-6 border-t border-slate-200/50 dark:border-slate-800/50">
-            <div className="flex gap-2">
-              <button
-                disabled={currentIdx === 0}
-                onClick={() => setCurrentIdx((prev) => prev - 1)}
-                className="inline-flex items-center justify-center gap-1.5 nm-btn disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                <span>Prev</span>
-              </button>
-              <button
-                disabled={currentIdx === quiz.questions.length - 1}
-                onClick={() => setCurrentIdx((prev) => prev + 1)}
-                className="inline-flex items-center justify-center gap-1.5 nm-btn disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg"
-              >
-                <span>Next</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-
-            <button
-              onClick={() => toggleReview(currentIdx)}
-              className={`font-semibold text-xs px-4 py-2.5 rounded-lg transition-all ${
-                reviewed.includes(currentIdx) ? 'nm-inset text-amber-600 dark:text-amber-400 border border-amber-500/30' : 'nm-btn text-amber-600 dark:text-amber-400'
-              }`}
-            >
-              {reviewed.includes(currentIdx) ? 'Marked for Review' : 'Mark for Review'}
-            </button>
-
-            <button
-              onClick={handleSubmitQuiz}
-              disabled={isSubmitting}
-              className="nm-btn-primary font-semibold text-xs px-6 py-2.5 rounded-lg flex items-center justify-center gap-1.5"
-            >
-              <Save className="h-3.5 w-3.5" />
-              <span>Submit Test</span>
-            </button>
-          </div>
+          {renderQuizControls('bottom')}
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Editor from '@monaco-editor/react';
 
-const COLORS = ['#10B981', '#F59E0B', '#EF4444'];
+const COLORS = ['#181A1B', '#B9F227', '#8A958C'];
 
 export default function TeacherDashboard() {
   const { user } = useSelector((state) => state.auth);
@@ -166,11 +166,12 @@ export default function TeacherDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-outfit font-extrabold text-3xl dark:text-white">Teacher Dashboard</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Review student rankings and schedule new contest exams</p>
+          <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-3">Instructor overview</p>
+          <h1 className="font-outfit font-semibold text-4xl tracking-[-.04em] dark:text-white">Your classroom.</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Review performance, manage assessments, and schedule contests.</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <Link
@@ -277,7 +278,7 @@ export default function TeacherDashboard() {
 
         {/* Difficulty Distribution Chart */}
         <div className="nm-card p-6 rounded-2xl">
-          <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Quiz Difficulty Split</h3>
+          <div className="flex items-start justify-between mb-4"><div><p className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--muted)]">Content mix</p><h3 className="font-outfit font-semibold text-lg dark:text-white mt-1">Difficulty split</h3></div><span className="text-[10px] text-[var(--muted)]">Quizzes</span></div>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -291,11 +292,11 @@ export default function TeacherDashboard() {
                   dataKey="value"
                 >
                   {(analytics?.difficultyDistribution || []).map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="var(--surface)" strokeWidth={2} />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend iconSize={10} layout="horizontal" verticalAlign="bottom" align="center" />
+                <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 0, fontSize: 11 }} />
+                <Legend iconSize={8} layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ fontSize: 10, color: '#687169' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
