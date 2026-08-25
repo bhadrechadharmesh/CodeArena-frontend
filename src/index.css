@@ -12,7 +12,11 @@ button, input, textarea, select { font: inherit; }
 .dark body, body.dark { background: var(--canvas) !important; color: var(--ink) !important; }
 .app-container { min-height:100vh; background:var(--canvas) !important; color:var(--ink) !important; }
 nav { background: color-mix(in srgb, var(--surface) 94%, transparent) !important; }
-footer { background: var(--ink) !important; }
+.site-footer { background: var(--surface) !important; color: var(--ink); border-top: 1px solid var(--line); }
+.site-footer-muted { color: var(--muted); }
+.site-footer-accent { color: var(--accent); }
+.site-footer-link { color: var(--muted); transition: color 150ms ease, background-color 150ms ease; }
+.site-footer-link:hover { color: var(--ink); background: var(--canvas); }
 .glass-card, .nm-card, .nm-card-sm { background:var(--surface) !important; border:1px solid var(--line) !important; box-shadow:none !important; transition:border-color 160ms ease !important; }
 .nm-card:hover { border-color:#aeb7b0 !important; }
 .nm-inset, .nm-inset-sm { background:var(--canvas) !important; border:1px solid var(--line) !important; box-shadow:none !important; }
