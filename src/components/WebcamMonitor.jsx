@@ -102,14 +102,14 @@ export default function WebcamMonitor({ contestId = null, quizId = null, challen
     <>
       {/* Toast Notification Overlay */}
       {toast && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[999] bg-red-600 border border-red-700 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-2 animate-bounce">
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[999] bg-red-600 border border-red-700 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-md shadow-2xl flex items-center gap-2 animate-bounce">
           <AlertTriangle className="h-4 w-4 shrink-0 animate-pulse" />
           <span>{toast}</span>
         </div>
       )}
 
       {/* Proctor Widget */}
-      <div className="fixed top-24 right-4 z-40 bg-slate-900 border border-slate-700 text-white rounded-xl p-3 shadow-2xl flex flex-col items-center w-48 transition-all duration-300">
+      <div className="fixed top-24 right-4 z-40 bg-slate-900 border border-slate-700 text-white rounded-md p-3 shadow-2xl flex flex-col items-center w-48 transition-all duration-300">
         <div className="flex items-center justify-between w-full mb-1">
           <span className="text-[10px] uppercase font-bold text-red-500 flex items-center gap-1 animate-pulse">
             <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>

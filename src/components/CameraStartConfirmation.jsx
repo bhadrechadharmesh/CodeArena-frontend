@@ -66,12 +66,12 @@ export default function CameraStartConfirmation({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xl bg-slate-955/85">
-      <div className="w-full max-w-2xl overflow-hidden rounded-3xl nm-card border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col md:flex-row">
+      <div className="w-full max-w-2xl overflow-hidden rounded-lg surface-card border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col md:flex-row">
         {/* Left Side: Video Preview */}
         <div className="w-full md:w-1/2 p-6 flex flex-col items-center justify-center bg-slate-950/40 border-b md:border-b-0 md:border-r border-slate-200/50 dark:border-slate-800/50">
           <span className="text-[10px] uppercase font-bold text-brand-600 dark:text-brand-400 tracking-wider mb-2">Camera Feed Preview</span>
           
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-black border border-slate-200 dark:border-slate-800 shadow-inner group">
+          <div className="relative w-full aspect-video rounded-md overflow-hidden bg-black border border-slate-200 dark:border-slate-800 shadow-inner group">
             {active ? (
               <video
                 ref={videoRef}
@@ -107,7 +107,7 @@ export default function CameraStartConfirmation({
           {error && (
             <button 
               onClick={startPreview}
-              className="mt-4 nm-btn text-xs font-bold px-4 py-2 rounded-xl text-brand-600 flex items-center gap-1.5"
+              className="mt-4 button-secondary text-xs font-bold px-4 py-2 rounded-md text-brand-600 flex items-center gap-1.5"
             >
               <Camera className="h-4.5 w-4.5" />
               Retry Connection
@@ -119,7 +119,7 @@ export default function CameraStartConfirmation({
         <div className="w-full md:w-1/2 p-6 flex flex-col justify-between">
           <div>
             <div className="mb-4">
-              <h2 className="font-outfit font-extrabold text-2xl text-slate-900 dark:text-white leading-tight">{title}</h2>
+              <h2 className="font-display font-extrabold text-2xl text-slate-900 dark:text-white leading-tight">{title}</h2>
               <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block mt-1">{subtitle}</span>
             </div>
 
@@ -178,16 +178,16 @@ export default function CameraStartConfirmation({
           <div className="flex gap-3 mt-6 pt-4 border-t border-slate-200/50 dark:border-slate-800/50">
             <button
               onClick={onCancel}
-              className="flex-grow nm-btn py-2.5 rounded-xl font-bold text-xs text-slate-700 dark:text-slate-200 text-center"
+              className="flex-grow button-secondary py-2.5 rounded-md font-bold text-xs text-slate-700 dark:text-slate-200 text-center"
             >
               Cancel
             </button>
             <button
               onClick={onConfirm}
               disabled={!allRulesChecked}
-              className={`flex-grow py-2.5 rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 transition-all ${
+              className={`flex-grow py-2.5 rounded-md font-bold text-xs text-center flex items-center justify-center gap-1.5 transition-all ${
                 allRulesChecked 
-                  ? 'nm-btn-primary hover:opacity-95' 
+                  ? 'button-primary hover:opacity-95'
                   : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed border border-transparent'
               }`}
             >

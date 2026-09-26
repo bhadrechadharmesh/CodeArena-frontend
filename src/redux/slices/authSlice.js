@@ -13,7 +13,7 @@ const initialState = {
   token: token || null,
   isAuthenticated: !!token,
   user: JSON.parse(localStorage.getItem('user')) || null,
-  loading: false,
+  loading: !!token,
   error: null,
 };
 
@@ -39,6 +39,7 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
     logout: (state) => {
+      state.loading = false;
       state.token = null;
       state.isAuthenticated = false;
       state.user = null;

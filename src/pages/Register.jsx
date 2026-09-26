@@ -48,14 +48,14 @@ export default function Register() {
 
   return (
     <div className="max-w-md mx-auto my-12 px-4">
-      <div className="nm-card p-8 rounded-3xl">
+      <div className="surface-card p-8 rounded-lg">
         <div className="text-center mb-8">
-          <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Create Account</h2>
+          <h2 className="font-display font-extrabold text-3xl text-slate-900 dark:text-white">Create Account</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Join the ultimate competitive coding arena</p>
         </div>
 
         {(error || validationErr) && (
-          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-xl mb-6 flex items-start gap-2 text-sm">
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-md mb-6 flex items-start gap-2 text-sm">
             <AlertCircle className="h-5 w-5 shrink-0" />
             <span>{error || validationErr}</span>
           </div>
@@ -70,7 +70,7 @@ export default function Register() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="Tony Stark"
               />
             </div>
@@ -84,7 +84,7 @@ export default function Register() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="tony@stark.com"
               />
             </div>
@@ -98,7 +98,7 @@ export default function Register() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="Min. 6 characters"
               />
             </div>
@@ -109,7 +109,7 @@ export default function Register() {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full nm-input rounded-xl py-3 px-4 text-sm dark:text-white"
+              className="w-full field-control rounded-md py-3 px-4 text-sm dark:text-white"
             >
               <option value="student">Student (Take contests & solve challenges)</option>
               <option value="teacher">Teacher (Schedule contests & review stats)</option>
@@ -125,7 +125,7 @@ export default function Register() {
                   type="text"
                   value={college}
                   onChange={(e) => setCollege(e.target.value)}
-                  className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                  className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                   placeholder="MIT"
                 />
               </div>
@@ -135,7 +135,7 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
+            className="w-full button-primary font-semibold py-3 rounded-md flex items-center justify-center gap-2"
           >
             {loading ? 'Creating Account...' : (
               <>

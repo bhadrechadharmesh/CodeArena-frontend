@@ -127,12 +127,12 @@ export default function OTPVerify() {
 
   return (
     <div className="max-w-md mx-auto my-16 px-4">
-      <div className="nm-card p-8 rounded-3xl">
+      <div className="surface-card p-8 rounded-lg">
         <div className="text-center mb-8">
-          <div className="mx-auto w-12 h-12 nm-card-sm rounded-2xl flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
+          <div className="mx-auto w-12 h-12 surface-card-small rounded-md flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
             <ShieldCheck className="h-6 w-6" />
           </div>
-          <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Verify Your Email</h2>
+          <h2 className="font-display font-extrabold text-3xl text-slate-900 dark:text-white">Verify Your Email</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 flex items-center justify-center gap-1.5">
             <Mail className="h-4 w-4 shrink-0" />
             <span>Code sent to <strong className="text-slate-700 dark:text-slate-300 font-semibold">{email || 'your email'}</strong></span>
@@ -141,14 +141,14 @@ export default function OTPVerify() {
 
         {/* Errors & Alerts */}
         {(error || validationErr) && (
-          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-xl mb-6 flex items-start gap-2 text-sm">
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-md mb-6 flex items-start gap-2 text-sm">
             <AlertCircle className="h-5 w-5 shrink-0" />
             <span>{error || validationErr}</span>
           </div>
         )}
 
         {successMessage && (
-          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl mb-6 text-sm">
+          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-md mb-6 text-sm">
             {successMessage}
           </div>
         )}
@@ -164,7 +164,7 @@ export default function OTPVerify() {
                 ref={(el) => (inputRefs.current[idx] = el)}
                 onChange={(e) => handleChange(idx, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(idx, e)}
-                className="w-12 h-14 text-center font-outfit text-xl font-bold nm-input rounded-xl dark:text-white"
+                className="w-12 h-14 text-center font-display text-xl font-bold field-control rounded-md dark:text-white"
                 placeholder="-"
                 disabled={!email || loading}
               />
@@ -174,7 +174,7 @@ export default function OTPVerify() {
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
+            className="w-full button-primary font-semibold py-3 rounded-md flex items-center justify-center gap-2"
           >
             {loading ? 'Verifying...' : 'Verify & Continue'}
           </button>

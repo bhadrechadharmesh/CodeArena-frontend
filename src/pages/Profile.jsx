@@ -39,11 +39,11 @@ export default function Profile() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-3">Account</p>
-      <h1 className="font-outfit font-semibold text-4xl tracking-[-.04em] dark:text-white mb-2">Profile settings.</h1>
+      <h1 className="font-display font-semibold text-4xl tracking-[-.04em] dark:text-white mb-2">Profile settings.</h1>
       <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Manage the details shown on your CodeArena account.</p>
 
       {successMsg && (
-        <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl mb-6 flex items-center gap-2 text-sm font-semibold">
+        <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-md mb-6 flex items-center gap-2 text-sm font-semibold">
           <CheckCircle className="h-5 w-5 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -51,8 +51,8 @@ export default function Profile() {
 
       <div className="grid md:grid-cols-[260px_1fr] gap-6 items-start">
         {/* Left Stats column */}
-        <div className="nm-card p-6 text-center">
-          <div className="w-20 h-20 nm-inset-sm text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 uppercase">
+        <div className="surface-card p-6 text-center">
+          <div className="w-20 h-20 surface-subtle text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center font-bold text-2xl mx-auto mb-4 uppercase">
             {user?.name.charAt(0)}
           </div>
           <h3 className="font-bold text-lg dark:text-white leading-tight">{user?.name}</h3>
@@ -75,7 +75,7 @@ export default function Profile() {
         </div>
 
         {/* Right Form column */}
-        <div className="nm-card p-6">
+        <div className="surface-card p-6">
           <form onSubmit={handleSave} className="space-y-4">
             <div>
               <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2">Full Name</label>
@@ -85,7 +85,7 @@ export default function Profile() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
+                  className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
                   placeholder="Your Name"
                 />
               </div>
@@ -99,7 +99,7 @@ export default function Profile() {
                   type="email"
                   value={user?.email || ''}
                   disabled
-                  className="w-full nm-input opacity-70 cursor-not-allowed rounded-xl py-3 pl-11 pr-4 text-sm text-slate-500 focus:outline-none"
+                  className="w-full field-control opacity-70 cursor-not-allowed rounded-md py-3 pl-11 pr-4 text-sm text-slate-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -113,7 +113,7 @@ export default function Profile() {
                   type="text"
                   value={college}
                   onChange={(e) => setCollege(e.target.value)}
-                  className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
+                  className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
                   placeholder="College Name"
                 />
                 </div>
@@ -128,7 +128,7 @@ export default function Profile() {
                   rows="3"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
+                  className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm focus:outline-none dark:text-white"
                   placeholder="Tell us about yourself..."
                 />
               </div>
@@ -137,7 +137,7 @@ export default function Profile() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2 text-sm"
+              className="w-full button-primary font-semibold py-3 rounded-md flex items-center justify-center gap-2 text-sm"
             >
               <Save className="h-4 w-4" />
               <span>{loading ? 'Saving Changes...' : 'Save Settings'}</span>

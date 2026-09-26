@@ -159,28 +159,28 @@ export default function QuizAttempt() {
   if (submittedResult) {
     return (
       <div className="max-w-2xl mx-auto my-12 px-4">
-        <div className="nm-card overflow-hidden">
+        <div className="surface-card overflow-hidden">
           <div className="h-2 bg-[var(--accent)]" />
           <div className="p-8">
           <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-4">Attempt complete</p>
-          <h2 className="font-outfit font-semibold text-4xl tracking-[-.04em] text-slate-900 dark:text-white">Your report is ready.</h2>
+          <h2 className="font-display font-semibold text-4xl tracking-[-.04em] text-slate-900 dark:text-white">Your report is ready.</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">{quiz.title} has been graded and added to your history.</p>
 
           <div className="grid grid-cols-2 gap-px bg-[var(--line)] border border-[var(--line)] my-8">
             <div className="bg-[var(--surface)] p-6">
               <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] block">Score</span>
-              <span className="font-outfit font-semibold text-3xl text-slate-900 dark:text-white mt-2 block">{submittedResult.score} <small className="text-sm text-[var(--muted)]">pts</small></span>
+              <span className="font-display font-semibold text-3xl text-slate-900 dark:text-white mt-2 block">{submittedResult.score} <small className="text-sm text-[var(--muted)]">pts</small></span>
             </div>
             <div className="bg-[var(--surface)] p-6">
               <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] block">Accuracy</span>
-              <span className="font-outfit font-semibold text-3xl text-slate-900 dark:text-white mt-2 block">{submittedResult.accuracy}%</span>
+              <span className="font-display font-semibold text-3xl text-slate-900 dark:text-white mt-2 block">{submittedResult.accuracy}%</span>
             </div>
           </div>
 
           <div className="flex flex-col-reverse sm:flex-row gap-3">
             <button
               onClick={() => navigate('/student-dashboard')}
-              className="sm:flex-grow nm-btn font-semibold py-3 px-5 text-sm"
+              className="sm:flex-grow button-secondary font-semibold py-3 px-5 text-sm"
             >
               Go to Dashboard
             </button>
@@ -196,7 +196,7 @@ export default function QuizAttempt() {
                 link.click();
                 link.parentNode.removeChild(link);
               }}
-              className="sm:flex-grow nm-btn-primary font-semibold px-5 py-3 text-sm inline-flex items-center justify-center gap-2"
+              className="sm:flex-grow button-primary font-semibold px-5 py-3 text-sm inline-flex items-center justify-center gap-2"
             >
               <Download className="h-4 w-4" /> Download scorecard
             </button>
@@ -216,11 +216,11 @@ export default function QuizAttempt() {
   const renderQuizControls = (position = 'top') => (
     <div className={`grid grid-cols-1 sm:grid-cols-3 items-center gap-3 ${position === 'top' ? 'mb-6' : 'mt-8 pt-6 border-t border-slate-200/50 dark:border-slate-800/50'}`}>
       <div className="flex gap-2 sm:justify-self-start">
-        <button disabled={currentIdx === 0} onClick={() => setCurrentIdx((prev) => prev - 1)} className="inline-flex items-center justify-center gap-1.5 nm-btn disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg"><ArrowLeft className="h-3.5 w-3.5" /><span>Prev</span></button>
-        <button onClick={() => toggleReview(currentIdx)} className={`font-semibold text-xs px-4 py-2.5 rounded-lg transition-all ${reviewed.includes(currentIdx) ? 'nm-inset text-amber-600 dark:text-amber-400 border border-amber-500/30' : 'nm-btn text-amber-600 dark:text-amber-400'}`}>{reviewed.includes(currentIdx) ? 'Marked' : 'Review'}</button>
+        <button disabled={currentIdx === 0} onClick={() => setCurrentIdx((prev) => prev - 1)} className="inline-flex items-center justify-center gap-1.5 button-secondary disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg"><ArrowLeft className="h-3.5 w-3.5" /><span>Prev</span></button>
+        <button onClick={() => toggleReview(currentIdx)} className={`font-semibold text-xs px-4 py-2.5 rounded-lg transition-all ${reviewed.includes(currentIdx) ? 'surface-subtle text-amber-600 dark:text-amber-400 border border-amber-500/30' : 'button-secondary text-amber-600 dark:text-amber-400'}`}>{reviewed.includes(currentIdx) ? 'Marked' : 'Review'}</button>
       </div>
-      <button onClick={handleSubmitQuiz} disabled={isSubmitting} className="nm-btn-primary font-semibold text-xs px-6 py-2.5 rounded-lg flex items-center justify-center gap-1.5 sm:justify-self-center"><Save className="h-3.5 w-3.5" /><span>Submit Test</span></button>
-      <button disabled={currentIdx === quiz.questions.length - 1} onClick={() => setCurrentIdx((prev) => prev + 1)} className="inline-flex items-center justify-center gap-1.5 nm-btn disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg sm:justify-self-end"><span>Next</span><ArrowRight className="h-3.5 w-3.5" /></button>
+      <button onClick={handleSubmitQuiz} disabled={isSubmitting} className="button-primary font-semibold text-xs px-6 py-2.5 rounded-lg flex items-center justify-center gap-1.5 sm:justify-self-center"><Save className="h-3.5 w-3.5" /><span>Submit Test</span></button>
+      <button disabled={currentIdx === quiz.questions.length - 1} onClick={() => setCurrentIdx((prev) => prev + 1)} className="inline-flex items-center justify-center gap-1.5 button-secondary disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg sm:justify-self-end"><span>Next</span><ArrowRight className="h-3.5 w-3.5" /></button>
     </div>
   );
 
@@ -236,10 +236,10 @@ export default function QuizAttempt() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
         <div>
           <span className="text-[10px] uppercase font-bold text-brand-600 dark:text-brand-400 tracking-wider">Exam Panel</span>
-          <h1 className="font-outfit font-extrabold text-2xl dark:text-white leading-none mt-1">{quiz.title}</h1>
+          <h1 className="font-display font-extrabold text-2xl dark:text-white leading-none mt-1">{quiz.title}</h1>
         </div>
 
-        <div className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold nm-inset-sm ${
+        <div className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold surface-subtle ${
           timeLeft < 120 ? 'text-red-600 animate-pulse' : 'text-brand-600 dark:text-brand-400'
         }`}>
           <Clock className="h-4 w-4" />
@@ -249,7 +249,7 @@ export default function QuizAttempt() {
 
       <div className="grid md:grid-cols-4 gap-8">
         {/* Navigation Sidebar */}
-        <div className="nm-card p-6 rounded-2xl h-fit">
+        <div className="surface-card p-6 rounded-md h-fit">
           <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Question Grid</h3>
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-4 gap-2">
             {quiz.questions.map((_, index) => {
@@ -266,11 +266,11 @@ export default function QuizAttempt() {
                 <button
                   key={index}
                   onClick={() => setCurrentIdx(index)}
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xs transition-all ${
-                    isSelected ? 'nm-inset text-brand-600 dark:text-brand-400 border border-brand-500/40 ring-1 ring-brand-500/20' :
+                  className={`w-10 h-10 rounded-md flex items-center justify-center font-bold text-xs transition-all ${
+                    isSelected ? 'surface-subtle text-brand-600 dark:text-brand-400 border border-brand-500/40 ring-1 ring-brand-500/20' :
                     isReview ? 'bg-amber-500 text-white border-amber-500 shadow-inner' :
                     hasAns ? 'bg-emerald-500 text-white border-emerald-500 shadow-inner' :
-                    'nm-btn text-slate-600 dark:text-slate-300'
+                    'button-secondary text-slate-600 dark:text-slate-300'
                   }`}
                 >
                   {index + 1}
@@ -290,23 +290,23 @@ export default function QuizAttempt() {
               <span>For Review</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 nm-inset-sm rounded"></span>
+              <span className="w-3 h-3 surface-subtle rounded"></span>
               <span>Unattempted</span>
             </div>
           </div>
         </div>
 
         {/* Question Panel */}
-        <div className="md:col-span-3 nm-card p-8 rounded-2xl flex flex-col justify-between min-h-[400px]">
+        <div className="md:col-span-3 surface-card p-8 rounded-md flex flex-col justify-between min-h-[400px]">
           <div>
             <div className="flex items-center justify-between mb-4 text-xs font-semibold text-slate-400">
               <span className="uppercase">Question {currentIdx + 1} of {quiz.questions.length}</span>
-              <span className="nm-inset-sm px-2.5 py-0.5 rounded uppercase">{currentQ.difficulty}</span>
+              <span className="surface-subtle px-2.5 py-0.5 rounded uppercase">{currentQ.difficulty}</span>
             </div>
 
             {renderQuizControls('top')}
 
-            <h3 className="font-outfit font-semibold text-lg text-slate-900 dark:text-white leading-relaxed mb-6">
+            <h3 className="font-display font-semibold text-lg text-slate-900 dark:text-white leading-relaxed mb-6">
               {currentQ.questionText}
             </h3>
 
@@ -317,8 +317,8 @@ export default function QuizAttempt() {
                 <button
                   key={i}
                   onClick={() => handleOptionChange(currentIdx, i)}
-                  className={`w-full text-left p-4 rounded-xl text-sm font-medium transition-all flex items-center justify-between ${
-                    currentAns.selectedOption === i ? 'nm-inset text-brand-700 dark:text-white border border-brand-500/30' : 'nm-btn text-slate-700 dark:text-slate-200'
+                  className={`w-full text-left p-4 rounded-md text-sm font-medium transition-all flex items-center justify-between ${
+                    currentAns.selectedOption === i ? 'surface-subtle text-brand-700 dark:text-white border border-brand-500/30' : 'button-secondary text-slate-700 dark:text-slate-200'
                   }`}
                 >
                   <span>{opt}</span>
@@ -335,8 +335,8 @@ export default function QuizAttempt() {
                   <button
                     key={i}
                     onClick={() => handleCheckboxChange(currentIdx, i)}
-                    className={`w-full text-left p-4 rounded-xl text-sm font-medium transition-all flex items-center justify-between ${
-                      isSelected ? 'nm-inset text-brand-700 dark:text-white border border-brand-500/30' : 'nm-btn text-slate-700 dark:text-slate-200'
+                    className={`w-full text-left p-4 rounded-md text-sm font-medium transition-all flex items-center justify-between ${
+                      isSelected ? 'surface-subtle text-brand-700 dark:text-white border border-brand-500/30' : 'button-secondary text-slate-700 dark:text-slate-200'
                     }`}
                   >
                     <span>{opt}</span>
@@ -354,8 +354,8 @@ export default function QuizAttempt() {
                     <button
                       key={val.toString()}
                       onClick={() => handleBooleanChange(currentIdx, val)}
-                      className={`flex-grow py-4 rounded-xl text-sm font-bold transition-all text-center ${
-                        currentAns.booleanAnswer === val ? 'nm-inset text-brand-700 dark:text-white border border-brand-500/30' : 'nm-btn text-slate-700 dark:text-slate-300'
+                      className={`flex-grow py-4 rounded-md text-sm font-bold transition-all text-center ${
+                        currentAns.booleanAnswer === val ? 'surface-subtle text-brand-700 dark:text-white border border-brand-500/30' : 'button-secondary text-slate-700 dark:text-slate-300'
                       }`}
                     >
                       {val ? 'TRUE' : 'FALSE'}
@@ -371,7 +371,7 @@ export default function QuizAttempt() {
                     type="text"
                     value={currentAns.textAnswer}
                     onChange={(e) => handleTextChange(currentIdx, e.target.value)}
-                    className="w-full nm-input rounded-xl py-4 px-4 text-sm focus:outline-none dark:text-white"
+                    className="w-full field-control rounded-md py-4 px-4 text-sm focus:outline-none dark:text-white"
                     placeholder="Type your answer here..."
                   />
                 </div>

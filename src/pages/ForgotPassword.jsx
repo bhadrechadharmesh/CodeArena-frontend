@@ -127,23 +127,23 @@ export default function ForgotPassword() {
 
   return (
     <div className="max-w-md mx-auto my-16 px-4">
-      <div className="nm-card p-8 rounded-3xl transition-all duration-300">
+      <div className="surface-card p-8 rounded-lg transition-all duration-300">
         
         {/* Step 1: Request OTP */}
         {step === 1 && (
           <div>
             <div className="text-center mb-8">
-              <div className="mx-auto w-12 h-12 nm-card-sm rounded-2xl flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
+              <div className="mx-auto w-12 h-12 surface-card-small rounded-md flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
                 <Mail className="h-6 w-6" />
               </div>
-              <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Forgot Password</h2>
+              <h2 className="font-display font-extrabold text-3xl text-slate-900 dark:text-white">Forgot Password</h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
                 Enter your email address to receive a One-Time Password (OTP) for password reset.
               </p>
             </div>
 
             {errorMsg && (
-              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-xl mb-6 flex items-start gap-2 text-sm">
+              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-md mb-6 flex items-start gap-2 text-sm">
                 <AlertCircle className="h-5 w-5 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -161,7 +161,7 @@ export default function ForgotPassword() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                    className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -170,7 +170,7 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
+                className="w-full button-primary font-semibold py-3 rounded-md flex items-center justify-center gap-2"
               >
                 {loading ? 'Sending OTP...' : (
                   <>
@@ -187,23 +187,23 @@ export default function ForgotPassword() {
         {step === 2 && (
           <div>
             <div className="text-center mb-8">
-              <div className="mx-auto w-12 h-12 nm-card-sm rounded-2xl flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
+              <div className="mx-auto w-12 h-12 surface-card-small rounded-md flex items-center justify-center text-brand-600 dark:text-brand-400 mb-4">
                 <ShieldCheck className="h-6 w-6" />
               </div>
-              <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white">Verify & Reset</h2>
+              <h2 className="font-display font-extrabold text-3xl text-slate-900 dark:text-white">Verify & Reset</h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
                 Verification code has been sent to <strong className="text-slate-700 dark:text-slate-300">{email}</strong>.
               </p>
             </div>
 
             {successMsg && (
-              <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl mb-6 text-sm">
+              <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-md mb-6 text-sm">
                 {successMsg}
               </div>
             )}
 
             {errorMsg && (
-              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-xl mb-6 flex items-start gap-2 text-sm">
+              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-md mb-6 flex items-start gap-2 text-sm">
                 <AlertCircle className="h-5 w-5 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -226,7 +226,7 @@ export default function ForgotPassword() {
                       ref={(el) => (inputRefs.current[idx] = el)}
                       onChange={(e) => handleOtpChange(idx, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                      className="w-12 h-14 text-center font-outfit text-xl font-bold nm-input rounded-xl dark:text-white"
+                      className="w-12 h-14 text-center font-display text-xl font-bold field-control rounded-md dark:text-white"
                       placeholder="-"
                       disabled={loading}
                     />
@@ -247,7 +247,7 @@ export default function ForgotPassword() {
                       required
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                      className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                       placeholder="Min 6 characters"
                     />
                   </div>
@@ -264,7 +264,7 @@ export default function ForgotPassword() {
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                      className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                       placeholder="Repeat password"
                     />
                   </div>
@@ -274,7 +274,7 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2 mt-2"
+                className="w-full button-primary font-semibold py-3 rounded-md flex items-center justify-center gap-2 mt-2"
               >
                 {loading ? 'Resetting Password...' : 'Reset Password'}
               </button>
@@ -296,13 +296,13 @@ export default function ForgotPassword() {
             <div className="mx-auto w-16 h-16 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mb-6">
               <CheckCircle2 className="h-10 w-10 animate-bounce" />
             </div>
-            <h2 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white mb-2">Reset Success!</h2>
+            <h2 className="font-display font-extrabold text-3xl text-slate-900 dark:text-white mb-2">Reset Success!</h2>
             <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">
               Your password has been successfully reset. You can now use your new password to sign in.
             </p>
             <Link
               to="/login"
-              className="w-full nm-btn-primary font-semibold py-3 rounded-xl inline-flex items-center justify-center gap-2"
+              className="w-full button-primary font-semibold py-3 rounded-md inline-flex items-center justify-center gap-2"
             >
               <span>Go to Sign In</span>
               <ArrowRight className="h-4 w-4" />

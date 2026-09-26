@@ -1,35 +1,18 @@
 import React from 'react';
-import { ShieldCheck, Cpu, Code2, RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 
 export default function About() {
-  return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <h1 className="font-outfit font-extrabold text-3xl text-slate-900 dark:text-white text-center mb-4">About CodeArena</h1>
-      <p className="text-slate-600 dark:text-slate-350 text-center max-w-2xl mx-auto text-sm leading-relaxed mb-12">
-        CodeArena is a state-of-the-art competitive coding and diagnostic testing ecosystem built to bridge learning gaps for developers and simplify proctored examinations for educational institutions.
-      </p>
-
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="nm-card p-6 rounded-2xl">
-          <h3 className="font-outfit font-semibold text-lg dark:text-white flex items-center gap-2 mb-3">
-            <Cpu className="h-5 w-5 text-brand-600" />
-            Execution Judge Architecture
-          </h3>
-          <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
-            The platform compiles code submissions in real-time inside secure, isolated processes. Using timeout guarantees and standard IO streaming, we validate answers against hidden test case criteria.
-          </p>
-        </div>
-
-        <div className="nm-card p-6 rounded-2xl">
-          <h3 className="font-outfit font-semibold text-lg dark:text-white flex items-center gap-2 mb-3">
-            <ShieldCheck className="h-5 w-5 text-emerald-600" />
-            Proctoring & Audit Trailing
-          </h3>
-          <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
-            To prevent fraud, active proctoring tracks tab switching, browser unfocusing, and camera availability. These security violations are logged directly to the admin center for review.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+ return <div className="max-w-4xl mx-auto px-5 sm:px-8 py-14">
+  <p className="eyebrow">ABOUT / CODEARENA</p>
+  <h1 className="text-4xl sm:text-5xl font-medium mt-6 mb-6">A place to work on<br/>your problem-solving.</h1>
+  <p className="text-lg leading-8 text-[var(--muted)] max-w-2xl">CodeArena brings programming practice, quizzes, and timed contests into one workspace for students and educators.</p>
+  <div className="mt-12 border-t border-[var(--line)]">{[
+   ['01', 'Practice', 'Write and run code in the integrated editor. Use test-case feedback to review your approach and improve your solution.'],
+   ['02', 'Compete', 'Join timed contests and follow the standings. Review the rules and submit solutions before the session ends.'],
+   ['03', 'Assess', 'Take quizzes and review your results. Educators can create challenges, schedule contests, and manage assessments.'],
+   ['04', 'Review', 'Access submission history and scorecards. Proctored sessions record tab, focus, and camera events for educator review.'],
+  ].map(([n,title,text])=><section key={n} className="grid grid-cols-[32px_1fr] sm:grid-cols-[40px_140px_1fr] gap-4 py-7 border-b border-[var(--line)]"><span className="font-mono text-xs text-[var(--muted)] pt-1">{n}</span><h2 className="text-xl font-medium">{title}</h2><p className="col-start-2 sm:col-start-auto text-sm leading-7 text-[var(--muted)]">{text}</p></section>)}</div>
+  <Link to="/challenges" className="arena-text-link mt-8">Browse challenges<ArrowRight size={16}/></Link>
+ </div>;
 }

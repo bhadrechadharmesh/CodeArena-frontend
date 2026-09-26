@@ -28,14 +28,11 @@ export default function MonacoEditor({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-900 border border-slate-700 rounded-lg overflow-hidden">
+    <div className="flex flex-col h-full bg-slate-900 border border-slate-700 rounded-none overflow-hidden">
       {/* Header toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-800 border-b border-slate-700">
+      <div className="flex flex-wrap gap-3 items-center justify-between px-4 py-3 bg-slate-800 border-b border-slate-700">
         <div className="flex items-center space-x-2">
-          <span className="w-3 w-3 h-3 bg-red-500 rounded-full"></span>
-          <span className="w-3 w-3 h-3 bg-yellow-500 rounded-full"></span>
-          <span className="w-3 w-3 h-3 bg-green-500 rounded-full"></span>
-          <span className="ml-2 font-mono text-xs text-slate-400">solution_editor.src</span>
+          <span className="font-mono text-xs text-slate-300">solution.{language === 'javascript' ? 'js' : language === 'python' ? 'py' : language === 'java' ? 'java' : 'cpp'}</span>
         </div>
 
         {/* Action Panel: Reset and Select Language */}
@@ -53,6 +50,7 @@ export default function MonacoEditor({
             Reset Code
           </button>
           <select
+            aria-label="Programming language"
             value={language}
             onChange={handleLanguageChange}
             className="bg-slate-700 border border-slate-600 rounded px-2 py-1 text-xs text-slate-200 font-medium focus:outline-none"

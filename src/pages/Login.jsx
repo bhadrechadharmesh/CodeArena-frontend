@@ -59,16 +59,16 @@ export default function Login() {
 
   return (
     <div className="max-w-md mx-auto my-16 px-4">
-      <div className="nm-card p-8">
+      <div className="surface-card p-8">
         <div className="text-center mb-8">
           <p className="font-mono text-[11px] uppercase tracking-[.15em] text-[var(--muted)] mb-4">Member access</p>
-          <h2 className="font-outfit font-semibold text-3xl text-slate-900 dark:text-white tracking-tight">Welcome back.</h2>
+          <h2 className="font-display font-semibold text-3xl text-slate-900 dark:text-white tracking-tight">Welcome back.</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Pick up where you left off.</p>
         </div>
 
         {/* Status Message */}
         {statusMsg && (
-          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-xl mb-6 flex items-start gap-2 text-sm">
+          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 p-4 rounded-md mb-6 flex items-start gap-2 text-sm">
             <Info className="h-5 w-5 shrink-0 text-emerald-500" />
             <span>{statusMsg}</span>
           </div>
@@ -76,7 +76,7 @@ export default function Login() {
 
         {/* Errors */}
         {(error || validationErr) && (
-          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-xl mb-6 flex items-start gap-2 text-sm">
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-md mb-6 flex items-start gap-2 text-sm">
             <AlertCircle className="h-5 w-5 shrink-0" />
             <span>{error || validationErr}</span>
           </div>
@@ -91,7 +91,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="you@example.com"
               />
             </div>
@@ -108,7 +108,7 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full nm-input rounded-xl py-3 pl-11 pr-4 text-sm dark:text-white"
+                className="w-full field-control rounded-md py-3 pl-11 pr-4 text-sm dark:text-white"
                 placeholder="••••••••"
               />
             </div>
@@ -117,7 +117,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full nm-btn-primary font-semibold py-3 rounded-xl flex items-center justify-center gap-2"
+            className="w-full button-primary font-semibold py-3 rounded-md flex items-center justify-center gap-2"
           >
             {loading ? 'Logging in...' : (
               <>
@@ -139,7 +139,7 @@ export default function Login() {
         <button
           disabled
           type="button"
-          className="w-full nm-inset-sm rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 text-slate-400 dark:text-slate-500 cursor-not-allowed"
+          className="w-full surface-subtle rounded-md py-3 text-sm font-semibold flex items-center justify-center gap-2 text-slate-400 dark:text-slate-500 cursor-not-allowed"
         >
           <Chrome className="h-4 w-4 text-slate-400 dark:text-slate-500 fill-current" />
           <span>Login with Google (Coming Soon)</span>

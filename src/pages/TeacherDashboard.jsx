@@ -127,7 +127,7 @@ export default function TeacherDashboard() {
         <div className="h-8 bg-slate-200 dark:bg-slate-700 w-48 rounded mb-6"></div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 bg-slate-200 dark:bg-slate-700 rounded-2xl"></div>
+            <div key={i} className="h-24 bg-slate-200 dark:bg-slate-700 rounded-md"></div>
           ))}
         </div>
       </div>
@@ -170,32 +170,32 @@ export default function TeacherDashboard() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[.16em] text-[var(--muted)] mb-3">Instructor overview</p>
-          <h1 className="font-outfit font-semibold text-4xl tracking-[-.04em] dark:text-white">Your classroom.</h1>
+          <h1 className="font-display font-semibold text-4xl tracking-[-.04em] dark:text-white">Your classroom.</h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Review performance, manage assessments, and schedule contests.</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <Link
             to="/create-challenge"
-            className="inline-flex items-center gap-1 nm-btn font-semibold text-sm px-4 py-2 rounded-xl text-slate-800 dark:text-slate-200"
+            className="inline-flex items-center gap-1 button-secondary font-semibold text-sm px-4 py-2 rounded-md text-slate-800 dark:text-slate-200"
           >
             <PlusCircle className="h-4 w-4 text-indigo-500" />
             <span>Create Challenge</span>
           </Link>
           <Link
             to="/create-quiz"
-            className="inline-flex items-center gap-1 nm-btn font-semibold text-sm px-4 py-2 rounded-xl text-slate-800 dark:text-slate-200"
+            className="inline-flex items-center gap-1 button-secondary font-semibold text-sm px-4 py-2 rounded-md text-slate-800 dark:text-slate-200"
           >
             <PlusCircle className="h-4 w-4 text-emerald-500" />
             <span>Create Quiz</span>
           </Link>
           <Link
             to="/create-contest"
-            className="inline-flex items-center gap-1 nm-btn-primary font-semibold text-sm px-4 py-2 rounded-xl"
+            className="inline-flex items-center gap-1 button-primary font-semibold text-sm px-4 py-2 rounded-md"
           >
             <Calendar className="h-4 w-4" />
             <span>Schedule Contest</span>
           </Link>
-          <button onClick={fetchData} className="p-2 rounded-lg nm-btn text-slate-600 dark:text-slate-300">
+          <button onClick={fetchData} className="p-2 rounded-lg button-secondary text-slate-600 dark:text-slate-300">
             <RefreshCw className="h-5 w-5" />
           </button>
         </div>
@@ -203,51 +203,51 @@ export default function TeacherDashboard() {
 
       {/* Metrics Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
-          <div className="p-3 nm-inset-sm rounded-xl text-brand-600 dark:text-brand-400">
+        <div className="surface-card p-6 rounded-md flex items-center gap-4">
+          <div className="p-3 surface-subtle rounded-md text-brand-600 dark:text-brand-400">
             <FileText className="h-6 w-6" />
           </div>
           <div>
             <span className="text-slate-500 dark:text-slate-400 text-xs uppercase font-bold tracking-wider block">Created Quizzes</span>
-            <span className="font-outfit font-bold text-2xl dark:text-white mt-1 block">{metrics.totalQuizzesCreated}</span>
+            <span className="font-display font-bold text-2xl dark:text-white mt-1 block">{metrics.totalQuizzesCreated}</span>
           </div>
         </div>
 
-        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
-          <div className="p-3 nm-inset-sm rounded-xl text-indigo-500">
+        <div className="surface-card p-6 rounded-md flex items-center gap-4">
+          <div className="p-3 surface-subtle rounded-md text-indigo-500">
             <Users className="h-6 w-6" />
           </div>
           <div>
             <span className="text-slate-500 dark:text-slate-400 text-xs uppercase font-bold tracking-wider block">Exam Attempts</span>
-            <span className="font-outfit font-bold text-2xl dark:text-white mt-1 block">{metrics.totalAttempts}</span>
+            <span className="font-display font-bold text-2xl dark:text-white mt-1 block">{metrics.totalAttempts}</span>
           </div>
         </div>
 
-        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
-          <div className="p-3 nm-inset-sm rounded-xl text-emerald-500">
+        <div className="surface-card p-6 rounded-md flex items-center gap-4">
+          <div className="p-3 surface-subtle rounded-md text-emerald-500">
             <Award className="h-6 w-6" />
           </div>
           <div>
             <span className="text-slate-500 dark:text-slate-400 text-xs uppercase font-bold tracking-wider block">Class Avg. Score</span>
-            <span className="font-outfit font-bold text-2xl dark:text-white mt-1 block">{metrics.averageClassScore} pts</span>
+            <span className="font-display font-bold text-2xl dark:text-white mt-1 block">{metrics.averageClassScore} pts</span>
           </div>
         </div>
 
-        <div className="nm-card p-6 rounded-2xl flex items-center gap-4">
-          <div className="p-3 nm-inset-sm rounded-xl text-purple-500">
+        <div className="surface-card p-6 rounded-md flex items-center gap-4">
+          <div className="p-3 surface-subtle rounded-md text-purple-500">
             <Percent className="h-6 w-6" />
           </div>
           <div>
             <span className="text-slate-500 dark:text-slate-400 text-xs uppercase font-bold tracking-wider block">Class Avg. Acc.</span>
-            <span className="font-outfit font-bold text-2xl dark:text-white mt-1 block">{metrics.averageClassAccuracy}%</span>
+            <span className="font-display font-bold text-2xl dark:text-white mt-1 block">{metrics.averageClassAccuracy}%</span>
           </div>
         </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
         {/* Top Performers */}
-        <div className="md:col-span-2 nm-card p-6 rounded-2xl">
-          <h3 className="font-outfit font-semibold text-lg dark:text-white mb-4">Top Performing Candidates</h3>
+        <div className="md:col-span-2 surface-card p-6 rounded-md">
+          <h3 className="font-display font-semibold text-lg dark:text-white mb-4">Top Performing Candidates</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -277,8 +277,8 @@ export default function TeacherDashboard() {
         </div>
 
         {/* Difficulty Distribution Chart */}
-        <div className="nm-card p-6 rounded-2xl">
-          <div className="flex items-start justify-between mb-4"><div><p className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--muted)]">Content mix</p><h3 className="font-outfit font-semibold text-lg dark:text-white mt-1">Difficulty split</h3></div><span className="text-[10px] text-[var(--muted)]">Quizzes</span></div>
+        <div className="surface-card p-6 rounded-md">
+          <div className="flex items-start justify-between mb-4"><div><p className="font-mono text-[10px] uppercase tracking-[.12em] text-[var(--muted)]">Content mix</p><h3 className="font-display font-semibold text-lg dark:text-white mt-1">Difficulty split</h3></div><span className="text-[10px] text-[var(--muted)]">Quizzes</span></div>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -304,12 +304,12 @@ export default function TeacherDashboard() {
       </div>
 
       {/* Tab Selectors */}
-      <div className="flex p-1.5 nm-inset rounded-2xl gap-2 mt-10 mb-8 max-w-fit">
+      <div className="flex p-1.5 surface-subtle rounded-md gap-2 mt-10 mb-8 max-w-fit">
         <button
           onClick={() => setActiveTab('contests')}
-          className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 ${
+          className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-md transition-all duration-200 ${
             activeTab === 'contests'
-              ? 'nm-card-sm text-brand-600 dark:text-brand-400'
+              ? 'surface-card-small text-brand-600 dark:text-brand-400'
               : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
           }`}
         >
@@ -317,9 +317,9 @@ export default function TeacherDashboard() {
         </button>
         <button
           onClick={() => setActiveTab('quizzes')}
-          className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 ${
+          className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-md transition-all duration-200 ${
             activeTab === 'quizzes'
-              ? 'nm-card-sm text-brand-600 dark:text-brand-400'
+              ? 'surface-card-small text-brand-600 dark:text-brand-400'
               : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
           }`}
         >
@@ -327,9 +327,9 @@ export default function TeacherDashboard() {
         </button>
         <button
           onClick={() => setActiveTab('challenges')}
-          className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 ${
+          className={`py-2.5 px-6 text-xs font-bold uppercase tracking-wider rounded-md transition-all duration-200 ${
             activeTab === 'challenges'
-              ? 'nm-card-sm text-brand-600 dark:text-brand-400'
+              ? 'surface-card-small text-brand-600 dark:text-brand-400'
               : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
           }`}
         >
@@ -339,9 +339,9 @@ export default function TeacherDashboard() {
 
       {/* Tab Content Panel */}
       {activeTab === 'contests' && (
-        <div className="nm-card rounded-2xl overflow-hidden">
+        <div className="surface-card rounded-md overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center">
-            <h3 className="font-outfit font-semibold text-lg dark:text-white">Scheduled Contests</h3>
+            <h3 className="font-display font-semibold text-lg dark:text-white">Scheduled Contests</h3>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {myContests.length} {myContests.length === 1 ? 'Contest' : 'Contests'} Scheduled
             </span>
@@ -349,7 +349,7 @@ export default function TeacherDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <tr className="surface-subtle text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-3">Contest Title</th>
                   <th className="px-6 py-3">Type</th>
                   <th className="px-6 py-3">Timeline</th>
@@ -403,7 +403,7 @@ export default function TeacherDashboard() {
                         <td className="px-6 py-4 text-right">
                           <button
                             onClick={() => handleDeleteContest(c._id, c.title)}
-                            className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
+                            className="inline-flex items-center gap-1.5 button-secondary font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                             <span>Cancel</span>
@@ -420,9 +420,9 @@ export default function TeacherDashboard() {
       )}
 
       {activeTab === 'quizzes' && (
-        <div className="nm-card rounded-2xl overflow-hidden">
+        <div className="surface-card rounded-md overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center">
-            <h3 className="font-outfit font-semibold text-lg dark:text-white">My Quizzes</h3>
+            <h3 className="font-display font-semibold text-lg dark:text-white">My Quizzes</h3>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {myQuizzes.length} {myQuizzes.length === 1 ? 'Quiz' : 'Quizzes'} Created
             </span>
@@ -430,7 +430,7 @@ export default function TeacherDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <tr className="surface-subtle text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-3">Quiz Title</th>
                   <th className="px-6 py-3">Category</th>
                   <th className="px-6 py-3">Difficulty</th>
@@ -473,14 +473,14 @@ export default function TeacherDashboard() {
                       <td className="px-6 py-4 text-right space-x-2">
                         <button
                           onClick={() => handleViewAttempts('quiz', q._id, q.title)}
-                          className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-brand-600 dark:text-brand-400"
+                          className="inline-flex items-center gap-1.5 button-secondary font-semibold text-xs px-2.5 py-1.5 rounded-lg text-brand-600 dark:text-brand-400"
                         >
                           <Eye className="h-3.5 w-3.5" />
                           <span>Attempts</span>
                         </button>
                         <button
                           onClick={() => handleDeleteQuiz(q._id, q.title)}
-                          className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
+                          className="inline-flex items-center gap-1.5 button-secondary font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           <span>Delete</span>
@@ -496,9 +496,9 @@ export default function TeacherDashboard() {
       )}
 
       {activeTab === 'challenges' && (
-        <div className="nm-card rounded-2xl overflow-hidden">
+        <div className="surface-card rounded-md overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200/50 dark:border-slate-800/50 flex justify-between items-center">
-            <h3 className="font-outfit font-semibold text-lg dark:text-white">Coding Challenges</h3>
+            <h3 className="font-display font-semibold text-lg dark:text-white">Coding Challenges</h3>
             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {myChallenges.length} {myChallenges.length === 1 ? 'Challenge' : 'Challenges'} Created
             </span>
@@ -506,7 +506,7 @@ export default function TeacherDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-              <tr className="nm-inset-sm text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <tr className="surface-subtle text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-3">Challenge Title</th>
                   <th className="px-6 py-3">Difficulty</th>
                   <th className="px-6 py-3">Supported Languages</th>
@@ -555,14 +555,14 @@ export default function TeacherDashboard() {
                       <td className="px-6 py-4 text-right space-x-2">
                         <button
                           onClick={() => handleViewAttempts('challenge', c._id, c.title)}
-                          className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-brand-600 dark:text-brand-400"
+                          className="inline-flex items-center gap-1.5 button-secondary font-semibold text-xs px-2.5 py-1.5 rounded-lg text-brand-600 dark:text-brand-400"
                         >
                           <Eye className="h-3.5 w-3.5" />
                           <span>Attempts</span>
                         </button>
                         <button
                           onClick={() => handleDeleteChallenge(c._id, c.title)}
-                          className="inline-flex items-center gap-1.5 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
+                          className="inline-flex items-center gap-1.5 button-secondary font-semibold text-xs px-2.5 py-1.5 rounded-lg text-red-650 dark:text-red-400"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           <span>Delete</span>
@@ -595,11 +595,11 @@ export default function TeacherDashboard() {
 
         return (
           <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="nm-card rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden flex flex-col transition-all transform scale-100 duration-300">
+            <div className="surface-card rounded-md max-w-4xl w-full max-h-[85vh] overflow-hidden flex flex-col transition-all transform scale-100 duration-300">
               {/* Header */}
               <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-750 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
                 <div>
-                  <h3 className="font-outfit font-bold text-xl text-slate-900 dark:text-white">
+                  <h3 className="font-display font-bold text-xl text-slate-900 dark:text-white">
                     {selectedAttemptForReview
                       ? `Review Submission: ${selectedAttemptForReview.attempt.userId?.name || 'Candidate'}`
                       : `Attempts Tracking: ${selectedItemForAttempts.title}`
@@ -651,27 +651,27 @@ export default function TeacherDashboard() {
                       <div className="space-y-6">
                         {/* Summary Cards */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Candidate</span>
-                            <span className="font-outfit font-bold text-sm text-slate-900 dark:text-white mt-1 block truncate">
+                            <span className="font-display font-bold text-sm text-slate-900 dark:text-white mt-1 block truncate">
                               {selectedAttemptForReview.attempt.userId?.name || 'N/A'}
                             </span>
                           </div>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Score Obtained</span>
-                            <span className="font-outfit font-extrabold text-base text-indigo-600 dark:text-indigo-400 mt-1 block">
+                            <span className="font-display font-extrabold text-base text-indigo-600 dark:text-indigo-400 mt-1 block">
                               {selectedAttemptForReview.attempt.score} / {selectedAttemptForReview.attempt.quizId?.totalMarks || 0} pts
                             </span>
                           </div>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Accuracy Rate</span>
-                            <span className="font-outfit font-extrabold text-base text-emerald-600 dark:text-emerald-400 mt-1 block">
+                            <span className="font-display font-extrabold text-base text-emerald-600 dark:text-emerald-400 mt-1 block">
                               {selectedAttemptForReview.attempt.accuracy?.toFixed(1)}%
                             </span>
                           </div>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Time Taken</span>
-                            <span className="font-outfit font-semibold text-sm text-slate-800 dark:text-slate-350 mt-1 block">
+                            <span className="font-display font-semibold text-sm text-slate-800 dark:text-slate-350 mt-1 block">
                               {Math.floor(selectedAttemptForReview.attempt.timeTaken / 60)}m {selectedAttemptForReview.attempt.timeTaken % 60}s
                             </span>
                           </div>
@@ -679,7 +679,7 @@ export default function TeacherDashboard() {
 
                         {/* Question Breakdown */}
                         <div className="space-y-4">
-                          <h4 className="font-outfit font-bold text-base dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">
+                          <h4 className="font-display font-bold text-base dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2">
                             Detailed Question & Response Log
                           </h4>
                           {selectedAttemptForReview.attempt.quizId?.questions?.map((q, idx) => {
@@ -691,7 +691,7 @@ export default function TeacherDashboard() {
                             return (
                               <div
                                 key={q._id}
-                                className={`nm-card p-5 rounded-2xl border transition-all ${
+                                className={`surface-card p-5 rounded-md border transition-all ${
                                   isCorrect
                                     ? 'border-emerald-500/20 dark:border-emerald-500/10 shadow-emerald-50/20 dark:shadow-none'
                                     : 'border-rose-500/20 dark:border-rose-500/10 shadow-rose-50/20 dark:shadow-none'
@@ -731,7 +731,7 @@ export default function TeacherDashboard() {
                                 </div>
 
                                 {/* Question Text */}
-                                <div className="font-outfit font-medium text-slate-900 dark:text-slate-100 text-sm mb-4 leading-relaxed whitespace-pre-line">
+                                <div className="font-display font-medium text-slate-900 dark:text-slate-100 text-sm mb-4 leading-relaxed whitespace-pre-line">
                                   {q.questionText}
                                 </div>
 
@@ -744,7 +744,7 @@ export default function TeacherDashboard() {
                                       return (
                                         <div
                                           key={optIdx}
-                                          className={`p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
+                                          className={`p-3 rounded-md border text-xs flex items-center justify-between transition-all ${
                                             isOptCorrect && isOptSelected
                                               ? 'bg-emerald-500/10 border-emerald-500 text-emerald-905 dark:text-emerald-250 font-semibold'
                                               : isOptCorrect
@@ -785,7 +785,7 @@ export default function TeacherDashboard() {
                                       return (
                                         <div
                                           key={optIdx}
-                                          className={`p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
+                                          className={`p-3 rounded-md border text-xs flex items-center justify-between transition-all ${
                                             isOptCorrect && isOptSelected
                                               ? 'bg-emerald-500/10 border-emerald-500 text-emerald-905 dark:text-emerald-250 font-semibold'
                                               : isOptCorrect
@@ -826,7 +826,7 @@ export default function TeacherDashboard() {
                                       return (
                                         <div
                                           key={val.toString()}
-                                          className={`p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
+                                          className={`p-3 rounded-md border text-xs flex items-center justify-between transition-all ${
                                             isValCorrect && isValSelected
                                               ? 'bg-emerald-500/10 border-emerald-500 text-emerald-905 dark:text-emerald-250 font-semibold'
                                               : isValCorrect
@@ -858,7 +858,7 @@ export default function TeacherDashboard() {
 
                                 {q.questionType === 'fill_blank' && (
                                   <div className="space-y-2 mb-3">
-                                    <div className={`p-3 rounded-xl border text-xs flex items-center gap-2 ${
+                                    <div className={`p-3 rounded-md border text-xs flex items-center gap-2 ${
                                       isCorrect
                                         ? 'bg-emerald-500/5 border-emerald-500/30'
                                         : 'bg-rose-500/5 border-rose-500/30'
@@ -869,7 +869,7 @@ export default function TeacherDashboard() {
                                       </span>
                                     </div>
                                     {!isCorrect && (
-                                      <div className="p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-xs flex items-center gap-2">
+                                      <div className="p-3 rounded-md border border-emerald-500/20 bg-emerald-500/5 text-xs flex items-center gap-2">
                                         <span className="text-slate-400 dark:text-slate-500 font-medium">Correct Answer:</span>
                                         <span className="font-semibold text-emerald-705 dark:text-emerald-400">
                                           {q.correctAnswerText}
@@ -881,7 +881,7 @@ export default function TeacherDashboard() {
 
                                 {/* Explanation Panel */}
                                 {q.explanation && (
-                                  <div className="mt-3 text-xs bg-slate-50 dark:bg-slate-800/35 p-3 rounded-xl border border-slate-150 dark:border-slate-750/80 text-slate-500 dark:text-slate-400">
+                                  <div className="mt-3 text-xs bg-slate-50 dark:bg-slate-800/35 p-3 rounded-md border border-slate-150 dark:border-slate-750/80 text-slate-500 dark:text-slate-400">
                                     <span className="font-bold text-slate-700 dark:text-slate-350 block mb-1">Explanation:</span>
                                     <p className="leading-relaxed">{q.explanation}</p>
                                   </div>
@@ -896,15 +896,15 @@ export default function TeacherDashboard() {
                       <div className="space-y-6 flex flex-col h-full">
                         {/* Summary Card */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Candidate</span>
-                            <span className="font-outfit font-bold text-sm text-slate-900 dark:text-white mt-1 block truncate">
+                            <span className="font-display font-bold text-sm text-slate-900 dark:text-white mt-1 block truncate">
                               {selectedAttemptForReview.attempt.userId?.name || 'N/A'}
                             </span>
                           </div>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Run Status</span>
-                            <span className={`font-outfit font-extrabold text-sm mt-1 block uppercase tracking-wide ${
+                            <span className={`font-display font-extrabold text-sm mt-1 block uppercase tracking-wide ${
                               selectedAttemptForReview.attempt.status === 'Accepted'
                                 ? 'text-emerald-605 dark:text-emerald-400'
                                 : 'text-rose-605 dark:text-rose-450'
@@ -912,22 +912,22 @@ export default function TeacherDashboard() {
                               {selectedAttemptForReview.attempt.status}
                             </span>
                           </div>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Test Cases Passed</span>
-                            <span className="font-outfit font-bold text-sm text-slate-800 dark:text-slate-350 mt-1 block">
+                            <span className="font-display font-bold text-sm text-slate-800 dark:text-slate-350 mt-1 block">
                               {selectedAttemptForReview.attempt.passedCount} / {selectedAttemptForReview.attempt.totalCount}
                             </span>
                           </div>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Points Awarded</span>
-                            <span className="font-outfit font-extrabold text-base text-indigo-600 dark:text-indigo-400 mt-1 block">
+                            <span className="font-display font-extrabold text-base text-indigo-600 dark:text-indigo-400 mt-1 block">
                               {selectedAttemptForReview.attempt.pointsAwarded} pts
                             </span>
                           </div>
                         </div>
 
                         {/* Solution Code Editor */}
-                        <div className="flex-1 flex flex-col bg-slate-900 border border-slate-700/60 rounded-2xl overflow-hidden min-h-[420px]">
+                        <div className="flex-1 flex flex-col bg-slate-900 border border-slate-700/60 rounded-md overflow-hidden min-h-[420px]">
                           {/* Code Header */}
                           <div className="flex items-center justify-between px-5 py-3 bg-slate-800 border-b border-slate-700/80">
                             <div className="flex items-center space-x-2">
@@ -988,39 +988,39 @@ export default function TeacherDashboard() {
                   <>
                     {/* Analytics Summary */}
                     <div className="grid grid-cols-3 gap-4 mb-6">
-                      <div className="nm-inset-sm p-4 rounded-xl">
+                      <div className="surface-subtle p-4 rounded-md">
                         <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Total Submissions</span>
-                        <span className="font-outfit font-extrabold text-2xl text-slate-900 dark:text-white mt-1 block">{totalAttemptsCount}</span>
+                        <span className="font-display font-extrabold text-2xl text-slate-900 dark:text-white mt-1 block">{totalAttemptsCount}</span>
                       </div>
                       {selectedItemForAttempts.type === 'quiz' ? (
                         <>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Average Score</span>
-                            <span className="font-outfit font-extrabold text-2xl text-brand-600 dark:text-brand-400 mt-1 block">{avgScore} pts</span>
+                            <span className="font-display font-extrabold text-2xl text-brand-600 dark:text-brand-400 mt-1 block">{avgScore} pts</span>
                           </div>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Highest Score</span>
-                            <span className="font-outfit font-extrabold text-2xl text-emerald-600 dark:text-emerald-400 mt-1 block">{highestScore} pts</span>
+                            <span className="font-display font-extrabold text-2xl text-emerald-600 dark:text-emerald-400 mt-1 block">{highestScore} pts</span>
                           </div>
                         </>
                       ) : (
                         <>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Success Rate</span>
-                            <span className="font-outfit font-extrabold text-2xl text-brand-600 dark:text-brand-400 mt-1 block">{successRate}%</span>
+                            <span className="font-display font-extrabold text-2xl text-brand-600 dark:text-brand-400 mt-1 block">{successRate}%</span>
                           </div>
-                          <div className="nm-inset-sm p-4 rounded-xl">
+                          <div className="surface-subtle p-4 rounded-md">
                             <span className="text-slate-450 dark:text-slate-500 text-[10px] font-bold uppercase tracking-wider block">Passed Submissions</span>
-                            <span className="font-outfit font-extrabold text-2xl text-emerald-600 dark:text-emerald-400 mt-1 block">{passedCountTotal}</span>
+                            <span className="font-display font-extrabold text-2xl text-emerald-600 dark:text-emerald-400 mt-1 block">{passedCountTotal}</span>
                           </div>
                         </>
                       )}
                     </div>
 
-                    <div className="overflow-x-auto nm-inset rounded-xl">
+                    <div className="overflow-x-auto surface-subtle rounded-md">
                       <table className="w-full text-left border-collapse text-xs md:text-sm">
                         <thead>
-                          <tr className="nm-card-sm border-b border-slate-200/50 dark:border-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+                          <tr className="surface-card-small border-b border-slate-200/50 dark:border-slate-800/50 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
                             <th className="px-5 py-3">Student Name</th>
                             <th className="px-5 py-3">Email</th>
                             <th className="px-5 py-3">College</th>
@@ -1090,7 +1090,7 @@ export default function TeacherDashboard() {
                               <td className="px-5 py-3.5 text-right">
                                 <button
                                   onClick={() => handleReviewAttempt(selectedItemForAttempts.type, attempt)}
-                                  className="inline-flex items-center gap-1 nm-btn font-semibold text-xs px-2.5 py-1.5 rounded-lg text-indigo-600 dark:text-indigo-400"
+                                  className="inline-flex items-center gap-1 button-secondary font-semibold text-xs px-2.5 py-1.5 rounded-lg text-indigo-600 dark:text-indigo-400"
                                 >
                                   <Eye className="h-3.5 w-3.5" />
                                   <span>Review</span>
@@ -1110,14 +1110,14 @@ export default function TeacherDashboard() {
                 {selectedAttemptForReview && (
                   <button
                     onClick={() => setSelectedAttemptForReview(null)}
-                    className="nm-btn font-semibold text-xs px-5 py-2.5 rounded-xl text-slate-750 dark:text-slate-300"
+                    className="button-secondary font-semibold text-xs px-5 py-2.5 rounded-md text-slate-750 dark:text-slate-300"
                   >
                     Back to List
                   </button>
                 )}
                 <button
                   onClick={handleCloseAttemptsModal}
-                  className="nm-btn-primary font-semibold text-xs px-5 py-2.5 rounded-xl"
+                  className="button-primary font-semibold text-xs px-5 py-2.5 rounded-md"
                 >
                   Close Panel
                 </button>

@@ -7,6 +7,7 @@ export const initiateSocketConnection = () => {
   if (socket) return socket;
   socket = io(SOCKET_URL, {
     withCredentials: true,
+    auth: { token: localStorage.getItem('token') },
     transports: ['websocket', 'polling'],
   });
   console.log('Connecting socket...');
@@ -24,10 +25,11 @@ export const disconnectSocket = () => {
 export const subscribeToContestLeaderboard = (contestId, userId, onUpdate) => {
   if (!socket) initiateSocketConnection();
   
-  socket.emit('join_contest', { contestId, userId });
+  socket.off('leaderboard_update');
   socket.on('leaderboard_update', (leaderboard) => {
     onUpdate(leaderboard);
   });
+  socket.emit('join_contest', { contestId });
 };
 
 export const unsubscribeFromContestLeaderboard = (contestId, userId) => {
