@@ -1,3 +1,5 @@
+import { enterFullscreen, exitFullscreen } from '../services/fullscreen.js';
+import useFullscreenCleanup from '../components/useFullscreenCleanup.js';
 import { useSessionNavigation } from '../components/SessionNavigation.jsx';
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
@@ -42,7 +44,11 @@ export default function Contests() {
 
   // Timer
   const [timeLeft, setTimeLeft] = useState(0);
-  useSessionNavigation(Boolean(activeContest) && contestConfirmed && timeLeft > 0);
+  useSessionNavigation(Boolean(activeContest) && timeLeft > 0);
+  useFullscreenCleanup();
+  useEffect(() => {
+    if (activeContest && timeLeft === 0) exitFullscreen();
+  }, [activeContest, timeLeft]);
 
   const timerRef = useRef(null);
 
@@ -70,6 +76,7 @@ export default function Contests() {
   const handleJoinContest = async (contestId) => {
     try {
       setLoading(true);
+      await enterFullscreen().catch(() => {});
       setContestConfirmed(false);
       setViolationCount(0);
       await axios.post(`/api/contests/${contestId}/join`);
@@ -97,6 +104,7 @@ export default function Contests() {
       }, 1000);
 
     } catch (err) {
+      await exitFullscreen();
       alert('Failed to join contest.');
     } finally {
       setLoading(false);
@@ -220,6 +228,7 @@ export default function Contests() {
   };
 
   const handleLeaveContestWorkspace = () => {
+    exitFullscreen();
     if (activeContest) {
       unsubscribeFromContestLeaderboard(activeContest._id, user.id);
     }
@@ -276,7 +285,7 @@ export default function Contests() {
   // Workspace Confirmation Page
   if (activeContest && !contestConfirmed) {
     return (
-      <CameraStartConfirmation
+      <CameraStartConfirmation requireFullscreen
         title={`Enter Contest: ${activeContest.title}`}
         subtitle={`Proctored Arena | Ends: ${new Date(activeContest.endTime).toLocaleString()}`}
         onConfirm={() => setContestConfirmed(true)}

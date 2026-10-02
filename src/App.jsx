@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { SessionNavigationProvider } from './components/SessionNavigation.jsx';
-import Footer from './components/Footer.jsx';
 import AppRoutes from './routes/AppRoutes.jsx';
 import { getMeThunk } from './redux/slices/authSlice.js';
 
@@ -30,7 +29,6 @@ export default function App() {
         <SessionNavigationProvider>
           <PageLayout />
         </SessionNavigationProvider>
-        <Footer />
       </div>
     </Router>
   );

@@ -1,3 +1,6 @@
+import { enterFullscreen, exitFullscreen } from '../services/fullscreen.js';
+import { useSessionNavigation } from '../components/SessionNavigation.jsx';
+import useFullscreenCleanup from '../components/useFullscreenCleanup.js';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { SectionLayout, SearchField, FilterButtons, EmptyState, LoadError } from '../components/SectionLayout.jsx';
@@ -22,6 +25,8 @@ export default function CodingChallenges() {
   const [testResults, setTestResults] = useState(null);
   const [violationCount, setViolationCount] = useState(0);
   const [challengeConfirmed, setChallengeConfirmed] = useState(false);
+  useSessionNavigation(Boolean(activeChallenge));
+  useFullscreenCleanup();
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -44,6 +49,7 @@ export default function CodingChallenges() {
   const handleSelectChallenge = async (id) => {
     try {
       setLoading(true);
+      await enterFullscreen().catch(() => {});
       setChallengeConfirmed(false);
       setViolationCount(0);
       const res = await axios.get(`/api/challenges/${id}`);
@@ -59,6 +65,7 @@ export default function CodingChallenges() {
       setCode(sample || LANGUAGE_TEMPLATES[defaultLang] || '');
       setTestResults(null);
     } catch (err) {
+      await exitFullscreen();
       alert('Failed to load challenge details.');
     } finally {
       setLoading(false);
@@ -92,7 +99,8 @@ export default function CodingChallenges() {
     if (activeChallenge && violationCount >= 3) {
       alert('CHALLENGE TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your code is being submitted automatically.');
       handleSubmitCode(false).then(() => {
-        setActiveChallenge(null);
+        exitFullscreen();
+          setActiveChallenge(null);
         setChallengeConfirmed(false);
       });
     }
@@ -110,11 +118,12 @@ export default function CodingChallenges() {
   // Workspace Confirmation Page
   if (activeChallenge && !challengeConfirmed) {
     return (
-      <CameraStartConfirmation
+      <CameraStartConfirmation requireFullscreen
         title={`Start Challenge: ${activeChallenge.title}`}
         subtitle={`Difficulty: ${activeChallenge.difficulty.toUpperCase()} | Supported Languages: ${activeChallenge.supportedLanguages.join(', ')}`}
         onConfirm={() => setChallengeConfirmed(true)}
         onCancel={() => {
+          exitFullscreen();
           setActiveChallenge(null);
           setChallengeConfirmed(false);
         }}
@@ -135,7 +144,8 @@ export default function CodingChallenges() {
         {/* Back navigation */}
         <button
           onClick={() => {
-            setActiveChallenge(null);
+            exitFullscreen();
+          setActiveChallenge(null);
             setChallengeConfirmed(false);
           }}
           className="text-brand-600 hover:text-brand-700 font-semibold text-sm mb-4 inline-flex items-center gap-1"
