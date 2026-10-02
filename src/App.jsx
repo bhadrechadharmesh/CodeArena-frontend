@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import Navbar from './components/Navbar.jsx';
+import { SessionNavigationProvider } from './components/SessionNavigation.jsx';
 import Footer from './components/Footer.jsx';
 import AppRoutes from './routes/AppRoutes.jsx';
 import { getMeThunk } from './redux/slices/authSlice.js';
@@ -27,8 +27,9 @@ export default function App() {
     <Router>
       <div className="flex flex-col app-container transition-colors duration-200">
         <a href="#main-content" className="sr-only focus:not-sr-only focus:p-3 focus:bg-blue-600 focus:text-white">Skip to content</a>
-        <Navbar />
-        <PageLayout />
+        <SessionNavigationProvider>
+          <PageLayout />
+        </SessionNavigationProvider>
         <Footer />
       </div>
     </Router>

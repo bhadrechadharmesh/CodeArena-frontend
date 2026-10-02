@@ -1,12 +1,32 @@
+import { enterFullscreen, exitFullscreen } from '../services/fullscreen.js';
 import React, { useRef, useEffect, useState } from 'react';
 import { Camera, CameraOff, AlertTriangle, ShieldCheck, CheckCircle2, Play } from 'lucide-react';
 
 export default function CameraStartConfirmation({ 
   title = "Start Attempt", 
   subtitle = "Proctoring Setup",
+  requireFullscreen = false,
   onConfirm, 
   onCancel 
 }) {
+  const [fullscreen, setFullscreen] = useState(Boolean(document.fullscreenElement));
+  const [fullscreenError, setFullscreenError] = useState('');
+  const fullscreenSupported = Boolean(document.documentElement.requestFullscreen);
+  useEffect(() => {
+    const update = () => setFullscreen(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', update);
+    update();
+    return () => document.removeEventListener('fullscreenchange', update);
+  }, []);
+  const requestFullscreen = async () => {
+    setFullscreenError('');
+    try { await enterFullscreen(); }
+    catch { setFullscreenError('Fullscreen could not be opened. Allow fullscreen in your browser and try again.'); }
+  };
+  const cancelSetup = async () => {
+    if (requireFullscreen) await exitFullscreen();
+    onCancel();
+  };
   const videoRef = useRef(null);
   const [stream, setStream] = useState(null);
   const [active, setActive] = useState(false);
@@ -55,7 +75,7 @@ export default function CameraStartConfirmation({
     }
   }, [stream, active]);
 
-  const allRulesChecked = active && checkedRules.faceVisible && checkedRules.noTabs && checkedRules.wellLit;
+  const allRulesChecked = (!requireFullscreen || fullscreen) && active && checkedRules.faceVisible && checkedRules.noTabs && checkedRules.wellLit;
 
   const handleCheckboxChange = (rule) => {
     setCheckedRules((prev) => ({
@@ -65,8 +85,8 @@ export default function CameraStartConfirmation({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-xl bg-slate-955/85">
-      <div className="w-full max-w-2xl overflow-hidden rounded-lg surface-card border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col md:flex-row">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto backdrop-blur-xl bg-slate-955/85">
+      <div className="w-full max-w-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-lg surface-card border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col md:flex-row">
         {/* Left Side: Video Preview */}
         <div className="w-full md:w-1/2 p-6 flex flex-col items-center justify-center bg-slate-950/40 border-b md:border-b-0 md:border-r border-slate-200/50 dark:border-slate-800/50">
           <span className="text-[10px] uppercase font-bold text-brand-600 dark:text-brand-400 tracking-wider mb-2">Camera Feed Preview</span>
@@ -123,6 +143,13 @@ export default function CameraStartConfirmation({
               <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block mt-1">{subtitle}</span>
             </div>
 
+            {requireFullscreen && <div className="border border-[var(--line)] p-3 text-xs mt-4">
+              {fullscreen ? <p className="flex items-center gap-2 text-emerald-600"><CheckCircle2 size={15}/>Fullscreen is active</p> : <>
+                <p className="text-[var(--muted)] mb-2">{fullscreenSupported ? 'Enter fullscreen to finish the quiz setup.' : 'This browser does not support fullscreen. Open the quiz in a browser that supports fullscreen to continue.'}</p>
+                {fullscreenSupported && <button onClick={requestFullscreen} className="button-secondary px-3 py-2">Enter fullscreen</button>}
+              </>}
+              {fullscreenError && <p role="alert" className="text-red-600 mt-2">{fullscreenError}</p>}
+            </div>}
             {/* Checklist */}
             <div className="space-y-3.5 my-5">
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-semibold uppercase tracking-wider">Please confirm compliance before starting:</p>
@@ -177,13 +204,13 @@ export default function CameraStartConfirmation({
           {/* Action Buttons */}
           <div className="flex gap-3 mt-6 pt-4 border-t border-slate-200/50 dark:border-slate-800/50">
             <button
-              onClick={onCancel}
+              onClick={cancelSetup}
               className="flex-grow button-secondary py-2.5 rounded-md font-bold text-xs text-slate-700 dark:text-slate-200 text-center"
             >
               Cancel
             </button>
             <button
-              onClick={onConfirm}
+              onClick={() => { if (allRulesChecked) onConfirm(); }}
               disabled={!allRulesChecked}
               className={`flex-grow py-2.5 rounded-md font-bold text-xs text-center flex items-center justify-center gap-1.5 transition-all ${
                 allRulesChecked 

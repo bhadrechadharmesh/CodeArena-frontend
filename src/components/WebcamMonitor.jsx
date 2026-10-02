@@ -1,9 +1,52 @@
 import React, { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Camera, CameraOff, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { Camera, CameraOff, AlertTriangle, GripVertical, Minus, Maximize2 } from 'lucide-react';
 
 export default function WebcamMonitor({ contestId = null, quizId = null, challengeId = null, onViolationLog = null }) {
   const videoRef = useRef(null);
+  const widgetRef = useRef(null);
+  const dragRef = useRef(null);
+  const streamRef = useRef(null);
+  const generationRef = useRef(0);
+  const toastTimerRef = useRef(null);
+  const [collapsed, setCollapsed] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [position, setPosition] = useState(() => ({ x: Math.max(8, window.innerWidth - 208), y: Math.max(8, window.innerHeight - 210) }));
+
+  const clampPosition = (x, y) => {
+    const bounds = widgetRef.current?.getBoundingClientRect();
+    return {
+      x: Math.max(8, Math.min(x, window.innerWidth - (bounds?.width || 192) - 8)),
+      y: Math.max(8, Math.min(y, window.innerHeight - (bounds?.height || 190) - 8)),
+    };
+  };
+  useEffect(() => {
+    const keepVisible = () => setPosition(previous => clampPosition(previous.x, previous.y));
+    const observer = new ResizeObserver(keepVisible);
+    if (widgetRef.current) observer.observe(widgetRef.current);
+    window.addEventListener('resize', keepVisible);
+    return () => { observer.disconnect(); window.removeEventListener('resize', keepVisible); };
+  }, []);
+
+  const startDrag = event => {
+    if (event.button !== 0) return;
+    const bounds = widgetRef.current.getBoundingClientRect();
+    dragRef.current = { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragging(true);
+  };
+  const moveDrag = event => {
+    if (!dragRef.current) return;
+    setPosition(clampPosition(event.clientX - dragRef.current.x, event.clientY - dragRef.current.y));
+  };
+  const endDrag = () => { dragRef.current = null; setDragging(false); };
+  const moveWithKeyboard = event => {
+    const movement = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[event.key];
+    if (!movement) return;
+    event.preventDefault();
+    const step = event.shiftKey ? 40 : 10;
+    setPosition(previous => clampPosition(previous.x + movement[0] * step, previous.y + movement[1] * step));
+  };
   const [stream, setStream] = useState(null);
   const [active, setActive] = useState(false);
   const [error, setError] = useState('');
@@ -15,19 +58,23 @@ export default function WebcamMonitor({ contestId = null, quizId = null, challen
   const showToast = (msg) => {
     setToast(msg);
     // Clear toast automatically after 4 seconds
-    setTimeout(() => {
+    clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => {
       setToast('');
     }, 4000);
   };
 
   // Start webcam stream
-  const startWebcam = async () => {
+  const startWebcam = async (generation) => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({ video: { width: 160, height: 120 } });
+      if (generation !== generationRef.current) { mediaStream.getTracks().forEach(track => track.stop()); return; }
+      streamRef.current = mediaStream;
       setStream(mediaStream);
       setActive(true);
       setError('');
     } catch (err) {
+      if (generation !== generationRef.current) return;
       setError('Webcam access denied. Proctoring requires camera access.');
       logCheatViolation('no_face', 'Camera access blocked by candidate');
     }
@@ -35,9 +82,10 @@ export default function WebcamMonitor({ contestId = null, quizId = null, challen
 
   // Stop webcam stream
   const stopWebcam = () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
     }
+    streamRef.current = null;
     setStream(null);
     setActive(false);
   };
@@ -86,12 +134,15 @@ export default function WebcamMonitor({ contestId = null, quizId = null, challen
       showToast('VIOLATION WARNING: Leaving or unfocusing the exam window is logged.');
     };
 
-    startWebcam();
+    const generation = ++generationRef.current;
+    startWebcam(generation);
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleWindowBlur);
 
     return () => {
+      generationRef.current++;
+      clearTimeout(toastTimerRef.current);
       stopWebcam();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('blur', handleWindowBlur);
@@ -108,47 +159,21 @@ export default function WebcamMonitor({ contestId = null, quizId = null, challen
         </div>
       )}
 
-      {/* Proctor Widget */}
-      <div className="fixed top-24 right-4 z-40 bg-slate-900 border border-slate-700 text-white rounded-md p-3 shadow-2xl flex flex-col items-center w-48 transition-all duration-300">
-        <div className="flex items-center justify-between w-full mb-1">
-          <span className="text-[10px] uppercase font-bold text-red-500 flex items-center gap-1 animate-pulse">
-            <span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-            Live Proctor
-          </span>
-          {active ? (
-            <ShieldCheck className="h-4 w-4 text-emerald-400" />
-          ) : (
-            <AlertTriangle className="h-4 w-4 text-amber-500" />
-          )}
+      <section ref={widgetRef} aria-label="Camera preview" className={'camera-widget ' + (dragging ? 'is-dragging' : '')} style={{ left: position.x, top: position.y }}>
+        <header className="camera-widget-header">
+          <button type="button" className="camera-drag-handle" aria-label="Move camera preview" aria-describedby="camera-move-help" title="Drag to move · Arrow keys to reposition" onPointerDown={startDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} onLostPointerCapture={endDrag} onKeyDown={moveWithKeyboard}>
+            <GripVertical size={15}/><span className={active ? 'camera-status active' : 'camera-status'}/><span>Camera {active ? 'on' : 'off'}</span>
+          </button>
+          <button type="button" className="camera-collapse" onClick={() => setCollapsed(previous => !previous)} aria-expanded={!collapsed} aria-controls="camera-preview-body" aria-label={collapsed ? 'Expand camera preview' : 'Minimize camera preview'} title={collapsed ? 'Expand preview' : 'Minimize preview'}>{collapsed ? <Maximize2 size={14}/> : <Minus size={16}/>}</button>
+        </header>
+        <span id="camera-move-help" className="sr-only">Drag this handle or use arrow keys to move the preview. Hold Shift to move faster.</span>
+        <div id="camera-preview-body" hidden={collapsed}>
+          <div className="camera-video">{active ? <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]"/> : <div className="camera-unavailable"><CameraOff size={22}/><span>Camera unavailable</span></div>}</div>
+          {error && <p className="camera-error">{error}</p>}
+          <div className="camera-widget-footer"><span>Session monitoring</span><span>{violations.length} events</span></div>
         </div>
-
-        {/* Video Box */}
-        <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden border border-slate-800">
-          {active ? (
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-full object-cover scale-x-[-1]"
-            />
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 text-xs">
-              <CameraOff className="h-6 w-6 mb-1" />
-              <span>Camera Off</span>
-            </div>
-          )}
-        </div>
-
-        {error && <span className="text-[10px] text-red-400 mt-2 text-center">{error}</span>}
-
-        {/* Violation Stats */}
-        <div className="mt-2 text-center w-full border-t border-slate-800 pt-2">
-          <span className="text-[10px] text-slate-400 block font-semibold">
-            Violations Logged: <strong className="text-red-500">{violations.length}</strong>
-          </span>
-        </div>
-      </div>
+        {collapsed && error && <p className="camera-error">{error}</p>}
+      </section>
     </>
   );
 }

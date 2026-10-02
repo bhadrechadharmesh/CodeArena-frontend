@@ -1,9 +1,11 @@
+import { useSessionNavigation } from '../components/SessionNavigation.jsx';
+import { exitFullscreen } from '../services/fullscreen.js';
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import WebcamMonitor from '../components/WebcamMonitor.jsx';
 import CameraStartConfirmation from '../components/CameraStartConfirmation.jsx';
-import { Clock, CheckSquare, ArrowLeft, ArrowRight, HelpCircle, Save, AlertTriangle, Download } from 'lucide-react';
+import { Clock, CheckSquare, ArrowLeft, ArrowRight, HelpCircle, Save, AlertTriangle, Download, Flag, Check, ChevronRight } from 'lucide-react';
 
 export default function QuizAttempt() {
   const { id } = useParams();
@@ -19,7 +21,24 @@ export default function QuizAttempt() {
   const [violationCount, setViolationCount] = useState(0);
   const [confirmed, setConfirmed] = useState(false);
   
+  useSessionNavigation(confirmed && !submittedResult);
+
   const timerRef = useRef(null);
+  const deadlineRef = useRef(null);
+  const submissionRef = useRef(false);
+  const autoSubmittedRef = useRef(false);
+  const [submitReview, setSubmitReview] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [notice, setNotice] = useState('');
+
+  const fullscreenExitTimer = useRef(null);
+  useEffect(() => {
+    clearTimeout(fullscreenExitTimer.current);
+    return () => {
+      // Defer cleanup so React StrictMode's effect replay does not exit fullscreen.
+      fullscreenExitTimer.current = setTimeout(() => { exitFullscreen(); }, 0);
+    };
+  }, []);
 
   // Fetch Quiz Questions
   useEffect(() => {
@@ -50,26 +69,22 @@ export default function QuizAttempt() {
     fetchQuiz();
   }, [id, navigate]);
 
-  // Timer countdown and Auto-submit
+  // Use wall-clock time so a delayed interval cannot extend the assessment.
   useEffect(() => {
-    if (loading || !quiz || timeLeft <= 0 || !confirmed) {
-      if (timeLeft === 0 && quiz && confirmed) {
-        handleAutoSubmit();
-      }
-      return;
-    }
-
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-
+    if (!confirmed || !quiz || submittedResult) return;
+    const tick = () => setTimeLeft(Math.max(0, Math.ceil((deadlineRef.current - Date.now()) / 1000)));
+    tick();
+    timerRef.current = setInterval(tick, 1000);
     return () => clearInterval(timerRef.current);
-  }, [loading, quiz, timeLeft, confirmed]);
+  }, [confirmed, quiz, submittedResult]);
 
-  const handleAutoSubmit = () => {
-    alert('TIMEOUT: Quiz duration elapsed. Auto-submitting details...');
-    handleSubmitQuiz();
-  };
+  useEffect(() => {
+    if (confirmed && quiz && !submittedResult && (timeLeft === 0 || violationCount >= 3) && !autoSubmittedRef.current) {
+      autoSubmittedRef.current = true;
+      setNotice(timeLeft === 0 ? 'Time is up. Your answers are being submitted.' : 'The session ended after three proctoring events. Your answers are being submitted.');
+      handleSubmitQuiz();
+    }
+  }, [timeLeft, confirmed, quiz, submittedResult, violationCount]);
 
   const handleOptionChange = (qIdx, optIdx) => {
     setAnswers((prev) =>
@@ -109,31 +124,25 @@ export default function QuizAttempt() {
   };
 
   const handleSubmitQuiz = async () => {
-    if (isSubmitting) return;
+    if (submissionRef.current || submittedResult) return;
+    submissionRef.current = true;
+    setSubmitError('');
     setIsSubmitting(true);
-    clearInterval(timerRef.current);
 
     try {
-      const elapsedSeconds = (quiz.duration * 60) - timeLeft;
+      const elapsedSeconds = Math.max(0, Math.min(quiz.duration * 60, Math.floor((Date.now() - (deadlineRef.current - quiz.duration * 60000)) / 1000)));
       const res = await axios.post(`/api/quizzes/${id}/attempt`, {
         answers,
         timeTaken: elapsedSeconds
       });
       setSubmittedResult(res.data.attempt);
     } catch (err) {
-      alert('Failed to submit attempt. Please try again.');
+      setSubmitError(err.response?.data?.message || 'Your answers could not be submitted. Please retry; your answers are still here.');
     } finally {
+      submissionRef.current = false;
       setIsSubmitting(false);
     }
   };
-
-  // Auto-submit on 3 violations
-  useEffect(() => {
-    if (violationCount >= 3) {
-      alert('EXAM TERMINATED: You have exceeded the maximum of 3 proctoring violations. Your quiz is being submitted automatically.');
-      handleSubmitQuiz();
-    }
-  }, [violationCount]);
 
   if (loading) {
     return (
@@ -144,12 +153,14 @@ export default function QuizAttempt() {
     );
   }
 
+  if (!quiz?.questions?.length) return <div className="live-empty"><h1>No questions available</h1><p>This assessment cannot be started yet.</p><button onClick={() => navigate('/quizzes')} className="button-secondary px-4 py-2">Back to quizzes</button></div>;
+
   if (!confirmed) {
     return (
-      <CameraStartConfirmation 
+      <CameraStartConfirmation requireFullscreen
         title={`Start Quiz: ${quiz?.title || 'Loading...'}`}
         subtitle={`Category: ${quiz?.category || '--'} | Duration: ${quiz?.duration || '--'} mins | Marks: ${quiz?.totalMarks || '--'}`}
-        onConfirm={() => setConfirmed(true)}
+        onConfirm={() => { deadlineRef.current = Date.now() + quiz.duration * 60000; setConfirmed(true); }}
         onCancel={() => navigate('/quizzes')}
       />
     );
@@ -158,7 +169,7 @@ export default function QuizAttempt() {
   // Display results screen after submission
   if (submittedResult) {
     return (
-      <div className="max-w-2xl mx-auto my-12 px-4">
+      <div className="live-result max-w-2xl mx-auto my-12 px-4">
         <div className="surface-card overflow-hidden">
           <div className="h-2 bg-[var(--accent)]" />
           <div className="p-8">
@@ -209,179 +220,42 @@ export default function QuizAttempt() {
 
   const currentQ = quiz.questions[currentIdx];
   const currentAns = answers[currentIdx];
+  const hasAnswer = answer => !!answer && (answer.selectedOption !== null || answer.selectedOptions.length > 0 || answer.booleanAnswer !== null || answer.textAnswer.trim() !== '');
+  const answeredCount = answers.filter(hasAnswer).length;
+  const locked = isSubmitting || timeLeft === 0 || violationCount >= 3;
+  const types = { mcq: 'Choose one answer', multiple_correct: 'Select all that apply', true_false: 'Choose true or false', fill_blank: 'Write your answer' };
+  const clearAnswer = () => setAnswers(previous => previous.map((answer, index) => index === currentIdx ? { ...answer, selectedOption: null, selectedOptions: [], booleanAnswer: null, textAnswer: '' } : answer));
 
-  const min = Math.floor(timeLeft / 60);
-  const sec = timeLeft % 60;
-
-  const renderQuizControls = (position = 'top') => (
-    <div className={`grid grid-cols-1 sm:grid-cols-3 items-center gap-3 ${position === 'top' ? 'mb-6' : 'mt-8 pt-6 border-t border-slate-200/50 dark:border-slate-800/50'}`}>
-      <div className="flex gap-2 sm:justify-self-start">
-        <button disabled={currentIdx === 0} onClick={() => setCurrentIdx((prev) => prev - 1)} className="inline-flex items-center justify-center gap-1.5 button-secondary disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg"><ArrowLeft className="h-3.5 w-3.5" /><span>Prev</span></button>
-        <button onClick={() => toggleReview(currentIdx)} className={`font-semibold text-xs px-4 py-2.5 rounded-lg transition-all ${reviewed.includes(currentIdx) ? 'surface-subtle text-amber-600 dark:text-amber-400 border border-amber-500/30' : 'button-secondary text-amber-600 dark:text-amber-400'}`}>{reviewed.includes(currentIdx) ? 'Marked' : 'Review'}</button>
-      </div>
-      <button onClick={handleSubmitQuiz} disabled={isSubmitting} className="button-primary font-semibold text-xs px-6 py-2.5 rounded-lg flex items-center justify-center gap-1.5 sm:justify-self-center"><Save className="h-3.5 w-3.5" /><span>Submit Test</span></button>
-      <button disabled={currentIdx === quiz.questions.length - 1} onClick={() => setCurrentIdx((prev) => prev + 1)} className="inline-flex items-center justify-center gap-1.5 button-secondary disabled:opacity-50 text-slate-700 dark:text-slate-200 font-semibold text-xs px-4 py-2.5 rounded-lg sm:justify-self-end"><span>Next</span><ArrowRight className="h-3.5 w-3.5" /></button>
-    </div>
-  );
-
-  return (
-    <div className="max-w-7xl mx-auto px-4 py-8 relative">
-      {/* Proctoring Camera Feed */}
-      <WebcamMonitor 
-        quizId={id} 
-        onViolationLog={() => setViolationCount((prev) => prev + 1)} 
-      />
-
-      {/* Header bar with Timer */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-slate-800">
-        <div>
-          <span className="text-[10px] uppercase font-bold text-brand-600 dark:text-brand-400 tracking-wider">Exam Panel</span>
-          <h1 className="font-display font-extrabold text-2xl dark:text-white leading-none mt-1">{quiz.title}</h1>
-        </div>
-
-        <div className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-bold surface-subtle ${
-          timeLeft < 120 ? 'text-red-600 animate-pulse' : 'text-brand-600 dark:text-brand-400'
-        }`}>
-          <Clock className="h-4 w-4" />
-          <span>Timer: {min}m {sec.toString().padStart(2, '0')}s</span>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-4 gap-8">
-        {/* Navigation Sidebar */}
-        <div className="surface-card p-6 rounded-md h-fit">
-          <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">Question Grid</h3>
-          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-4 gap-2">
-            {quiz.questions.map((_, index) => {
-              const isSelected = index === currentIdx;
-              const hasAns = answers[index] && (
-                answers[index].selectedOption !== null ||
-                answers[index].selectedOptions.length > 0 ||
-                answers[index].booleanAnswer !== null ||
-                answers[index].textAnswer.trim() !== ''
-              );
-              const isReview = reviewed.includes(index);
-
-              return (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIdx(index)}
-                  className={`w-10 h-10 rounded-md flex items-center justify-center font-bold text-xs transition-all ${
-                    isSelected ? 'surface-subtle text-brand-600 dark:text-brand-400 border border-brand-500/40 ring-1 ring-brand-500/20' :
-                    isReview ? 'bg-amber-500 text-white border-amber-500 shadow-inner' :
-                    hasAns ? 'bg-emerald-500 text-white border-emerald-500 shadow-inner' :
-                    'button-secondary text-slate-600 dark:text-slate-300'
-                  }`}
-                >
-                  {index + 1}
-                </button>
-              );
+  return <div className="live-quiz">
+    <WebcamMonitor quizId={id} onViolationLog={() => setViolationCount(previous => previous + 1)}/>
+    <header className="live-topbar"><div><p className="desk-label">CODEARENA / ASSESSMENT IN PROGRESS</p><h1>{quiz.title}</h1></div><div className="live-session-meta"><span>{quiz.category}</span><span>{quiz.totalMarks} marks</span></div></header>
+    {notice && <p className="desk-alert" role="status">{notice}</p>}
+    {submitError && <div role="alert" className="desk-alert">{submitError}<button onClick={handleSubmitQuiz} disabled={isSubmitting} className="underline ml-3">Retry submission</button></div>}
+    <div className="live-layout">
+      <section className="live-question" aria-labelledby="live-question-heading">
+        <div className="live-question-meta"><span>QUESTION {String(currentIdx + 1).padStart(2, '0')} <span className="text-[var(--muted)]">/ {String(quiz.questions.length).padStart(2, '0')}</span></span><button onClick={() => toggleReview(currentIdx)} disabled={locked} aria-pressed={reviewed.includes(currentIdx)} className={reviewed.includes(currentIdx) ? 'is-flagged' : ''}><Flag size={14}/>{reviewed.includes(currentIdx) ? 'Marked for review' : 'Mark for review'}</button></div>
+        <div className="live-question-body"><p className="live-answer-instruction">{types[currentQ.questionType]}<span className="level-label" data-level={currentQ.difficulty}>{currentQ.difficulty}</span></p><h2 id="live-question-heading">{currentQ.questionText}</h2>
+          <fieldset disabled={locked} className="live-answers"><legend className="sr-only">{types[currentQ.questionType]}</legend>
+            {['mcq', 'multiple_correct'].includes(currentQ.questionType) && currentQ.options.map((option, index) => {
+              const multiple = currentQ.questionType === 'multiple_correct';
+              const selected = multiple ? currentAns.selectedOptions.includes(index) : currentAns.selectedOption === index;
+              return <label key={currentQ._id + '-' + index} className={'live-option ' + (selected ? 'is-chosen' : '')}><span className="live-option-letter" aria-hidden="true">{String.fromCharCode(65 + index)}</span><span className="live-option-text">{option}</span><input type={multiple ? 'checkbox' : 'radio'} name={'answer-' + currentQ._id} checked={selected} onChange={() => multiple ? handleCheckboxChange(currentIdx, index) : handleOptionChange(currentIdx, index)}/></label>;
             })}
-          </div>
-
-          {/* Color Legend */}
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 space-y-2 text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-emerald-500 rounded"></span>
-              <span>Attempted</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 bg-amber-500 rounded"></span>
-              <span>For Review</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 surface-subtle rounded"></span>
-              <span>Unattempted</span>
-            </div>
-          </div>
+            {currentQ.questionType === 'true_false' && <div className="live-boolean">{[true, false].map(value => <label key={String(value)} className={'live-option ' + (currentAns.booleanAnswer === value ? 'is-chosen' : '')}><span>{value ? 'True' : 'False'}</span><input type="radio" name={'answer-' + currentQ._id} checked={currentAns.booleanAnswer === value} onChange={() => handleBooleanChange(currentIdx, value)}/></label>)}</div>}
+            {currentQ.questionType === 'fill_blank' && <label className="live-written"><span>Your answer</span><input type="text" value={currentAns.textAnswer} onChange={event => handleTextChange(currentIdx, event.target.value)} placeholder="Enter your answer" autoComplete="off"/></label>}
+          </fieldset>
+          <div className="live-answer-footer"><span>{hasAnswer(currentAns) ? <><Check size={13}/>Answer selected</> : 'No answer selected'}</span><button onClick={clearAnswer} disabled={locked || !hasAnswer(currentAns)}>Clear answer</button></div>
         </div>
-
-        {/* Question Panel */}
-        <div className="md:col-span-3 surface-card p-8 rounded-md flex flex-col justify-between min-h-[400px]">
-          <div>
-            <div className="flex items-center justify-between mb-4 text-xs font-semibold text-slate-400">
-              <span className="uppercase">Question {currentIdx + 1} of {quiz.questions.length}</span>
-              <span className="surface-subtle px-2.5 py-0.5 rounded uppercase">{currentQ.difficulty}</span>
-            </div>
-
-            {renderQuizControls('top')}
-
-            <h3 className="font-display font-semibold text-lg text-slate-900 dark:text-white leading-relaxed mb-6">
-              {currentQ.questionText}
-            </h3>
-
-            {/* Answer Selector Inputs based on type */}
-            <div className="space-y-3">
-              {/* MCQ */}
-              {currentQ.questionType === 'mcq' && currentQ.options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleOptionChange(currentIdx, i)}
-                  className={`w-full text-left p-4 rounded-md text-sm font-medium transition-all flex items-center justify-between ${
-                    currentAns.selectedOption === i ? 'surface-subtle text-brand-700 dark:text-white border border-brand-500/30' : 'button-secondary text-slate-700 dark:text-slate-200'
-                  }`}
-                >
-                  <span>{opt}</span>
-                  <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${currentAns.selectedOption === i ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-350 dark:border-slate-600'}`}>
-                    {currentAns.selectedOption === i && <span className="w-1.5 h-1.5 bg-white rounded-full"></span>}
-                  </span>
-                </button>
-              ))}
-
-              {/* Multiple Correct */}
-              {currentQ.questionType === 'multiple_correct' && currentQ.options.map((opt, i) => {
-                const isSelected = currentAns.selectedOptions?.includes(i);
-                return (
-                  <button
-                    key={i}
-                    onClick={() => handleCheckboxChange(currentIdx, i)}
-                    className={`w-full text-left p-4 rounded-md text-sm font-medium transition-all flex items-center justify-between ${
-                      isSelected ? 'surface-subtle text-brand-700 dark:text-white border border-brand-500/30' : 'button-secondary text-slate-700 dark:text-slate-200'
-                    }`}
-                  >
-                    <span>{opt}</span>
-                    <span className={`w-4 h-4 rounded border flex items-center justify-center ${isSelected ? 'border-brand-500 bg-brand-500 text-white' : 'border-slate-350 dark:border-slate-600'}`}>
-                      {isSelected && <span className="w-2 h-2 bg-white rounded-sm"></span>}
-                    </span>
-                  </button>
-                );
-              })}
-
-              {/* True/False */}
-              {currentQ.questionType === 'true_false' && (
-                <div className="flex gap-4">
-                  {[true, false].map((val) => (
-                    <button
-                      key={val.toString()}
-                      onClick={() => handleBooleanChange(currentIdx, val)}
-                      className={`flex-grow py-4 rounded-md text-sm font-bold transition-all text-center ${
-                        currentAns.booleanAnswer === val ? 'surface-subtle text-brand-700 dark:text-white border border-brand-500/30' : 'button-secondary text-slate-700 dark:text-slate-300'
-                      }`}
-                    >
-                      {val ? 'TRUE' : 'FALSE'}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* Fill in the blank */}
-              {currentQ.questionType === 'fill_blank' && (
-                <div>
-                  <input
-                    type="text"
-                    value={currentAns.textAnswer}
-                    onChange={(e) => handleTextChange(currentIdx, e.target.value)}
-                    className="w-full field-control rounded-md py-4 px-4 text-sm focus:outline-none dark:text-white"
-                    placeholder="Type your answer here..."
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {renderQuizControls('bottom')}
-        </div>
-      </div>
+        <footer className="live-question-nav"><button onClick={() => setCurrentIdx(previous => previous - 1)} disabled={currentIdx === 0 || isSubmitting}><ArrowLeft size={16}/>Previous</button><span>{currentIdx + 1} of {quiz.questions.length}</span>{currentIdx < quiz.questions.length - 1 ? <button onClick={() => setCurrentIdx(previous => previous + 1)} disabled={isSubmitting}>Next question<ArrowRight size={16}/></button> : <button onClick={() => setSubmitReview(true)} disabled={locked}>Review & submit<ArrowRight size={16}/></button>}</footer>
+      </section>
+      <aside className="live-sidebar">
+        <div className={'live-timer ' + (timeLeft < 120 ? 'time-low' : '')}><p><Clock size={14}/>TIME REMAINING</p><strong role="timer" aria-label="Time remaining">{String(Math.floor(timeLeft / 60)).padStart(2, '0')}<span>:</span>{String(timeLeft % 60).padStart(2, '0')}</strong><span>of {quiz.duration} minutes</span></div>
+        <div className="live-progress"><div><h2>Your progress</h2><span>{answeredCount}/{quiz.questions.length}</span></div><div className="live-progress-track"><span style={{ width: answeredCount / quiz.questions.length * 100 + '%' }}/></div><p>{quiz.questions.length - answeredCount} unanswered · {reviewed.length} marked for review</p></div>
+        <nav className="live-question-map" aria-label="Question navigation">{quiz.questions.map((question, index) => <button key={question._id} onClick={() => setCurrentIdx(index)} disabled={isSubmitting} aria-current={currentIdx === index ? 'step' : undefined} aria-label={'Question ' + (index + 1) + (hasAnswer(answers[index]) ? ', answered' : ', unanswered') + (reviewed.includes(index) ? ', marked for review' : '')} className={(hasAnswer(answers[index]) ? 'is-answered ' : '') + (reviewed.includes(index) ? 'is-review ' : '')}>{index + 1}{reviewed.includes(index) && <span aria-hidden="true"/>}</button>)}</nav>
+        <div className="live-legend"><span><i className="answered"/>Answered</span><span><i className="review"/>Review</span><span><i/>Unanswered</span></div>
+        <div className="live-submit-block">{submitReview ? <div className="live-submit-review"><h3>Submit this attempt?</h3><p>{answeredCount} answered, {quiz.questions.length - answeredCount} unanswered, and {reviewed.length} marked for review. You cannot change answers after submitting.</p><button onClick={handleSubmitQuiz} disabled={isSubmitting} className="live-submit">{isSubmitting ? 'Submitting…' : 'Confirm submission'}<Check size={15}/></button><button onClick={() => setSubmitReview(false)} disabled={isSubmitting} className="live-keep-working">Keep working</button></div> : <><button onClick={() => locked ? handleSubmitQuiz() : setSubmitReview(true)} disabled={isSubmitting} className="live-submit">{isSubmitting ? 'Submitting…' : locked ? 'Retry submission' : 'Finish assessment'}<ArrowRight size={15}/></button><p>Review your answers before submitting.</p></>}</div>
+        <div className="live-session-note"><span><AlertTriangle size={13}/>{violationCount} / 3 proctoring events</span><p>Stay on this page and keep your camera on. Answers are held in this session until submission.</p></div>
+      </aside>
     </div>
-  );
+  </div>;
 }

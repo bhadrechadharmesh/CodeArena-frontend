@@ -1,3 +1,4 @@
+import { useSessionNavigation } from '../components/SessionNavigation.jsx';
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -41,6 +42,8 @@ export default function Contests() {
 
   // Timer
   const [timeLeft, setTimeLeft] = useState(0);
+  useSessionNavigation(Boolean(activeContest) && contestConfirmed && timeLeft > 0);
+
   const timerRef = useRef(null);
 
   const fetchContests = async () => {
